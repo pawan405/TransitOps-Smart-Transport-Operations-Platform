@@ -9,7 +9,11 @@
 <!-- Material Symbols -->
 <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
 <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
-<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<!-- Leaflet CSS -->
+    <link rel="stylesheet" href="/node_modules/leaflet/dist/leaflet.css" />
+    <!-- Leaflet JS -->
+    <script src="/node_modules/leaflet/dist/leaflet.js"></script>
+    <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
 <script id="tailwind-config">
         tailwind.config = {
             darkMode: "class",
@@ -153,6 +157,40 @@
         }
         .material-symbols-outlined {
             font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+        
+        /* Map container */
+        #map-container {
+            width: 100%;
+            height: 100%;
+            border-radius: 0.5rem;
+        }
+        
+        /* Leaflet custom styling for cyberpunk theme */
+        .leaflet-popup-content-wrapper {
+            background-color: #1a1c1f;
+            border: 1px solid rgba(255, 255, 255, 0.05);
+            border-radius: 0.5rem;
+            color: #e2e2e6;
+        }
+        .leaflet-popup-tip {
+            background-color: #1a1c1f;
+        }
+        .leaflet-popup-close-button {
+            color: #849495 !important;
+        }
+        .leaflet-control-zoom a {
+            background-color: rgba(20, 24, 29, 0.8) !important;
+            border-color: rgba(255, 255, 255, 0.05) !important;
+            color: #e2e2e6 !important;
+        }
+        .leaflet-control-zoom a:hover {
+            background-color: rgba(30, 32, 35, 0.8) !important;
+        }
+        .leaflet-control-scale-line {
+            background-color: rgba(20, 24, 29, 0.8) !important;
+            border-color: rgba(255, 255, 255, 0.05) !important;
+            color: #e2e2e6 !important;
         }
     </style>
 </head>
@@ -317,15 +355,10 @@
 </div>
 </div>
 <div class="flex-1 glass-panel relative overflow-hidden group">
-<!-- Simulated Map Interface -->
-<div class="absolute inset-0 opacity-40 mix-blend-screen pointer-events-none">
-<div class="absolute w-full h-full" style="background-image: radial-gradient(circle, rgba(0, 240, 255, 0.05) 1px, transparent 1px); background-size: 32px 32px;"></div>
-</div>
-<div class="absolute inset-0 flex items-center justify-center">
-<div class="w-full h-full bg-cover bg-center transition-transform duration-[20s] linear scale-110 group-hover:scale-125" data-alt="A sophisticated digital topological fleet map of a dense urban center like San Francisco. The map is stylized in deep charcoal and asphalt colors with vibrant neon cyan and amber vector lines representing transit routes. Dozens of small glowing nodes pulse across the grid, signifying active vehicles in real-time. High-tech mission control aesthetic with data overlays." data-location="San Francisco" style="background-image: url('https://lh3.googleusercontent.com/aida-public/AB6AXuAUwpZlwTMKcxFbOFn2Cfzh7IixXMzr8_ARnwipNh4sUGkk9VUpzz7F6xWg295OqZ3iIzsPZY_K4p-09B2kNDwIQHENjz3JIRrBH9j4E7cEc6LihoKxiA7VkfeteMou2OroYRJZ59jvAmFdGUvxngWC0lwy_sSJdNMT2Qvv4_jh_90fUBpmf-Cspr-zKL-tRmwM5N71y5QzElWz0ZlIJZ-tyMO0Sb1I3uu1KrWE_7c_wBAgyg85MUNfrLPIbv0ued4BxHbUjn20R60')"></div>
-</div>
+<!-- Real Leaflet Map -->
+<div id="map-container"></div>
 <!-- Map HUD Overlays -->
-<div class="absolute top-4 left-4 flex flex-col space-y-2">
+<div class="absolute top-4 left-4 flex flex-col space-y-2 z-[400]">
 <div class="glass-panel p-2 bg-surface-container/90">
 <div class="flex items-center space-x-2">
 <span class="w-2 h-2 rounded-full bg-secondary-fixed pulse-alert"></span>
@@ -337,13 +370,13 @@
 <span class="font-data-sm text-data-sm text-primary tabular-nums" id="clock">00:00:00 UTC</span>
 </div>
 </div>
-<div class="absolute bottom-4 right-4">
+<div class="absolute bottom-4 right-4 z-[400]">
 <div class="glass-panel p-3 bg-surface-container/90 border-l-4 border-primary">
 <div class="flex items-start space-x-3">
 <span class="material-symbols-outlined text-primary">sensors</span>
 <div>
 <span class="font-label-caps text-label-caps text-on-surface-variant block">COORDINATE MESH</span>
-<span class="font-data-sm text-data-sm text-primary">34.0522° N, 118.2437° W</span>
+<span class="font-data-sm text-data-sm text-primary">27.1767° N, 78.0081° E</span>
 </div>
 </div>
 </div>
@@ -427,7 +460,14 @@
 <a class="font-label-caps text-label-caps text-on-surface-variant hover:text-primary-fixed transition-colors uppercase underline decoration-outline-variant decoration-1 underline-offset-4" href="#">Operational Logs</a>
 </div>
 </footer>
-<script>
+<script type="module">
+        import { initMap } from './js/map.js';
+        
+        // Initialize the map when the DOM is ready
+        document.addEventListener('DOMContentLoaded', () => {
+            initMap();
+        });
+        
         // Real-time clock update
         function updateClock() {
             const now = new Date();
