@@ -1,0 +1,195 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+        <!-- Region Views -->
+        <record id="view_transit_region_form" model="ir.ui.view">
+            <field name="name">transit.region.form</field>
+            <field name="model">transit.region</field>
+            <field name="arch" type="xml">
+                <form string="Region">
+                    <sheet>
+                        <group>
+                            <group>
+                                <field name="name"/>
+                                <field name="code"/>
+                            </group>
+                            <group>
+                                <field name="active"/>
+                            </group>
+                        </group>
+                        <separator string="Description"/>
+                        <field name="description"/>
+                    </sheet>
+                    <div class="oe_chatter">
+                        <field name="message_follower_ids"/>
+                        <field name="activity_ids"/>
+                        <field name="message_ids"/>
+                    </div>
+                </form>
+            </field>
+        </record>
+        <record id="view_transit_region_tree" model="ir.ui.view">
+            <field name="name">transit.region.tree</field>
+            <field name="model">transit.region</field>
+            <field name="arch" type="xml">
+                <tree string="Regions">
+                    <field name="name"/>
+                    <field name="code"/>
+                    <field name="active"/>
+                </tree>
+            </field>
+        </record>
+        <record id="action_transit_region" model="ir.actions.act_window">
+            <field name="name">Regions</field>
+            <field name="res_model">transit.region</field>
+            <field name="view_mode">tree,form</field>
+        </record>
+
+        <!-- Vehicle Type Views -->
+        <record id="view_transit_vehicle_type_form" model="ir.ui.view">
+            <field name="name">transit.vehicle.type.form</field>
+            <field name="model">transit.vehicle.type</field>
+            <field name="arch" type="xml">
+                <form string="Vehicle Type">
+                    <sheet>
+                        <group>
+                            <group>
+                                <field name="name"/>
+                                <field name="code"/>
+                            </group>
+                            <group>
+                                <field name="active"/>
+                            </group>
+                        </group>
+                        <separator string="Description"/>
+                        <field name="description"/>
+                    </sheet>
+                    <div class="oe_chatter">
+                        <field name="message_follower_ids"/>
+                        <field name="activity_ids"/>
+                        <field name="message_ids"/>
+                    </div>
+                </form>
+            </field>
+        </record>
+        <record id="view_transit_vehicle_type_tree" model="ir.ui.view">
+            <field name="name">transit.vehicle.type.tree</field>
+            <field name="model">transit.vehicle.type</field>
+            <field name="arch" type="xml">
+                <tree string="Vehicle Types">
+                    <field name="name"/>
+                    <field name="code"/>
+                    <field name="active"/>
+                </tree>
+            </field>
+        </record>
+        <record id="action_transit_vehicle_type" model="ir.actions.act_window">
+            <field name="name">Vehicle Types</field>
+            <field name="res_model">transit.vehicle.type</field>
+            <field name="view_mode">tree,form</field>
+        </record>
+
+        <!-- License Category Views -->
+        <record id="view_transit_license_category_form" model="ir.ui.view">
+            <field name="name">transit.license.category.form</field>
+            <field name="model">transit.license.category</field>
+            <field name="arch" type="xml">
+                <form string="License Category">
+                    <sheet>
+                        <group>
+                            <group>
+                                <field name="name"/>
+                                <field name="code"/>
+                            </group>
+                            <group>
+                                <field name="active"/>
+                            </group>
+                        </group>
+                        <separator string="Description"/>
+                        <field name="description"/>
+                    </sheet>
+                    <div class="oe_chatter">
+                        <field name="message_follower_ids"/>
+                        <field name="activity_ids"/>
+                        <field name="message_ids"/>
+                    </div>
+                </form>
+            </field>
+        </record>
+        <record id="view_transit_license_category_tree" model="ir.ui.view">
+            <field name="name">transit.license.category.tree</field>
+            <field name="model">transit.license.category</field>
+            <field name="arch" type="xml">
+                <tree string="License Categories">
+                    <field name="name"/>
+                    <field name="code"/>
+                    <field name="active"/>
+                </tree>
+            </field>
+        </record>
+        <record id="action_transit_license_category" model="ir.actions.act_window">
+            <field name="name">License Categories</field>
+            <field name="res_model">transit.license.category</field>
+            <field name="view_mode">tree,form</field>
+        </record>
+
+        <!-- Route Views -->
+        <record id="view_transit_route_form" model="ir.ui.view">
+            <field name="name">transit.route.form</field>
+            <field name="model">transit.route</field>
+            <field name="arch" type="xml">
+                <form string="Route">
+                    <sheet>
+                        <group>
+                            <group>
+                                <field name="name"/>
+                                <field name="source"/>
+                                <field name="destination"/>
+                            </group>
+                            <group>
+                                <field name="distance"/>
+                                <field name="estimated_time"/>
+                                <field name="active"/>
+                            </group>
+                        </group>
+                    </sheet>
+                    <div class="oe_chatter">
+                        <field name="message_follower_ids"/>
+                        <field name="activity_ids"/>
+                        <field name="message_ids"/>
+                    </div>
+                </form>
+            </field>
+        </record>
+        <record id="view_transit_route_tree" model="ir.ui.view">
+            <field name="name">transit.route.tree</field>
+            <field name="model">transit.route</field>
+            <field name="arch" type="xml">
+                <tree string="Routes">
+                    <field name="name"/>
+                    <field name="source"/>
+                    <field name="destination"/>
+                    <field name="distance"/>
+                    <field name="estimated_time"/>
+                    <field name="active"/>
+                </tree>
+            </field>
+        </record>
+        <record id="action_transit_route" model="ir.actions.act_window">
+            <field name="name">Routes</field>
+            <field name="res_model">transit.route</field>
+            <field name="view_mode">tree,form</field>
+        </record>
+
+        <!-- Top Menu -->
+        <menuitem id="base.menu_transit" name="TransitOps" sequence="10"/>
+        
+        <!-- Menu Items -->
+        <menuitem id="menu_transit_config" name="Configuration" parent="base.menu_transit" sequence="50"/>
+        <menuitem id="menu_transit_config_master" name="Master Data" parent="menu_transit_config" sequence="1"/>
+        <menuitem id="menu_transit_region" name="Regions" parent="menu_transit_config_master" action="action_transit_region" sequence="1"/>
+        <menuitem id="menu_transit_vehicle_type" name="Vehicle Types" parent="menu_transit_config_master" action="action_transit_vehicle_type" sequence="2"/>
+        <menuitem id="menu_transit_license_category" name="License Categories" parent="menu_transit_config_master" action="action_transit_license_category" sequence="3"/>
+        <menuitem id="menu_transit_route" name="Routes" parent="menu_transit_config_master" action="action_transit_route" sequence="4"/>
+    </data>
+</odoo>

@@ -1,0 +1,7 @@
+id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
+access_transit_fuel_log_admin,transit.fuel.log.admin,model_transit_fuel_log,transit_base.group_transit_admin,1,1,1,1
+access_transit_fuel_log_manager,transit.fuel.log.manager,model_transit_fuel_log,transit_base.group_transit_fleet_manager,1,1,1,1
+access_transit_fuel_log_finance,transit.fuel.log.finance,model_transit_fuel_log,transit_base.group_transit_finance,1,1,1,1
+access_transit_expense_admin,transit.expense.admin,model_transit_expense,transit_base.group_transit_admin,1,1,1,1
+access_transit_expense_manager,transit.expense.manager,model_transit_expense,transit_base.group_transit_fleet_manager,1,1,1,1
+access_transit_expense_finance,transit.expense.finance,model_transit_expense,transit_base.group_transit_finance,1,1,1,1

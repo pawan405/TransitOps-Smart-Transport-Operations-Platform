@@ -1,0 +1,108 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+        <!-- Driver Form View -->
+        <record id="view_transit_driver_form" model="ir.ui.view">
+            <field name="name">transit.driver.form</field>
+            <field name="model">transit.driver</field>
+            <field name="arch" type="xml">
+                <form string="Driver">
+                    <header>
+                        <button name="action_set_available" string="Set Available" type="object" states="on_trip,off_duty,suspended" class="oe_highlight"/>
+                        <button name="action_set_off_duty" string="Set Off Duty" type="object" states="available"/>
+                        <button name="action_set_suspended" string="Suspend" type="object" states="available,off_duty"/>
+                        <field name="status" widget="statusbar" statusbar_visible="available,on_trip,off_duty,suspended"/>
+                    </header>
+                    <sheet>
+                        <div class="oe_button_box" name="button_box">
+                            <button class="oe_stat_button" name="%(action_transit_trip)d" type="action" icon="fa-road">
+                                <field string="Trips" name="trip_ids" widget="statinfo"/>
+                            </button>
+                        </div>
+                        <field name="image_128" widget="image" class="oe_avatar"/>
+                        <div class="oe_title">
+                            <h1><field name="name"/></h1>
+                        </div>
+                        <group>
+                            <group>
+                                <field name="license_number"/>
+                                <field name="license_category_id"/>
+                                <field name="license_expiry_date"/>
+                                <field name="phone"/>
+                            </group>
+                            <group>
+                                <field name="email"/>
+                                <field name="safety_score"/>
+                            </group>
+                        </group>
+                        <separator string="Documents"/>
+                        <field name="license_attachment_ids" widget="many2many_binary"/>
+                    </sheet>
+                    <div class="oe_chatter">
+                        <field name="message_follower_ids"/>
+                        <field name="activity_ids"/>
+                        <field name="message_ids"/>
+                    </div>
+                </form>
+            </field>
+        </record>
+
+        <!-- Driver Tree View -->
+        <record id="view_transit_driver_tree" model="ir.ui.view">
+            <field name="name">transit.driver.tree</field>
+            <field name="model">transit.driver</field>
+            <field name="arch" type="xml">
+                <tree string="Drivers">
+                    <field name="name"/>
+                    <field name="license_number"/>
+                    <field name="license_category_id"/>
+                    <field name="license_expiry_date"/>
+                    <field name="status"/>
+                    <field name="safety_score"/>
+                </tree>
+            </field>
+        </record>
+
+        <!-- Driver Action -->
+        <record id="action_transit_driver" model="ir.actions.act_window">
+            <field name="name">Drivers</field>
+            <field name="res_model">transit.driver</field>
+            <field name="view_mode">kanban,tree,form</field>
+        </record>
+
+        <!-- Driver Kanban View -->
+        <record id="view_transit_driver_kanban" model="ir.ui.view">
+            <field name="name">transit.driver.kanban</field>
+            <field name="model">transit.driver</field>
+            <field name="arch" type="xml">
+                <kanban class="o_kanban_mobile">
+                    <field name="name"/>
+                    <field name="status"/>
+                    <field name="image_128"/>
+                    <templates>
+                        <t t-name="kanban-box">
+                            <div t-attf-class="#{kanban_color(record.color.raw_value)}">
+                                <div class="oe_kanban_global_click">
+                                    <div class="o_kanban_image">
+                                        <img t-att-src="kanban_image('transit.driver', 'image_128', record.id.raw_value)"/>
+                                    </div>
+                                    <div class="oe_kanban_details">
+                                        <strong class="o_kanban_record_title">
+                                            <field name="name"/>
+                                        </strong>
+                                        <div><field name="license_number"/></div>
+                                        <div><field name="status" widget="badge"/></div>
+                                        <div>Safety Score: <field name="safety_score"/></div>
+                                    </div>
+                                </div>
+                            </div>
+                        </t>
+                    </templates>
+                </kanban>
+            </field>
+        </record>
+
+        <!-- Menu Items -->
+        <menuitem id="menu_transit_driver" name="Drivers" parent="base.menu_transit" action="action_transit_driver" sequence="20"/>
+    </data>
+</odoo>

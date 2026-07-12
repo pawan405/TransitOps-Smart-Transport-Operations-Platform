@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data noupdate="1">
+        <!-- Regions -->
+        <record id="region_north" model="transit.region">
+            <field name="name">North Region</field>
+            <field name="code">NR</field>
+            <field name="description">North India region</field>
+        </record>
+        <record id="region_south" model="transit.region">
+            <field name="name">South Region</field>
+            <field name="code">SR</field>
+            <field name="description">South India region</field>
+        </record>
+        <record id="region_east" model="transit.region">
+            <field name="name">East Region</field>
+            <field name="code">ER</field>
+            <field name="description">East India region</field>
+        </record>
+        <record id="region_west" model="transit.region">
+            <field name="name">West Region</field>
+            <field name="code">WR</field>
+            <field name="description">West India region</field>
+        </record>
+
+        <!-- Vehicle Types -->
+        <record id="vehicle_type_truck" model="transit.vehicle.type">
+            <field name="name">Truck</field>
+            <field name="code">TRK</field>
+        </record>
+        <record id="vehicle_type_trailer" model="transit.vehicle.type">
+            <field name="name">Trailer</field>
+            <field name="code">TRL</field>
+        </record>
+        <record id="vehicle_type_van" model="transit.vehicle.type">
+            <field name="name">Van</field>
+            <field name="code">VAN</field>
+        </record>
+
+        <!-- License Categories -->
+        <record id="license_cat_hmv" model="transit.license.category">
+            <field name="name">Heavy Motor Vehicle</field>
+            <field name="code">HMV</field>
+        </record>
+        <record id="license_cat_lmv" model="transit.license.category">
+            <field name="name">Light Motor Vehicle</field>
+            <field name="code">LMV</field>
+        </record>
+
+        <!-- Routes -->
+        <record id="route_delhi_mumbai" model="transit.route">
+            <field name="name">Delhi - Mumbai</field>
+            <field name="source">Delhi</field>
+            <field name="destination">Mumbai</field>
+            <field name="distance">1400.0</field>
+            <field name="estimated_time">24.0</field>
+        </record>
+        <record id="route_mumbai_bangalore" model="transit.route">
+            <field name="name">Mumbai - Bangalore</field>
+            <field name="source">Mumbai</field>
+            <field name="destination">Bangalore</field>
+            <field name="distance">980.0</field>
+            <field name="estimated_time">18.0</field>
+        </record>
+    </data>
+</odoo>

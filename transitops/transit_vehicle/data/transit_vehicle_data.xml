@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data noupdate="1">
+        <!-- Sample Vehicles -->
+        <record id="vehicle_001" model="transit.vehicle">
+            <field name="registration_number">DL 1CA 1234</field>
+            <field name="name">Tata Prima</field>
+            <field name="model">Prima 4928.S</field>
+            <field name="vehicle_type_id" ref="transit_base.vehicle_type_truck"/>
+            <field name="load_capacity">25.0</field>
+            <field name="fuel_type">diesel</field>
+            <field name="acquisition_cost">3500000.0</field>
+            <field name="current_odometer">45000.0</field>
+            <field name="status">available</field>
+            <field name="region_id" ref="transit_base.region_north"/>
+        </record>
+        <record id="vehicle_002" model="transit.vehicle">
+            <field name="registration_number">MH 01 AB 5678</field>
+            <field name="name">Ashok Leyland</field>
+            <field name="model">4825</field>
+            <field name="vehicle_type_id" ref="transit_base.vehicle_type_truck"/>
+            <field name="load_capacity">22.0</field>
+            <field name="fuel_type">diesel</field>
+            <field name="acquisition_cost">3200000.0</field>
+            <field name="current_odometer">62000.0</field>
+            <field name="status">available</field>
+            <field name="region_id" ref="transit_base.region_west"/>
+        </record>
+    </data>
+</odoo>

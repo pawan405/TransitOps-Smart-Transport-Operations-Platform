@@ -1,0 +1,299 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>TransitOps - Transport Management</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap');
+        * { font-family: 'Inter', sans-serif; }
+        .mesh-gradient {
+            position: fixed;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: radial-gradient(circle at 20% 80%, rgba(108, 99, 255, 0.15) 0%, transparent 50%),
+                        radial-gradient(circle at 80% 20%, rgba(0, 212, 255, 0.15) 0%, transparent 50%),
+                        radial-gradient(circle at 50% 50%, rgba(124, 58, 237, 0.1) 0%, transparent 50%);
+            animation: pulse 10s ease-in-out infinite;
+            z-index: 0;
+        }
+        @keyframes pulse {
+            0%, 100% { transform: scale(1) rotate(0deg); }
+            50% { transform: scale(1.1) rotate(5deg); }
+        }
+        .glass-card {
+            background: rgba(255, 255, 255, 0.03);
+            backdrop-filter: blur(20px);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+        }
+        .glass-card:hover {
+            background: rgba(255, 255, 255, 0.06);
+            border-color: rgba(108, 99, 255, 0.3);
+            transform: translateY(-4px);
+            box-shadow: 0 20px 40px rgba(108, 99, 255, 0.2);
+        }
+        .text-gradient {
+            background: linear-gradient(135deg, #6C63FF, #00D4FF, #7C3AED);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+        .stat-icon {
+            background: linear-gradient(135deg, rgba(108, 99, 255, 0.2), rgba(0, 212, 255, 0.2));
+            border: 1px solid rgba(108, 99, 255, 0.3);
+        }
+        .nav-link.active {
+            background: rgba(108, 99, 255, 0.2);
+            border-color: rgba(108, 99, 255, 0.5);
+        }
+        @keyframes slideUp {
+            from { opacity: 0; transform: translateY(30px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        .animate-slide-up { animation: slideUp 0.6s cubic-bezier(0.16, 1, 0.3, 1) forwards; }
+    </style>
+</head>
+<body class="min-h-screen bg-gradient-to-br from-slate-950 via-slate-900 to-slate-950 text-white">
+    <div class="mesh-gradient"></div>
+    <div class="relative z-10 flex">
+        <!-- Sidebar -->
+        <aside class="w-72 glass-card border-r border-white/10 min-h-screen p-6 flex flex-col gap-2">
+            <div class="flex items-center gap-4 mb-8">
+                <div class="w-12 h-12 rounded-2xl stat-icon flex items-center justify-center">
+                    <i class="fas fa-truck-fast text-2xl text-gradient"></i>
+                </div>
+                <h1 class="text-2xl font-extrabold text-gradient">TransitOps</h1>
+            </div>
+            <nav class="space-y-2">
+                <a href="#dashboard" class="nav-link active flex items-center gap-3 px-4 py-3 rounded-xl border border-transparent hover:border-white/10 transition-all" data-page="dashboard">
+                    <i class="fas fa-gauge-high w-5"></i>
+                    <span class="font-medium">Dashboard</span>
+                </a>
+                <a href="#vehicles" class="nav-link flex items-center gap-3 px-4 py-3 rounded-xl border border-transparent hover:border-white/10 transition-all" data-page="vehicles">
+                    <i class="fas fa-truck w-5"></i>
+                    <span class="font-medium">Vehicles</span>
+                </a>
+                <a href="#drivers" class="nav-link flex items-center gap-3 px-4 py-3 rounded-xl border border-transparent hover:border-white/10 transition-all" data-page="drivers">
+                    <i class="fas fa-user-tie w-5"></i>
+                    <span class="font-medium">Drivers</span>
+                </a>
+                <a href="#trips" class="nav-link flex items-center gap-3 px-4 py-3 rounded-xl border border-transparent hover:border-white/10 transition-all" data-page="trips">
+                    <i class="fas fa-route w-5"></i>
+                    <span class="font-medium">Trips</span>
+                </a>
+                <a href="#maintenance" class="nav-link flex items-center gap-3 px-4 py-3 rounded-xl border border-transparent hover:border-white/10 transition-all" data-page="maintenance">
+                    <i class="fas fa-wrench w-5"></i>
+                    <span class="font-medium">Maintenance</span>
+                </a>
+                <a href="#fuel" class="nav-link flex items-center gap-3 px-4 py-3 rounded-xl border border-transparent hover:border-white/10 transition-all" data-page="fuel">
+                    <i class="fas fa-gas-pump w-5"></i>
+                    <span class="font-medium">Fuel Logs</span>
+                </a>
+                <a href="#expenses" class="nav-link flex items-center gap-3 px-4 py-3 rounded-xl border border-transparent hover:border-white/10 transition-all" data-page="expenses">
+                    <i class="fas fa-file-invoice-dollar w-5"></i>
+                    <span class="font-medium">Expenses</span>
+                </a>
+                <a href="#reports" class="nav-link flex items-center gap-3 px-4 py-3 rounded-xl border border-transparent hover:border-white/10 transition-all" data-page="reports">
+                    <i class="fas fa-chart-bar w-5"></i>
+                    <span class="font-medium">Reports</span>
+                </a>
+            </nav>
+        </aside>
+        
+        <!-- Main Content -->
+        <main class="flex-1 p-8 overflow-y-auto">
+            <!-- Dashboard Page -->
+            <div id="page-dashboard" class="page">
+                <header class="mb-8">
+                    <h2 class="text-3xl font-bold mb-2">Dashboard</h2>
+                    <p class="text-gray-400">Real-time overview of your fleet</p>
+                </header>
+                
+                <!-- KPI Grid -->
+                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
+                    <div class="glass-card rounded-3xl p-6 transition-all duration-300">
+                        <div class="stat-icon w-12 h-12 rounded-2xl flex items-center justify-center mb-4">
+                            <i class="fas fa-truck text-xl text-cyan-400"></i>
+                        </div>
+                        <p class="text-gray-400 text-sm font-medium uppercase tracking-wider mb-1">Active Vehicles</p>
+                        <p class="text-4xl font-bold text-white mb-2" id="kpi-active-vehicles">12</p>
+                        <p class="text-green-400 text-sm flex items-center gap-1">
+                            <i class="fas fa-arrow-up"></i>
+                            2 from last week
+                        </p>
+                    </div>
+                    <div class="glass-card rounded-3xl p-6 transition-all duration-300">
+                        <div class="stat-icon w-12 h-12 rounded-2xl flex items-center justify-center mb-4">
+                            <i class="fas fa-check-circle text-xl text-green-400"></i>
+                        </div>
+                        <p class="text-gray-400 text-sm font-medium uppercase tracking-wider mb-1">Available</p>
+                        <p class="text-4xl font-bold text-white mb-2" id="kpi-available-vehicles">8</p>
+                        <p class="text-cyan-400 text-sm">Ready for dispatch</p>
+                    </div>
+                    <div class="glass-card rounded-3xl p-6 transition-all duration-300">
+                        <div class="stat-icon w-12 h-12 rounded-2xl flex items-center justify-center mb-4">
+                            <i class="fas fa-indian-rupee-sign text-xl text-green-400"></i>
+                        </div>
+                        <p class="text-gray-400 text-sm font-medium uppercase tracking-wider mb-1">Total Revenue</p>
+                        <p class="text-4xl font-bold text-white mb-2">₹4.2L</p>
+                        <p class="text-green-400 text-sm flex items-center gap-1">
+                            <i class="fas fa-arrow-up"></i>
+                            15% this month
+                        </p>
+                    </div>
+                    <div class="glass-card rounded-3xl p-6 transition-all duration-300">
+                        <div class="stat-icon w-12 h-12 rounded-2xl flex items-center justify-center mb-4">
+                            <i class="fas fa-gas-pump text-xl text-orange-400"></i>
+                        </div>
+                        <p class="text-gray-400 text-sm font-medium uppercase tracking-wider mb-1">Fuel Efficiency</p>
+                        <p class="text-4xl font-bold text-white mb-2">8.2 km/L</p>
+                        <p class="text-cyan-400 text-sm">Optimal</p>
+                    </div>
+                </div>
+                
+                <!-- Recent Trips & Maintenance -->
+                <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+                    <div class="lg:col-span-2 glass-card rounded-3xl p-8 transition-all duration-300">
+                        <div class="flex items-center justify-between mb-6">
+                            <h3 class="text-xl font-bold flex items-center gap-3">
+                                <i class="fas fa-route text-gradient"></i> Recent Trips
+                            </h3>
+                            <a href="#trips" class="text-cyan-400 hover:text-cyan-300 font-medium text-sm">View All</a>
+                        </div>
+                        <div id="recent-trips" class="space-y-4"></div>
+                    </div>
+                    <div class="glass-card rounded-3xl p-8 transition-all duration-300">
+                        <h3 class="text-xl font-bold flex items-center gap-3 mb-6">
+                            <i class="fas fa-wrench text-gradient"></i> Maintenance Alerts
+                        </h3>
+                        <div id="maintenance-alerts" class="space-y-4"></div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Vehicles Page -->
+            <div id="page-vehicles" class="page hidden">
+                <header class="mb-8 flex items-center justify-between">
+                    <div>
+                        <h2 class="text-3xl font-bold mb-2">Vehicles</h2>
+                        <p class="text-gray-400">Manage your entire fleet</p>
+                    </div>
+                    <button onclick="showAddVehicleModal()" class="px-6 py-3 rounded-xl bg-gradient-to-r from-purple-600 to-indigo-600 hover:from-purple-500 hover:to-indigo-500 font-semibold flex items-center gap-2">
+                        <i class="fas fa-plus"></i> Add Vehicle
+                    </button>
+                </header>
+                <div id="vehicles-grid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6"></div>
+            </div>
+            
+            <!-- Drivers Page -->
+            <div id="page-drivers" class="page hidden">
+                <header class="mb-8 flex items-center justify-between">
+                    <div>
+                        <h2 class="text-3xl font-bold mb-2">Drivers</h2>
+                        <p class="text-gray-400">Manage your drivers</p>
+                    </div>
+                    <button onclick="showAddDriverModal()" class="px-6 py-3 rounded-xl bg-gradient-to-r from-purple-600 to-indigo-600 hover:from-purple-500 hover:to-indigo-500 font-semibold flex items-center gap-2">
+                        <i class="fas fa-plus"></i> Add Driver
+                    </button>
+                </header>
+                <div id="drivers-grid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6"></div>
+            </div>
+            
+            <!-- Trips Page -->
+            <div id="page-trips" class="page hidden">
+                <header class="mb-8 flex items-center justify-between">
+                    <div>
+                        <h2 class="text-3xl font-bold mb-2">Trips</h2>
+                        <p class="text-gray-400">Manage and dispatch trips</p>
+                    </div>
+                    <button onclick="showAddTripModal()" class="px-6 py-3 rounded-xl bg-gradient-to-r from-purple-600 to-indigo-600 hover:from-purple-500 hover:to-indigo-500 font-semibold flex items-center gap-2">
+                        <i class="fas fa-plus"></i> New Trip
+                    </button>
+                </header>
+                <div id="trips-list" class="space-y-4"></div>
+            </div>
+            
+            <!-- Maintenance Page -->
+            <div id="page-maintenance" class="page hidden">
+                <header class="mb-8 flex items-center justify-between">
+                    <div>
+                        <h2 class="text-3xl font-bold mb-2">Maintenance</h2>
+                        <p class="text-gray-400">Track vehicle maintenance</p>
+                    </div>
+                    <button onclick="showAddMaintenanceModal()" class="px-6 py-3 rounded-xl bg-gradient-to-r from-purple-600 to-indigo-600 hover:from-purple-500 hover:to-indigo-500 font-semibold flex items-center gap-2">
+                        <i class="fas fa-plus"></i> Add Maintenance
+                    </button>
+                </header>
+                <div id="maintenance-list" class="space-y-4"></div>
+            </div>
+            
+            <!-- Fuel Logs Page -->
+            <div id="page-fuel" class="page hidden">
+                <header class="mb-8 flex items-center justify-between">
+                    <div>
+                        <h2 class="text-3xl font-bold mb-2">Fuel Logs</h2>
+                        <p class="text-gray-400">Track fuel purchases and efficiency</p>
+                    </div>
+                    <button onclick="showAddFuelModal()" class="px-6 py-3 rounded-xl bg-gradient-to-r from-purple-600 to-indigo-600 hover:from-purple-500 hover:to-indigo-500 font-semibold flex items-center gap-2">
+                        <i class="fas fa-plus"></i> Add Fuel Log
+                    </button>
+                </header>
+                <div id="fuel-list" class="space-y-4"></div>
+            </div>
+            
+            <!-- Expenses Page -->
+            <div id="page-expenses" class="page hidden">
+                <header class="mb-8 flex items-center justify-between">
+                    <div>
+                        <h2 class="text-3xl font-bold mb-2">Expenses</h2>
+                        <p class="text-gray-400">Track all operational expenses</p>
+                    </div>
+                    <button onclick="showAddExpenseModal()" class="px-6 py-3 rounded-xl bg-gradient-to-r from-purple-600 to-indigo-600 hover:from-purple-500 hover:to-indigo-500 font-semibold flex items-center gap-2">
+                        <i class="fas fa-plus"></i> Add Expense
+                    </button>
+                </header>
+                <div id="expenses-list" class="space-y-4"></div>
+            </div>
+            
+            <!-- Reports Page -->
+            <div id="page-reports" class="page hidden">
+                <header class="mb-8">
+                    <h2 class="text-3xl font-bold mb-2">Reports</h2>
+                    <p class="text-gray-400">Generate reports for your fleet</p>
+                </header>
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <div class="glass-card rounded-3xl p-6 transition-all duration-300">
+                        <h3 class="text-xl font-bold mb-4 flex items-center gap-2"><i class="fas fa-truck text-gradient"></i> Fleet Utilization</h3>
+                        <p class="text-gray-400 text-sm mb-4">Summary of vehicle usage</p>
+                        <button onclick="exportReport('fleet')" class="px-4 py-2 rounded-xl bg-gradient-to-r from-cyan-600 to-blue-600 font-semibold text-sm">Export CSV</button>
+                    </div>
+                    <div class="glass-card rounded-3xl p-6 transition-all duration-300">
+                        <h3 class="text-xl font-bold mb-4 flex items-center gap-2"><i class="fas fa-gas-pump text-gradient"></i> Fuel Efficiency</h3>
+                        <p class="text-gray-400 text-sm mb-4">Fuel efficiency per vehicle</p>
+                        <button onclick="exportReport('fuel')" class="px-4 py-2 rounded-xl bg-gradient-to-r from-cyan-600 to-blue-600 font-semibold text-sm">Export CSV</button>
+                    </div>
+                    <div class="glass-card rounded-3xl p-6 transition-all duration-300">
+                        <h3 class="text-xl font-bold mb-4 flex items-center gap-2"><i class="fas fa-dollar-sign text-gradient"></i> Expense Report</h3>
+                        <p class="text-gray-400 text-sm mb-4">Total expenses breakdown</p>
+                        <button onclick="exportReport('expense')" class="px-4 py-2 rounded-xl bg-gradient-to-r from-cyan-600 to-blue-600 font-semibold text-sm">Export CSV</button>
+                    </div>
+                    <div class="glass-card rounded-3xl p-6 transition-all duration-300">
+                        <h3 class="text-xl font-bold mb-4 flex items-center gap-2"><i class="fas fa-user-tie text-gradient"></i> Driver Performance</h3>
+                        <p class="text-gray-400 text-sm mb-4">Driver safety and trip stats</p>
+                        <button onclick="exportReport('driver')" class="px-4 py-2 rounded-xl bg-gradient-to-r from-cyan-600 to-blue-600 font-semibold text-sm">Export CSV</button>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+    
+    <!-- Modals -->
+    <div id="modals-container"></div>
+    
+    <script src="app.js"></script>
+</body>
+</html>

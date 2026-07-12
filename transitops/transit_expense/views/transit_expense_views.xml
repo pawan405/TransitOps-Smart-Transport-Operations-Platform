@@ -1,0 +1,109 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+        <!-- Fuel Log Views -->
+        <record id="view_transit_fuel_log_form" model="ir.ui.view">
+            <field name="name">transit.fuel.log.form</field>
+            <field name="model">transit.fuel.log</field>
+            <field name="arch" type="xml">
+                <form string="Fuel Log">
+                    <sheet>
+                        <group>
+                            <group>
+                                <field name="vehicle_id"/>
+                                <field name="trip_id"/>
+                                <field name="date"/>
+                                <field name="vendor"/>
+                            </group>
+                            <group>
+                                <field name="quantity"/>
+                                <field name="cost"/>
+                                <field name="odometer"/>
+                                <field name="fuel_efficiency" readonly="1"/>
+                            </group>
+                        </group>
+                    </sheet>
+                    <div class="oe_chatter">
+                        <field name="message_follower_ids"/>
+                        <field name="activity_ids"/>
+                        <field name="message_ids"/>
+                    </div>
+                </form>
+            </field>
+        </record>
+        <record id="view_transit_fuel_log_tree" model="ir.ui.view">
+            <field name="name">transit.fuel.log.tree</field>
+            <field name="model">transit.fuel.log</field>
+            <field name="arch" type="xml">
+                <tree string="Fuel Logs">
+                    <field name="vehicle_id"/>
+                    <field name="trip_id"/>
+                    <field name="date"/>
+                    <field name="quantity"/>
+                    <field name="cost"/>
+                    <field name="fuel_efficiency"/>
+                </tree>
+            </field>
+        </record>
+        <record id="action_transit_fuel_log" model="ir.actions.act_window">
+            <field name="name">Fuel Logs</field>
+            <field name="res_model">transit.fuel.log</field>
+            <field name="view_mode">tree,form</field>
+        </record>
+
+        <!-- Expense Views -->
+        <record id="view_transit_expense_form" model="ir.ui.view">
+            <field name="name">transit.expense.form</field>
+            <field name="model">transit.expense</field>
+            <field name="arch" type="xml">
+                <form string="Expense">
+                    <sheet>
+                        <group>
+                            <group>
+                                <field name="name"/>
+                                <field name="expense_type"/>
+                                <field name="vehicle_id"/>
+                                <field name="trip_id"/>
+                            </group>
+                            <group>
+                                <field name="date"/>
+                                <field name="amount"/>
+                            </group>
+                        </group>
+                        <separator string="Notes"/>
+                        <field name="notes"/>
+                    </sheet>
+                    <div class="oe_chatter">
+                        <field name="message_follower_ids"/>
+                        <field name="activity_ids"/>
+                        <field name="message_ids"/>
+                    </div>
+                </form>
+            </field>
+        </record>
+        <record id="view_transit_expense_tree" model="ir.ui.view">
+            <field name="name">transit.expense.tree</field>
+            <field name="model">transit.expense</field>
+            <field name="arch" type="xml">
+                <tree string="Expenses">
+                    <field name="name"/>
+                    <field name="expense_type"/>
+                    <field name="vehicle_id"/>
+                    <field name="trip_id"/>
+                    <field name="date"/>
+                    <field name="amount"/>
+                </tree>
+            </field>
+        </record>
+        <record id="action_transit_expense" model="ir.actions.act_window">
+            <field name="name">Expenses</field>
+            <field name="res_model">transit.expense</field>
+            <field name="view_mode">tree,form</field>
+        </record>
+
+        <!-- Menu Items -->
+        <menuitem id="menu_transit_operations" name="Operations" parent="base.menu_transit" sequence="20"/>
+        <menuitem id="menu_transit_fuel_log" name="Fuel Logs" parent="menu_transit_operations" action="action_transit_fuel_log" sequence="10"/>
+        <menuitem id="menu_transit_expense" name="Expenses" parent="menu_transit_operations" action="action_transit_expense" sequence="20"/>
+    </data>
+</odoo>

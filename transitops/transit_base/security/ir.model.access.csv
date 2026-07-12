@@ -1,0 +1,13 @@
+id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
+access_transit_region_admin,transit.region.admin,model_transit_region,group_transit_admin,1,1,1,1
+access_transit_region_manager,transit.region.manager,model_transit_region,group_transit_fleet_manager,1,1,1,1
+access_transit_region_dispatcher,transit.region.dispatcher,model_transit_region,group_transit_dispatcher,1,0,0,0
+access_transit_vehicle_type_admin,transit.vehicle.type.admin,model_transit_vehicle_type,group_transit_admin,1,1,1,1
+access_transit_vehicle_type_manager,transit.vehicle.type.manager,model_transit_vehicle_type,group_transit_fleet_manager,1,1,1,1
+access_transit_vehicle_type_dispatcher,transit.vehicle.type.dispatcher,model_transit_vehicle_type,group_transit_dispatcher,1,0,0,0
+access_transit_license_category_admin,transit.license.category.admin,model_transit_license_category,group_transit_admin,1,1,1,1
+access_transit_license_category_manager,transit.license.category.manager,model_transit_license_category,group_transit_fleet_manager,1,1,1,1
+access_transit_license_category_dispatcher,transit.license.category.dispatcher,model_transit_license_category,group_transit_dispatcher,1,0,0,0
+access_transit_route_admin,transit.route.admin,model_transit_route,group_transit_admin,1,1,1,1
+access_transit_route_manager,transit.route.manager,model_transit_route,group_transit_fleet_manager,1,1,1,1
+access_transit_route_dispatcher,transit.route.dispatcher,model_transit_route,group_transit_dispatcher,1,1,1,0

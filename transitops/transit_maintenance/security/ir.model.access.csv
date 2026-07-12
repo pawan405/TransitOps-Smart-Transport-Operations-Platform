@@ -1,0 +1,4 @@
+id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
+access_transit_maintenance_admin,transit.maintenance.admin,model_transit_maintenance,transit_base.group_transit_admin,1,1,1,1
+access_transit_maintenance_manager,transit.maintenance.manager,model_transit_maintenance,transit_base.group_transit_fleet_manager,1,1,1,1
+access_transit_maintenance_safety,transit.maintenance.safety,model_transit_maintenance,transit_base.group_transit_safety,1,1,0,0

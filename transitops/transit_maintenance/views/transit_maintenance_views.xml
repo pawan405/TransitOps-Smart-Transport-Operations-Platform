@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+        <!-- Maintenance Form View -->
+        <record id="view_transit_maintenance_form" model="ir.ui.view">
+            <field name="name">transit.maintenance.form</field>
+            <field name="model">transit.maintenance</field>
+            <field name="arch" type="xml">
+                <form string="Maintenance">
+                    <header>
+                        <button name="action_start" string="Start" type="object" states="open" class="oe_highlight"/>
+                        <button name="action_complete" string="Complete" type="object" states="in_progress" class="oe_highlight"/>
+                        <field name="status" widget="statusbar" statusbar_visible="open,in_progress,completed"/>
+                    </header>
+                    <sheet>
+                        <div class="oe_title">
+                            <h1><field name="name"/></h1>
+                        </div>
+                        <group>
+                            <group>
+                                <field name="vehicle_id"/>
+                                <field name="maintenance_type"/>
+                                <field name="date"/>
+                            </group>
+                            <group>
+                                <field name="cost"/>
+                            </group>
+                        </group>
+                        <separator string="Notes"/>
+                        <field name="notes"/>
+                    </sheet>
+                    <div class="oe_chatter">
+                        <field name="message_follower_ids"/>
+                        <field name="activity_ids"/>
+                        <field name="message_ids"/>
+                    </div>
+                </form>
+            </field>
+        </record>
+
+        <!-- Maintenance Tree View -->
+        <record id="view_transit_maintenance_tree" model="ir.ui.view">
+            <field name="name">transit.maintenance.tree</field>
+            <field name="model">transit.maintenance</field>
+            <field name="arch" type="xml">
+                <tree string="Maintenance">
+                    <field name="name"/>
+                    <field name="vehicle_id"/>
+                    <field name="maintenance_type"/>
+                    <field name="status" widget="badge"/>
+                    <field name="date"/>
+                    <field name="cost"/>
+                </tree>
+            </field>
+        </record>
+
+        <!-- Maintenance Action -->
+        <record id="action_transit_maintenance" model="ir.actions.act_window">
+            <field name="name">Maintenance</field>
+            <field name="res_model">transit.maintenance</field>
+            <field name="view_mode">tree,form</field>
+        </record>
+
+        <!-- Menu Items -->
+        <menuitem id="menu_transit_maintenance" name="Maintenance" parent="base.menu_transit" action="action_transit_maintenance" sequence="40"/>
+    </data>
+</odoo>

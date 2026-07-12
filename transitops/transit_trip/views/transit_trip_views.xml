@@ -1,0 +1,114 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+        <!-- Trip Sequence -->
+        <record id="seq_transit_trip" model="ir.sequence">
+            <field name="name">Trip Sequence</field>
+            <field name="code">transit.trip</field>
+            <field name="prefix">TRIP/</field>
+            <field name="padding">5</field>
+            <field name="number_increment">1</field>
+        </record>
+
+        <!-- Trip Form View -->
+        <record id="view_transit_trip_form" model="ir.ui.view">
+            <field name="name">transit.trip.form</field>
+            <field name="model">transit.trip</field>
+            <field name="arch" type="xml">
+                <form string="Trip">
+                    <header>
+                        <button name="action_dispatch" string="Dispatch" type="object" states="draft" class="oe_highlight"/>
+                        <button name="action_start" string="Start Trip" type="object" states="dispatched"/>
+                        <button name="action_complete" string="Complete" type="object" states="in_progress" class="oe_highlight"/>
+                        <button name="action_cancel" string="Cancel" type="object" states="draft,dispatched,in_progress"/>
+                        <field name="status" widget="statusbar" statusbar_visible="draft,dispatched,in_progress,completed"/>
+                    </header>
+                    <sheet>
+                        <div class="oe_title">
+                            <h1><field name="trip_number"/></h1>
+                        </div>
+                        <group>
+                            <group>
+                                <field name="source"/>
+                                <field name="destination"/>
+                                <field name="route_id"/>
+                                <field name="vehicle_id"/>
+                                <field name="driver_id"/>
+                            </group>
+                            <group>
+                                <field name="cargo_weight"/>
+                                <field name="distance"/>
+                                <field name="expected_fuel"/>
+                                <field name="actual_fuel"/>
+                                <field name="revenue"/>
+                            </group>
+                        </group>
+                        <group>
+                            <group>
+                                <field name="start_date"/>
+                                <field name="end_date"/>
+                            </group>
+                        </group>
+                        <notebook>
+                            <page string="Stops">
+                                <field name="stop_ids">
+                                    <tree editable="bottom">
+                                        <field name="sequence" widget="handle"/>
+                                        <field name="location"/>
+                                        <field name="arrival_time"/>
+                                        <field name="departure_time"/>
+                                        <field name="notes"/>
+                                    </tree>
+                                </field>
+                            </page>
+                            <page string="Status History">
+                                <field name="status_history_ids">
+                                    <tree>
+                                        <field name="status" widget="badge"/>
+                                        <field name="date"/>
+                                        <field name="user_id"/>
+                                    </tree>
+                                </field>
+                            </page>
+                            <page string="Expenses">
+                                <field name="expense_ids"/>
+                            </page>
+                        </notebook>
+                    </sheet>
+                    <div class="oe_chatter">
+                        <field name="message_follower_ids"/>
+                        <field name="activity_ids"/>
+                        <field name="message_ids"/>
+                    </div>
+                </form>
+            </field>
+        </record>
+
+        <!-- Trip Tree View -->
+        <record id="view_transit_trip_tree" model="ir.ui.view">
+            <field name="name">transit.trip.tree</field>
+            <field name="model">transit.trip</field>
+            <field name="arch" type="xml">
+                <tree string="Trips">
+                    <field name="trip_number"/>
+                    <field name="source"/>
+                    <field name="destination"/>
+                    <field name="vehicle_id"/>
+                    <field name="driver_id"/>
+                    <field name="status" widget="badge"/>
+                    <field name="start_date"/>
+                </tree>
+            </field>
+        </record>
+
+        <!-- Trip Action -->
+        <record id="action_transit_trip" model="ir.actions.act_window">
+            <field name="name">Trips</field>
+            <field name="res_model">transit.trip</field>
+            <field name="view_mode">tree,form</field>
+        </record>
+
+        <!-- Menu Items -->
+        <menuitem id="menu_transit_trip" name="Trips" parent="base.menu_transit" action="action_transit_trip" sequence="30"/>
+    </data>
+</odoo>

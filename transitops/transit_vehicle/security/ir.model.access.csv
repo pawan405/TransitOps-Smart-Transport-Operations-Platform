@@ -1,0 +1,7 @@
+id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
+access_transit_vehicle_admin,transit.vehicle.admin,model_transit_vehicle,transit_base.group_transit_admin,1,1,1,1
+access_transit_vehicle_manager,transit.vehicle.manager,model_transit_vehicle,transit_base.group_transit_fleet_manager,1,1,1,1
+access_transit_vehicle_dispatcher,transit.vehicle.dispatcher,model_transit_vehicle,transit_base.group_transit_dispatcher,1,0,0,0
+access_transit_vehicle_finance,transit.vehicle.finance,model_transit_vehicle,transit_base.group_transit_finance,1,0,0,0
+access_transit_vehicle_document_admin,transit.vehicle.document.admin,model_transit_vehicle_document,transit_base.group_transit_admin,1,1,1,1
+access_transit_vehicle_document_manager,transit.vehicle.document.manager,model_transit_vehicle_document,transit_base.group_transit_fleet_manager,1,1,1,1
