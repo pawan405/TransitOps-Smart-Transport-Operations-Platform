@@ -1,0 +1,965 @@
+<USER_REQUEST>
+<!DOCTYPE html>
+
+<html class="dark" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>TransitOps | Telemetry</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Hanken+Grotesk:wght@400;600;700&amp;family=JetBrains+Mono:wght@400;500;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<style>.material-symbols-outlined {
+    font-variation-settings: "FILL" 0, "wght" 400, "GRAD" 0, "opsz" 24
+    }
+.scanline-overlay {
+    background: linear-gradient(to bottom, transparent 50%, rgba(0, 0, 0, 0.03) 50%);
+    background-size: 100% 4px;
+    pointer-events: none
+    }
+.route-line-pulse {
+    stroke-dasharray: 8;
+    animation: dash 30s linear infinite
+    }
+@keyframes dash {
+    to {
+        stroke-dashoffset: -1000;
+        }
+    }
+.glow-cyan {
+    box-shadow: 0 0 15px rgba(0, 212, 255, 0.4)
+    }
+.light-beam {
+    background: linear-gradient(180deg, rgba(0, 212, 255, 0.1) 0%, transparent 100%)
+    }
+.glass-panel {
+    backdrop-filter: blur(20px);
+    border: 1px solid rgba(255, 255, 255, 0.05)
+    }
+.grain {
+    background-image: url(https://lh3.googleusercontent.com/aida-public/AB6AXuCav7QHnsG_O4MtiF7fBRnA67K9HL9dS708oqv7pVwb7XF7o5nTO5Me8rwrTFjY5DV-DgZkyhduZzHxZGhRJ8b21oEffhjEAI4-L8lm15SDn8awlZxo1_qpCjZt1v3O2GJ_dEcn8-IzEad0O6wnSwvhXPkJ7viksQz5tZV4sHAsxC0fKwUFCEpX7lYfu2cdsqKsQUFtX7YyCJmiMdGCteAoOf2o1Z3e6DMRNkm6k9e-rHL8E3JJM8bkkz47KHyF1SQHnIbzJEyM2L0);
+    filter: contrast(150%) brightness(1000%);
+    opacity: 0.02
+    }</style>
+<script id="tailwind-config">
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            "colors": {
+                    "surface-bright": "#37393d",
+                    "on-tertiary-fixed": "#2a1700",
+                    "secondary": "#4edea3",
+                    "on-tertiary-fixed-variant": "#653e00",
+                    "tertiary-container": "#ffb451",
+                    "on-surface-variant": "#bbc9cf",
+                    "on-secondary": "#003824",
+                    "primary": "#a8e8ff",
+                    "on-secondary-fixed-variant": "#005236",
+                    "outline": "#859398",
+                    "on-tertiary": "#472a00",
+                    "surface-container": "#1e2023",
+                    "inverse-surface": "#e2e2e6",
+                    "tertiary-fixed-dim": "#ffb95f",
+                    "surface-container-lowest": "#0c0e11",
+                    "on-error": "#690005",
+                    "primary-container": "#00d4ff",
+                    "on-primary": "#003642",
+                    "error": "#ffb4ab",
+                    "background": "#111317",
+                    "secondary-container": "#00a572",
+                    "on-primary-fixed": "#001f27",
+                    "on-secondary-fixed": "#002113",
+                    "surface-container-highest": "#333538",
+                    "on-background": "#e2e2e6",
+                    "error-container": "#93000a",
+                    "surface": "#111317",
+                    "inverse-primary": "#00677e",
+                    "on-surface": "#e2e2e6",
+                    "on-primary-container": "#00586b",
+                    "on-tertiary-container": "#724700",
+                    "on-error-container": "#ffdad6",
+                    "inverse-on-surface": "#2f3034",
+                    "surface-container-low": "#1a1c1f",
+                    "surface-dim": "#111317",
+                    "surface-variant": "#333538",
+                    "outline-variant": "#3c494e",
+                    "surface-container-high": "#282a2d",
+                    "tertiary-fixed": "#ffddb8",
+                    "on-primary-fixed-variant": "#004e5f",
+                    "primary-fixed": "#b4ebff",
+                    "on-secondary-container": "#00311f",
+                    "secondary-fixed": "#6ffbbe",
+                    "surface-tint": "#3cd7ff",
+                    "primary-fixed-dim": "#3cd7ff",
+                    "tertiary": "#ffd8ae",
+                    "secondary-fixed-dim": "#4edea3"
+            },
+            "borderRadius": {
+                    "DEFAULT": "0.125rem",
+                    "lg": "0.25rem",
+                    "xl": "0.5rem",
+                    "full": "0.75rem"
+            },
+            "spacing": {
+                    "container-max": "1440px",
+                    "margin-desktop": "40px",
+                    "margin-mobile": "16px",
+                    "gutter": "24px",
+                    "unit": "4px"
+            },
+            "fontFamily": {
+                    "headline-sm": ["Hanken Grotesk"],
+                    "body-base": ["Hanken Grotesk"],
+                    "headline-md": ["Hanken Grotesk"],
+                    "display-lg": ["Hanken Grotesk"],
+                    "label-caps": ["JetBrains Mono"],
+                    "data-mono": ["JetBrains Mono"]
+            },
+            "fontSize": {
+                    "headline-sm": ["20px", {"lineHeight": "1.4", "fontWeight": "600"}],
+                    "body-base": ["16px", {"lineHeight": "1.6", "fontWeight": "400"}],
+                    "headline-md": ["32px", {"lineHeight": "1.2", "fontWeight": "600"}],
+                    "display-lg": ["48px", {"lineHeight": "1.1", "letterSpacing": "-0.02em", "fontWeight": "700"}],
+                    "label-caps": ["11px", {"lineHeight": "1.2", "letterSpacing": "0.1em", "fontWeight": "700"}],
+                    "data-mono": ["14px", {"lineHeight": "1.5", "letterSpacing": "0.02em", "fontWeight": "500"}]
+            }
+          },
+        },
+      }
+    </script>
+</head>
+<body class="bg-background text-on-background min-h-screen selection:bg-primary-container selection:text-on-primary-container overflow-x-hidden font-body-base">
+<!-- Global Visual Overlays -->
+<div class="fixed inset-0 scanline-overlay z-[9999]"></div>
+<div class="fixed inset-0 grain pointer-events-none z-[9998]"></div>
+<!-- TopNavBar -->
+<header class="fixed top-0 w-full z-50 bg-surface/80 backdrop-blur-xl border-b border-outline-variant/30 shadow-[0_4px_20px_rgba(0,212,255,0.1)] h-16">
+<div class="flex justify-between items-center px-margin-desktop h-full w-full max-w-container-max mx-auto">
+<div class="flex items-center gap-4">
+<span class="font-headline-md text-headline-md font-bold text-primary tracking-tighter">TransitOps</span>
+<span class="h-4 w-[1px] bg-outline-variant mx-2"></span>
+<nav class="hidden md:flex gap-6 items-center">
+<a class="font-label-caps text-label-caps text-primary border-b-2 border-primary pb-1" href="#">Telemetry</a>
+<a class="font-label-caps text-label-caps text-on-surface-variant hover:text-on-surface transition-colors" href="#">Integrity</a>
+<a class="font-label-caps text-label-caps text-on-surface-variant hover:text-on-surface transition-colors" href="#">Tech Stack</a>
+<a class="font-label-caps text-label-caps text-on-surface-variant hover:text-on-surface transition-colors" href="#">Status</a>
+</nav>
+</div>
+<button class="bg-primary-container text-on-primary px-6 py-2 rounded font-label-caps text-label-caps glow-cyan hover:scale-[1.02] active:scale-95 transition-all duration-300">
+                Establish Connection
+            </button>
+</div>
+</header>
+<main class="pt-16 pb-24">
+<!-- Hero Section with Background Image -->
+<section class="relative h-[80vh] w-full flex items-center justify-center overflow-hidden">
+<div class="absolute inset-0 z-0">
+<div class="absolute inset-0 bg-gradient-to-t from-background via-transparent to-background/50 z-10"></div>
+<div class="absolute inset-0 bg-gradient-to-r from-background via-transparent to-transparent z-10"></div>
+<div class="w-full h-full bg-cover bg-center transition-transform duration-[20s] hover:scale-110" style="background-image: url('https://lh3.googleusercontent.com/aida/AP1WRLs1esNNoxiOsqnw8nnA9xNDJ9qk3qJ57jKgefil9hRnvhcpZ5iSg-RmMRsms9HjtVg5RBAKjh-cUFn2pEXQMX-v61SyUTlIcI5Huv8_M3xBENGylU1LB1ym3tP2BzC5eKxqY0IjzJqvLhPWDTtCslHY99gOQWa4lazeq6geGUrsEC7uETqs1BSqsN8q8umNHfJlgHooZpZODWDdjQLTi47B95202KMEOM43xI36TeDtHawcXsvhQ1PdhQ')"></div>
+</div>
+<div class="relative z-20 w-full max-w-container-max px-margin-desktop grid grid-cols-12 gap-gutter">
+<div class="col-span-12 lg:col-span-6 flex flex-col justify-center">
+<div class="flex items-center gap-2 mb-4">
+<span class="w-2 h-2 bg-secondary rounded-full animate-pulse"></span>
+<span class="font-label-caps text-label-caps text-secondary uppercase tracking-[0.2em]">Live Telemetry Feed</span>
+</div>
+<h1 class="font-display-lg text-display-lg text-on-surface mb-6 leading-[1.05]">
+                        REAL-TIME <br/>
+<span class="text-primary-container">SYSTEM SYNC</span>
+</h1>
+<p class="font-body-base text-body-base text-on-surface-variant max-w-md mb-8">
+                        Monitor fleet-wide integrity with sub-millisecond precision. TransitOps provides a cinematic, high-stakes interface for mission-critical logistics environments.
+                    </p>
+<div class="flex gap-4">
+<button class="bg-primary-container text-on-primary px-8 py-4 rounded font-label-caps text-label-caps glow-cyan hover:brightness-110 transition-all flex items-center gap-3">
+<span class="material-symbols-outlined text-lg">sensors</span>
+                            Establish Connection
+                        </button>
+<button class="border border-outline-variant px-8 py-4 rounded font-label-caps text-label-caps text-on-surface hover:bg-surface-bright/30 transition-all flex items-center gap-3">
+<span class="material-symbols-outlined text-lg">terminal</span>
+                            View Logs
+                        </button>
+</div>
+</div>
+<!-- Live Data Readouts Sidebar (Desktop Only) -->
+<div class="hidden lg:col-span-6 lg:flex flex-col justify-center items-end gap-4">
+<div class="glass-panel p-4 w-64 rounded-lg bg-surface-container/60">
+<div class="flex justify-between items-center mb-2">
+<span class="font-label-caps text-[10px] text-outline">NODE LATENCY</span>
+<span class="font-data-mono text-data-mono text-secondary">12ms</span>
+</div>
+<div class="w-full h-1 bg-surface-container-highest rounded-full overflow-hidden">
+<div class="h-full bg-secondary w-1/4 animate-[pulse_2s_infinite]"></div>
+</div>
+</div>
+<div class="glass-panel p-4 w-72 rounded-lg bg-surface-container/60 translate-x-[-20px]">
+<div class="flex justify-between items-center mb-2">
+<span class="font-label-caps text-[10px] text-outline">PACKET_LOSS</span>
+<span class="font-data-mono text-data-mono text-primary">0.00%</span>
+</div>
+<div class="w-full h-1 bg-surface-container-highest rounded-full overflow-hidden">
+<div class="h-full bg-primary-container w-[1%]"></div>
+</div>
+</div>
+<div class="glass-panel p-4 w-64 rounded-lg bg-surface-container/60">
+<div class="flex justify-between items-center mb-2">
+<span class="font-label-caps text-[10px] text-outline">SIGNAL_STRENGTH</span>
+<span class="font-data-mono text-data-mono text-on-surface">-42dBm</span>
+</div>
+<div class="w-full h-1 bg-surface-container-highest rounded-full overflow-hidden">
+<div class="h-full bg-primary-container w-4/5"></div>
+</div>
+</div>
+</div>
+</div>
+</section>
+<!-- Bento Grid Telemetry Dash -->
+<section class="max-w-container-max mx-auto px-margin-desktop -mt-16 relative z-30">
+<div class="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-4 gap-6">
+<!-- Status Card: Active Fleet -->
+<div class="bg-surface-container-low p-6 rounded-xl border border-outline-variant/20 flex flex-col justify-between group relative overflow-hidden h-48">
+<div class="absolute inset-0 light-beam opacity-0 group-hover:opacity-100 transition-opacity"></div>
+<div>
+<span class="material-symbols-outlined text-primary-container mb-4">local_shipping</span>
+<h3 class="font-label-caps text-label-caps text-on-surface-variant">Active Units</h3>
+</div>
+<div class="flex items-baseline gap-2">
+<span class="font-headline-md text-headline-md text-on-surface">1,284</span>
+<span class="font-data-mono text-xs text-secondary">+12.4%</span>
+</div>
+<!-- Route Line Sparkle -->
+<svg class="absolute bottom-0 left-0 w-full h-2">
+<line class="route-line-pulse stroke-primary-container" stroke-width="2" x1="0" x2="100%" y1="1" y2="1"></line>
+</svg>
+</div>
+<!-- Status Card: Throughput -->
+<div class="bg-surface-container-low p-6 rounded-xl border border-outline-variant/20 flex flex-col justify-between group relative overflow-hidden h-48">
+<div class="absolute inset-0 light-beam opacity-0 group-hover:opacity-100 transition-opacity"></div>
+<div>
+<span class="material-symbols-outlined text-secondary mb-4">database</span>
+<h3 class="font-label-caps text-label-caps text-on-surface-variant">Data Throughput</h3>
+</div>
+<div class="flex items-baseline gap-2">
+<span class="font-headline-md text-headline-md text-on-surface">84.2 <span class="text-xl">GB/s</span></span>
+</div>
+</div>
+<!-- Large Graph Card -->
+<div class="md:col-span-2 bg-surface-container-low p-6 rounded-xl border border-outline-variant/20 relative h-48 overflow-hidden group">
+<div class="absolute top-4 right-4 flex gap-2">
+<div class="flex items-center gap-1">
+<span class="w-2 h-2 rounded-full bg-primary-container"></span>
+<span class="font-label-caps text-[9px] text-outline">PRIMARY</span>
+</div>
+<div class="flex items-center gap-1">
+<span class="w-2 h-2 rounded-full bg-secondary"></span>
+<span class="font-label-caps text-[9px] text-outline">SECONDARY</span>
+</div>
+</div>
+<h3 class="font-label-caps text-label-caps text-on-surface-variant mb-4">Network Stability (24h)</h3>
+<div class="absolute bottom-0 left-0 w-full h-32 px-2 flex items-end gap-1">
+<!-- Mock Graph Bars -->
+<div class="w-full bg-primary-container/20 h-[40%] rounded-t-sm group-hover:h-[60%] transition-all duration-700"></div>
+<div class="w-full bg-primary-container/20 h-[45%] rounded-t-sm group-hover:h-[55%] transition-all duration-700 delay-75"></div>
+<div class="w-full bg-primary-container/20 h-[38%] rounded-t-sm group-hover:h-[70%] transition-all duration-700 delay-100"></div>
+<div class="w-full bg-primary-container/20 h-[50%] rounded-t-sm group-hover:h-[65%] transition-all duration-700 delay-150"></div>
+<div class="w-full bg-primary-container/20 h-[42%] rounded-t-sm group-hover:h-[75%] transition-all duration-700 delay-200"></div>
+<div class="w-full bg-primary-container/20 h-[35%] rounded-t-sm group-hover:h-[50%] transition-all duration-700 delay-300"></div>
+<div class="w-full bg-primary-container/20 h-[48%] rounded-t-sm group-hover:h-[80%] transition-all duration-700 delay-75"></div>
+<div class="w-full bg-secondary/20 h-[60%] rounded-t-sm group-hover:h-[40%] transition-all duration-700"></div>
+<div class="w-full bg-secondary/20 h-[65%] rounded-t-sm group-hover:h-[45%] transition-all duration-700 delay-100"></div>
+<div class="w-full bg-secondary/20 h-[58%] rounded-t-sm group-hover:h-[38%] transition-all duration-700 delay-150"></div>
+</div>
+</div>
+</div>
+</section>
+<!-- Detailed Telemetry Table -->
+<section class="max-w-container-max mx-auto px-margin-desktop mt-12">
+<div class="bg-surface-container-low rounded-xl border border-outline-variant/20 overflow-hidden">
+<div class="p-6 border-b border-outline-variant/20 flex justify-between items-center bg-surface-container-high/50">
+<h2 class="font-headline-sm text-headline-sm flex items-center gap-3">
+<span class="material-symbols-outlined text-primary">analytics</span>
+                        Fleet Performance Matrix
+                    </h2>
+<div class="flex gap-2">
+<span class="px-3 py-1 rounded bg-secondary/10 text-secondary font-label-caps text-[10px] border border-secondary/20 flex items-center gap-1">
+<span class="material-symbols-outlined text-sm" style="font-variation-settings: 'FILL' 1;">check_circle</span> SYSTEM_OK
+                        </span>
+</div>
+</div>
+<div class="overflow-x-auto">
+<table class="w-full text-left">
+<thead class="bg-surface-container-highest/30">
+<tr>
+<th class="px-6 py-4 font-label-caps text-label-caps text-outline">Unit ID</th>
+<th class="px-6 py-4 font-label-caps text-label-caps text-outline">Coord Origin</th>
+<th class="px-6 py-4 font-label-caps text-label-caps text-outline">Load Cap</th>
+<th class="px-6 py-4 font-label-caps text-label-caps text-outline">Temp</th>
+<th class="px-6 py-4 font-label-caps text-label-caps text-outline">Status</th>
+<th class="px-6 py-4 font-label-caps text-label-caps text-outline text-right">Telemetry</th>
+</tr>
+</thead>
+<tbody class="font-data-mono text-data-mono">
+<tr class="hover:bg-surface-bright/20 border-b border-outline-variant/10 transition-colors">
+<td class="px-6 py-4 text-on-surface">TX-8802</td>
+<td class="px-6 py-4 text-on-surface-variant">40.7128Â° N, 74.0060Â° W</td>
+<td class="px-6 py-4">92%</td>
+<td class="px-6 py-4 text-secondary">38.4Â°C</td>
+<td class="px-6 py-4">
+<span class="px-2 py-0.5 rounded-sm bg-secondary/10 text-secondary text-[10px] border border-secondary/30">NOMINAL</span>
+</td>
+<td class="px-6 py-4 text-right">
+<button class="text-primary-container hover:underline text-[10px]">SYNC</button>
+</td>
+</tr>
+<tr class="hover:bg-surface-bright/20 border-b border-outline-variant/10 transition-colors bg-surface-container/30">
+<td class="px-6 py-4 text-on-surface">TX-9104</td>
+<td class="px-6 py-4 text-on-surface-variant">34.0522Â° N, 118.2437Â° W</td>
+<td class="px-6 py-4">45%</td>
+<td class="px-6 py-4 text-primary">32.1Â°C</td>
+<td class="px-6 py-4">
+<span class="px-2 py-0.5 rounded-sm bg-primary/10 text-primary text-[10px] border border-primary/30">IN_TRANSIT</span>
+</td>
+<td class="px-6 py-4 text-right">
+<button class="text-primary-container hover:underline text-[10px]">SYNC</button>
+</td>
+</tr>
+<tr class="hover:bg-surface-bright/20 border-b border-outline-variant/10 transition-colors">
+<td class="px-6 py-4 text-on-surface">TX-4491</td>
+<td class="px-6 py-4 text-on-surface-variant">41.8781Â° N, 87.6298Â° W</td>
+<td class="px-6 py-4">100%</td>
+<td class="px-6 py-4 text-tertiary">44.9Â°C</td>
+<td class="px-6 py-4">
+<span class="px-2 py-0.5 rounded-sm bg-tertiary/10 text-tertiary text-[10px] border border-tertiary/30">LOADING</span>
+</td>
+<td class="px-6 py-4 text-right">
+<button class="text-primary-container hover:underline text-[10px]">SYNC</button>
+</td>
+</tr>
+<tr class="hover:bg-surface-bright/20 border-b border-outline-variant/10 transition-colors bg-surface-container/30">
+<td class="px-6 py-4 text-on-surface">TX-1120</td>
+<td class="px-6 py-4 text-on-surface-variant">29.7604Â° N, 95.3698Â° W</td>
+<td class="px-6 py-4">12%</td>
+<td class="px-6 py-4 text-secondary">36.0Â°C</td>
+<td class="px-6 py-4">
+<span class="px-2 py-0.5 rounded-sm bg-secondary/10 text-secondary text-[10px] border border-secondary/30">NOMINAL</span>
+</td>
+<td class="px-6 py-4 text-right">
+<button class="text-primary-container hover:underline text-[10px]">SYNC</button>
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="p-4 bg-surface-container-highest/20 flex justify-center">
+<button class="font-label-caps text-[10px] text-outline hover:text-on-surface transition-colors flex items-center gap-2">
+                        FETCH NEXT DATA PACKET <span class="material-symbols-outlined text-sm">keyboard_arrow_down</span>
+</button>
+</div>
+</div>
+</section>
+</main>
+<!-- Footer -->
+<footer class="w-full py-8 bg-surface-container-lowest border-t border-outline-variant/20">
+<div class="flex flex-col md:flex-row justify-between items-center px-margin-desktop w-full max-w-container-max mx-auto gap-4">
+<div class="flex flex-col md:flex-row items-center gap-6">
+<span class="font-label-caps text-label-caps text-on-surface-variant">TransitOps Systems</span>
+<span class="font-data-mono text-data-mono text-secondary-fixed-dim">System Status: 99.9% Uptime</span>
+</div>
+<div class="flex gap-6">
+<a class="font-label-caps text-label-caps text-on-surface-variant hover:text-primary transition-all duration-200 hover:translate-x-1" href="#">Protocol v4.2</a>
+<a class="font-label-caps text-label-caps text-on-surface-variant hover:text-primary transition-all duration-200 hover:translate-x-1" href="#">Operator Portal</a>
+<a class="font-label-caps text-label-caps text-on-surface-variant hover:text-primary transition-all duration-200 hover:translate-x-1" href="#">Security Specs</a>
+</div>
+<p class="font-label-caps text-label-caps text-on-surface-variant">Â© 2024 TransitOps Systems. All channels encrypted.</p>
+</div>
+</footer>
+<!-- FAB (Suppressed as per rules for Details/Telemetry but kept for "Establish Connection" core context if needed, but since we have it in TopBar and Hero, we can omit or make it a "Reconnect" button) -->
+<div class="fixed bottom-8 right-8 z-[100] md:hidden">
+<button class="w-14 h-14 bg-primary-container text-on-primary rounded-full shadow-2xl flex items-center justify-center glow-cyan">
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">sensors</span>
+</button>
+</div>
+<script>
+        // Micro-interaction: Randomize telemetry data slightly for atmospheric effect
+        setInterval(() => {
+            const dataNodes = document.querySelectorAll('.data-mono.text-secondary, .data-mono.text-primary');
+            dataNodes.forEach(node => {
+                if (node.innerText.includes('ms')) {
+                    const current = parseInt(node.innerText);
+                    const change = Math.floor(Math.random() * 3) - 1;
+                    node.innerText = `${Math.max(8, current + change)}ms`;
+                }
+            });
+        }, 3000);
+
+        // Header scroll effect
+        window.addEventListener('scroll', () => {
+            const header = document.querySelector('header');
+            if (window.scrollY > 20) {
+                header.classList.add('bg-surface/95');
+                header.classList.remove('bg-surface/80');
+            } else {
+                header.classList.remove('bg-surface/95');
+                header.classList.add('bg-surface/80');
+            }
+        });
+    </script>
+</body></html>
+
+
+
+
+
+<!DOCTYPE html>
+
+<html class="dark" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>TransitOps | Integrity Protocol</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Hanken+Grotesk:wght@400;600;700&amp;family=JetBrains+Mono:wght@500;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<style>@keyframes scanline {
+    0% {
+        transform: translateY(-100%);
+        } 100% {
+        transform: translateY(100%);
+        }
+    }
+.scanline-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(to bottom, transparent 50%, rgba(0, 212, 255, 0.02) 50%);
+    background-size: 100% 4px;
+    pointer-events: none;
+    z-index: 50
+    }
+.glow-cyan {
+    box-shadow: 0 0 15px rgba(0, 212, 255, 0.3)
+    }
+.glow-amber {
+    box-shadow: 0 0 15px rgba(255, 180, 81, 0.3)
+    }
+.route-line-pulse {
+    stroke-dasharray: 8;
+    animation: dash 20s linear infinite
+    }
+@keyframes dash {
+    to {
+        stroke-dashoffset: -1000;
+        }
+    }
+.grain {
+    background-image: url(https://lh3.googleusercontent.com/aida-public/AB6AXuAPAHEgR9f2F59jMLDh5d2ls3SWLDWceRt7Ug_RQGC3b5AI60CflNVdULHhvIifwySNyi457JcXDLfFsBuabi2Os_i7mPutDMoms0EcSLPgaiyGu2KJD0iIu-onV3kLjEhie4He8p0sFdxk8K9Jp9SbJtzCg6KlS8mdTKOC4P8oZTu5M8pKTC8QFHqCWLig-2LT7oKi6oKJhXPvQqp0W_8zDuW1XilHUXhUyC5PxctmAap3e_BUbEdbdxJZSBbZtjeR57IcXiWop9Q);
+    filter: contrast(150%) brightness(1000%);
+    opacity: 0.03
+    }
+.light-beam {
+    background: linear-gradient(180deg, rgba(0, 212, 255, 0.15) 0%, rgba(0, 212, 255, 0) 100%)
+    }</style>
+<script id="tailwind-config">
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            "colors": {
+                    "surface-bright": "#37393d",
+                    "on-tertiary-fixed": "#2a1700",
+                    "secondary": "#4edea3",
+                    "on-tertiary-fixed-variant": "#653e00",
+                    "tertiary-container": "#ffb451",
+                    "on-surface-variant": "#bbc9cf",
+                    "on-secondary": "#003824",
+                    "primary": "#a8e8ff",
+                    "on-secondary-fixed-variant": "#005236",
+                    "outline": "#859398",
+                    "on-tertiary": "#472a00",
+                    "surface-container": "#1e2023",
+                    "inverse-surface": "#e2e2e6",
+                    "tertiary-fixed-dim": "#ffb95f",
+                    "surface-container-lowest": "#0c0e11",
+                    "on-error": "#690005",
+                    "primary-container": "#00d4ff",
+                    "on-primary": "#003642",
+                    "error": "#ffb4ab",
+                    "background": "#111317",
+                    "secondary-container": "#00a572",
+                    "on-primary-fixed": "#001f27",
+                    "on-secondary-fixed": "#002113",
+                    "surface-container-highest": "#333538",
+                    "on-background": "#e2e2e6",
+                    "error-container": "#93000a",
+                    "surface": "#111317",
+                    "inverse-primary": "#00677e",
+                    "on-surface": "#e2e2e6",
+                    "on-primary-container": "#00586b",
+                    "on-tertiary-container": "#724700",
+                    "on-error-container": "#ffdad6",
+                    "inverse-on-surface": "#2f3034",
+                    "surface-container-low": "#1a1c1f",
+                    "surface-dim": "#111317",
+                    "surface-variant": "#333538",
+                    "outline-variant": "#3c494e",
+                    "surface-container-high": "#282a2d",
+                    "tertiary-fixed": "#ffddb8",
+                    "on-primary-fixed-variant": "#004e5f",
+                    "primary-fixed": "#b4ebff",
+                    "on-secondary-container": "#00311f",
+                    "secondary-fixed": "#6ffbbe",
+                    "surface-tint": "#3cd7ff",
+                    "primary-fixed-dim": "#3cd7ff",
+                    "tertiary": "#ffd8ae",
+                    "secondary-fixed-dim": "#4edea3"
+            },
+            "borderRadius": {
+                    "DEFAULT": "0.125rem",
+                    "lg": "0.25rem",
+                    "xl": "0.5rem",
+                    "full": "0.75rem"
+            },
+            "spacing": {
+                    "container-max": "1440px",
+                    "margin-desktop": "40px",
+                    "margin-mobile": "16px",
+                    "gutter": "24px",
+                    "unit": "4px"
+            },
+            "fontFamily": {
+                    "headline-sm": ["Hanken Grotesk"],
+                    "body-base": ["Hanken Grotesk"],
+                    "headline-md": ["Hanken Grotesk"],
+                    "display-lg": ["Hanken Grotesk"],
+                    "label-caps": ["JetBrains Mono"],
+                    "data-mono": ["JetBrains Mono"]
+            },
+            "fontSize": {
+                    "headline-sm": ["20px", {"lineHeight": "1.4", "fontWeight": "600"}],
+                    "body-base": ["16px", {"lineHeight": "1.6", "fontWeight": "400"}],
+                    "headline-md": ["32px", {"lineHeight": "1.2", "fontWeight": "600"}],
+                    "display-lg": ["48px", {"lineHeight": "1.1", "letterSpacing": "-0.02em", "fontWeight": "700"}],
+                    "label-caps": ["11px", {"lineHeight": "1.2", "letterSpacing": "0.1em", "fontWeight": "700"}],
+                    "data-mono": ["14px", {"lineHeight": "1.5", "letterSpacing": "0.02em", "fontWeight": "500"}]
+            }
+          },
+        },
+      }
+    </script>
+</head>
+<body class="bg-background text-on-surface font-body-base selection:bg-primary-container selection:text-on-primary">
+<div class="scanline-overlay"></div>
+<!-- TopNavBar -->
+<nav class="fixed top-0 w-full bg-surface/80 backdrop-blur-xl border-b border-outline-variant/30 shadow-[0_4px_20px_rgba(0,212,255,0.1)] z-[100]">
+<div class="flex justify-between items-center px-margin-desktop h-16 w-full max-w-container-max mx-auto">
+<div class="font-headline-md text-headline-md font-bold text-primary tracking-tighter">TransitOps</div>
+<div class="hidden md:flex items-center gap-8">
+<a class="text-on-surface-variant hover:text-on-surface transition-colors font-label-caps text-label-caps" href="#">Telemetry</a>
+<a class="text-primary border-b-2 border-primary pb-1 font-label-caps text-label-caps" href="#">Integrity</a>
+<a class="text-on-surface-variant hover:text-on-surface transition-colors font-label-caps text-label-caps" href="#">Tech Stack</a>
+<a class="text-on-surface-variant hover:text-on-surface transition-colors font-label-caps text-label-caps" href="#">Status</a>
+</div>
+<button class="bg-primary-container text-on-primary px-6 py-2 rounded-lg font-label-caps text-label-caps active:scale-95 duration-150 transition-all hover:bg-surface-bright/50">
+                Establish Connection
+            </button>
+</div>
+</nav>
+<main class="pt-24 pb-16 px-margin-desktop max-w-container-max mx-auto relative min-h-screen">
+<!-- Hero Section / Connectivity Status -->
+<section class="grid grid-cols-1 lg:grid-cols-12 gap-gutter mb-12">
+<div class="lg:col-span-8 flex flex-col justify-center">
+<div class="inline-flex items-center gap-2 mb-4">
+<span class="w-2 h-2 rounded-full bg-secondary animate-pulse shadow-[0_0_8px_#4edea3]"></span>
+<span class="font-label-caps text-label-caps text-secondary uppercase tracking-[0.2em]">Live Encryption Active</span>
+</div>
+<h1 class="font-display-lg text-display-lg mb-6 max-w-2xl">
+                    Protocol integrity for the <span class="text-primary">next-gen logistics</span> network.
+                </h1>
+<p class="font-body-base text-body-base text-on-surface-variant max-w-xl mb-8">
+                    TransitOps employs advanced Row-Level Security (RLS) via Supabase to ensure granular data isolation. Every telemetry packet is validated, hashed, and authorized in real-time.
+                </p>
+<div class="flex gap-4">
+<button class="bg-primary-container text-on-primary px-8 py-4 rounded font-label-caps text-label-caps tracking-widest shadow-[0_0_20px_rgba(0,212,255,0.4)] hover:shadow-[0_0_30px_rgba(0,212,255,0.6)] transition-all">
+                        ESTABLISH CONNECTION
+                    </button>
+<button class="border border-outline-variant px-8 py-4 rounded font-label-caps text-label-caps tracking-widest hover:bg-surface-bright/30 transition-all">
+                        VIEW PROTOCOLS
+                    </button>
+</div>
+</div>
+<!-- Visual Graphic / Shield Dashboard -->
+<div class="lg:col-span-4 relative group">
+<div class="absolute -inset-4 bg-primary/5 rounded-full blur-3xl group-hover:bg-primary/10 transition-all duration-700"></div>
+<div class="bg-surface-container-high border border-outline-variant/30 p-8 rounded-xl relative overflow-hidden">
+<div class="grain absolute inset-0"></div>
+<div class="relative z-10 text-center">
+<div class="mb-6 flex justify-center">
+<span class="material-symbols-outlined text-primary text-[80px] font-thin animate-pulse" style="font-variation-settings: 'FILL' 0;">shield_lock</span>
+</div>
+<div class="space-y-4">
+<div class="flex justify-between items-center border-b border-outline-variant/20 pb-2">
+<span class="font-label-caps text-label-caps text-on-surface-variant">RLS POLICY</span>
+<span class="font-data-mono text-data-mono text-secondary">ACTIVE</span>
+</div>
+<div class="flex justify-between items-center border-b border-outline-variant/20 pb-2">
+<span class="font-label-caps text-label-caps text-on-surface-variant">KEY ROTATION</span>
+<span class="font-data-mono text-data-mono text-primary">T-14M</span>
+</div>
+<div class="flex justify-between items-center border-b border-outline-variant/20 pb-2">
+<span class="font-label-caps text-label-caps text-on-surface-variant">THREAT LVL</span>
+<span class="font-data-mono text-data-mono text-tertiary-container">MINIMAL</span>
+</div>
+</div>
+<div class="mt-8 pt-4">
+<div class="h-1 w-full bg-surface-bright rounded-full overflow-hidden">
+<div class="h-full bg-primary w-2/3 glow-cyan"></div>
+</div>
+<p class="font-label-caps text-[9px] mt-2 text-on-surface-variant tracking-[0.15em]">CORE SYSTEM INTEGRITY: 98.4%</p>
+</div>
+</div>
+</div>
+</div>
+</section>
+<!-- Bento Grid: Monitoring Station -->
+<section class="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-4 gap-gutter mb-12">
+<!-- Large Map/Activity Card -->
+<div class="md:col-span-2 lg:col-span-3 bg-surface-container-low border border-outline-variant/20 rounded-xl overflow-hidden relative min-h-[400px]">
+<div class="absolute inset-0 z-0">
+<div class="w-full h-full bg-center bg-cover opacity-40 grayscale" data-alt="A dark, high-contrast digital map interface showing a global logistics network with glowing cyan paths and node points. The style is cinematic and technical, resembling a mission control display with subtle data overlays, coordinate grids, and faint digital scanlines. Deep blacks and electric cyan highlights dominate the atmosphere." style="background-image: url('https://lh3.googleusercontent.com/aida-public/AB6AXuBT2jeyhvCgyBvlIm5PD5BreJKYUZ0wqXJ0OE8A1bZtF6mCa88LWIE-5jMbln1Fn7FWfiCSTB5DdYesvoQezXj-BtZPMebpsqMK7feqrh1Cwgxf1_EnjsLW7dLnaN9qf2gX-SDEhyyCIDZvdMlQcbvQyrlvLR68BdSYEyfr-stAYpC-cwD6dbjLWuEyPVFYu7mmSQIU7WjCaY0EwSsIguEhZULC6A_OZEydv-2aAr-BG3L6Db8iGyIay9jXf4gZqheGUkHHaU-Aqi4')"></div>
+</div>
+<div class="relative z-10 p-6 flex flex-col h-full justify-between">
+<div class="flex justify-between items-start">
+<div>
+<h3 class="font-headline-sm text-headline-sm text-primary mb-1">Global Node Integrity</h3>
+<p class="font-label-caps text-label-caps text-on-surface-variant">Real-time authentication map</p>
+</div>
+<div class="bg-surface/80 backdrop-blur-md p-3 border border-outline-variant/30 rounded">
+<span class="font-data-mono text-data-mono text-secondary">842 NODES SECURE</span>
+</div>
+</div>
+<!-- Decorative Route Line UI -->
+<div class="absolute inset-0 pointer-events-none opacity-20">
+<svg class="w-full h-full" viewbox="0 0 800 400">
+<path class="route-line-pulse" d="M50 200 Q 200 50, 400 200 T 750 200" fill="none" stroke="#00D4FF" stroke-width="1"></path>
+</svg>
+</div>
+<div class="flex gap-4">
+<div class="px-3 py-1 bg-surface-container-highest border border-outline-variant/50 rounded flex items-center gap-2">
+<span class="w-1.5 h-1.5 rounded-full bg-secondary"></span>
+<span class="font-label-caps text-[10px]">PARIS_HUB</span>
+</div>
+<div class="px-3 py-1 bg-surface-container-highest border border-outline-variant/50 rounded flex items-center gap-2">
+<span class="w-1.5 h-1.5 rounded-full bg-secondary"></span>
+<span class="font-label-caps text-[10px]">SEOUL_01</span>
+</div>
+<div class="px-3 py-1 bg-surface-container-highest border border-outline-variant/50 rounded flex items-center gap-2">
+<span class="w-1.5 h-1.5 rounded-full bg-tertiary-container"></span>
+<span class="font-label-caps text-[10px]">LA_PORTAL_SYNC</span>
+</div>
+</div>
+</div>
+</div>
+<!-- Encryption Status -->
+<div class="bg-surface-container-high border border-outline-variant/30 rounded-xl p-6 flex flex-col">
+<div class="mb-6">
+<span class="material-symbols-outlined text-secondary mb-4">vpn_key</span>
+<h3 class="font-headline-sm text-headline-sm mb-2">Encryption</h3>
+<p class="font-body-base text-sm text-on-surface-variant">AES-256-GCM hardware-accelerated tunnel protocol.</p>
+</div>
+<div class="mt-auto space-y-4">
+<div class="p-3 bg-surface-container-lowest border border-outline-variant/10 rounded">
+<div class="flex justify-between mb-1">
+<span class="font-label-caps text-[10px]">PACKET_LOSS</span>
+<span class="font-data-mono text-[10px] text-secondary">0.0001%</span>
+</div>
+<div class="h-1 bg-surface-bright rounded-full">
+<div class="h-full bg-secondary w-[99.9%]"></div>
+</div>
+</div>
+<div class="p-3 bg-surface-container-lowest border border-outline-variant/10 rounded">
+<div class="flex justify-between mb-1">
+<span class="font-label-caps text-[10px]">LATENCY</span>
+<span class="font-data-mono text-[10px] text-primary">12ms</span>
+</div>
+<div class="h-1 bg-surface-bright rounded-full">
+<div class="h-full bg-primary w-1/4"></div>
+</div>
+</div>
+</div>
+</div>
+<!-- Warning/Alert Block -->
+<div class="bg-surface-container-high border-l-4 border-l-tertiary-container rounded-r-xl p-6 relative overflow-hidden">
+<div class="light-beam absolute inset-0 opacity-10"></div>
+<div class="relative z-10">
+<div class="flex items-center gap-2 text-tertiary-container mb-4">
+<span class="material-symbols-outlined">warning</span>
+<span class="font-label-caps text-label-caps">INTEGRITY_ALERT</span>
+</div>
+<p class="font-data-mono text-sm mb-6 leading-relaxed">
+                        Unrecognized connection attempt from <span class="bg-on-tertiary-container/20 px-1">IP: 192.168.1.104</span>. Supabase RLS successfully blocked access to private operator telemetry.
+                    </p>
+<button class="w-full py-2 border border-tertiary-container/30 text-tertiary-container font-label-caps text-label-caps hover:bg-tertiary-container/10 transition-colors">
+                        INVESTIGATE LOGS
+                    </button>
+</div>
+</div>
+<!-- Tech Stack / Database Block -->
+<div class="bg-surface-container-high border border-outline-variant/30 rounded-xl p-6 col-span-1 md:col-span-2 lg:col-span-1">
+<h4 class="font-label-caps text-label-caps text-on-surface-variant mb-4 uppercase">Infrastructure Stack</h4>
+<div class="space-y-4">
+<div class="flex items-center gap-3">
+<div class="w-8 h-8 rounded bg-primary-container/20 flex items-center justify-center">
+<span class="material-symbols-outlined text-primary text-sm">database</span>
+</div>
+<div>
+<p class="font-label-caps text-[10px] text-on-surface-variant leading-none">DATABASE</p>
+<p class="font-body-base text-sm">Postgres + Supabase</p>
+</div>
+</div>
+<div class="flex items-center gap-3">
+<div class="w-8 h-8 rounded bg-secondary-container/20 flex items-center justify-center">
+<span class="material-symbols-outlined text-secondary text-sm">policy</span>
+</div>
+<div>
+<p class="font-label-caps text-[10px] text-on-surface-variant leading-none">AUTHORIZATION</p>
+<p class="font-body-base text-sm">Granular RLS Policies</p>
+</div>
+</div>
+<div class="flex items-center gap-3">
+<div class="w-8 h-8 rounded bg-tertiary-container/20 flex items-center justify-center">
+<span class="material-symbols-outlined text-tertiary text-sm">terminal</span>
+</div>
+<div>
+<p class="font-label-caps text-[10px] text-on-surface-variant leading-none">ORCHESTRATOR</p>
+<p class="font-body-base text-sm">Edge Runtime v2.1</p>
+</div>
+</div>
+</div>
+</div>
+<!-- Telemetry Table -->
+<div class="md:col-span-2 bg-surface-container-low border border-outline-variant/20 rounded-xl overflow-hidden">
+<div class="px-6 py-4 border-b border-outline-variant/20 flex justify-between items-center">
+<span class="font-label-caps text-label-caps">SYSTEM_LOG_SNAPSHOT</span>
+<span class="material-symbols-outlined text-on-surface-variant text-sm">refresh</span>
+</div>
+<div class="overflow-x-auto">
+<table class="w-full font-data-mono text-[12px] text-left">
+<thead>
+<tr class="text-on-surface-variant border-b border-outline-variant/10">
+<th class="px-6 py-3 font-medium">TIMESTAMP</th>
+<th class="px-6 py-3 font-medium">SERVICE</th>
+<th class="px-6 py-3 font-medium">PROTOCOL</th>
+<th class="px-6 py-3 font-medium">STATUS</th>
+</tr>
+</thead>
+<tbody class="divide-y divide-outline-variant/5">
+<tr class="hover:bg-surface-bright/20 transition-colors">
+<td class="px-6 py-3">22:04:12.84</td>
+<td class="px-6 py-3">Ingress_Router_A</td>
+<td class="px-6 py-3">mTLS</td>
+<td class="px-6 py-3"><span class="text-secondary">VERIFIED</span></td>
+</tr>
+<tr class="bg-surface-bright/10 hover:bg-surface-bright/20 transition-colors">
+<td class="px-6 py-3">22:04:08.12</td>
+<td class="px-6 py-3">Telemetry_Store</td>
+<td class="px-6 py-3">Postgres_RLS</td>
+<td class="px-6 py-3"><span class="text-secondary">SECURE</span></td>
+</tr>
+<tr class="hover:bg-surface-bright/20 transition-colors">
+<td class="px-6 py-3">22:03:59.01</td>
+<td class="px-6 py-3">Auth_Service_Main</td>
+<td class="px-6 py-3">JWT_H256</td>
+<td class="px-6 py-3"><span class="text-secondary">AUTHORIZED</span></td>
+</tr>
+<tr class="bg-surface-bright/10 hover:bg-surface-bright/20 transition-colors">
+<td class="px-6 py-3">22:03:45.33</td>
+<td class="px-6 py-3">Client_Terminal_8</td>
+<td class="px-6 py-3">TLS_1.3</td>
+<td class="px-6 py-3"><span class="text-secondary">ACTIVE</span></td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+</section>
+<!-- Final CTA Area -->
+<section class="mt-24 text-center py-16 bg-gradient-to-b from-surface-container-low to-transparent rounded-t-[100px] border-t border-outline-variant/20">
+<div class="max-w-2xl mx-auto px-6">
+<span class="material-symbols-outlined text-primary text-5xl mb-6" style="font-variation-settings: 'FILL' 1;">security</span>
+<h2 class="font-headline-md text-headline-md mb-4">Ready to reinforce your fleet?</h2>
+<p class="font-body-base text-on-surface-variant mb-10">
+                    Connect your existing tech stack to the TransitOps Integrity layer and experience zero-trust logistics at scale.
+                </p>
+<div class="inline-flex p-2 bg-surface-container rounded-lg border border-outline-variant/30">
+<button class="bg-primary-container text-on-primary px-10 py-4 rounded font-label-caps text-label-caps shadow-lg hover:shadow-primary-container/20 transition-all">
+                        ESTABLISH CONNECTION
+                    </button>
+</div>
+</div>
+</section>
+</main>
+<!-- Footer -->
+<footer class="w-full py-8 border-t border-outline-variant/20 bg-surface-container-lowest">
+<div class="flex flex-col md:flex-row justify-between items-center px-margin-desktop w-full max-w-container-max mx-auto gap-6">
+<div class="flex flex-col items-center md:items-start">
+<div class="font-label-caps text-label-caps text-on-surface-variant mb-2">TransitOps Systems</div>
+<p class="font-data-mono text-data-mono text-secondary text-[10px]">Â© 2024 TransitOps Systems. All channels encrypted.</p>
+</div>
+<div class="flex flex-wrap justify-center gap-6">
+<a class="font-label-caps text-[11px] text-on-surface-variant hover:text-primary transition-colors duration-200 hover:translate-x-1 transition-transform" href="#">System Status: 99.9% Uptime</a>
+<a class="font-label-caps text-[11px] text-on-surface-variant hover:text-primary transition-colors duration-200 hover:translate-x-1 transition-transform" href="#">Protocol v4.2</a>
+<a class="font-label-caps text-[11px] text-on-surface-variant hover:text-primary transition-colors duration-200 hover:translate-x-1 transition-transform" href="#">Operator Portal</a>
+<a class="font-label-caps text-[11px] text-on-surface-variant hover:text-primary transition-colors duration-200 hover:translate-x-1 transition-transform" href="#">Security Specs</a>
+</div>
+</div>
+</footer>
+<script>
+        // Micro-interaction for UI depth
+        document.addEventListener('mousemove', (e) => {
+            const glow = document.querySelector('.glow-cyan');
+            if (glow) {
+                const x = (e.clientX / window.innerWidth - 0.5) * 20;
+                const y = (e.clientY / window.innerHeight - 0.5) * 20;
+                glow.style.transform = `translate(${x}px, ${y}px)`;
+            }
+        });
+    </script>
+</body></html>
+
+
+
+
+
+<!DOCTYPE html>
+
+<html class="dark" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>TransitOps | Tech Stack</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Hanken+Grotesk:wght@400;600;700&amp;family=JetBrains+Mono:wght@500;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<style>
+        @keyframes scanline {
+            0% { transform: translateY(-100%); }
+            100% { transform: translateY(100%); }
+        }
+        .scanline-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(to bottom, transparent 50%, rgba(0, 212, 255, 0.03) 50%);
+            background-size: 100% 4px;
+            pointer-events: none;
+            z-index: 50;
+        }
+        .glow-border:hover {
+            box-shadow: 0 0 15px rgba(0, 212, 255, 0.4);
+            border-color: #00d4ff;
+        }
+        .route-line-pulse {
+            position: relative;
+            overflow: hidden;
+        }
+        .route-line-pulse::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: -100%;
+            width: 100%;
+            height: 2px;
+            background: linear-gradient(90deg, transparent, #4edea3, transparent);
+            animation: pulse-line 3s infinite linear;
+        }
+        @keyframes pulse-line {
+            0% { left: -100%; }
+            100% { left: 100%; }
+        }
+        .bento-grid {
+            display: grid;
+            grid-template-columns: repeat(12, 1fr);
+            gap: 24px;
+        }
+        .glass-panel {
+            background: rgba(30, 32, 35, 0.6);
+            backdrop-filter: blur(20px);
+            border: 1px solid rgba(255, 255, 255, 0.05);
+        }
+    </style>
+<script id="tailwind-config">
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            "colors": {
+                    "surface-bright": "#37393d",
+                    "on-tertiary-fixed": "#2a1700",
+                    "secondary": "#4edea3",
+                    "on-tertiary-fixed-variant": "#653e00",
+                    "tertiary-container": "#ffb451",
+                    "on-surface-variant": "#bbc9cf",
+                    "on-secondary": "#003824",
+                    "primary": "#a8e8ff",
+                    "on-secondary-fixed-variant": "#005236",
+                    "outline": "#859398",
+                    "on-tertiary": "#472a00",
+                    "surface-container": "#1e2023",
+                    "inverse-surface": "#e2e2e6",
+                    "tertiary-fixed-dim": "#ffb95f",
+                    "surface-container-lowest": "#0c0e11",
+                    "on-error": "#690005",
+                    "primary-container": "#00d4ff",
+                    "on-primary": "#003642",
+                    "error": "#ffb4ab",
+                    "background": "#111317",
+                    "secondary-container": "#00a572",
+                    "on-primary-fixed": "#001f27",
+                    "on-secondary-fixed": "#002113",
+                    "surface-container-highest": "#333538",
+                    "on-background": "#e2e2e6",
+                    "error-container": "#93000a",
+                    "surface": "#111317",
+                    "inverse-primary": "#00677e",
+                    "on-surface": "#e2e2e6",
+                    "on-primary-container": "#00586b",
+                    "on-tertiary-container": "#724700",
+                    "on-error-container": "#ffdad6",
+                    "inverse-on-surface": "#2f3034",
+                    "surface-container-low": "#1a1c1f",
+                    "surface-dim": "#111317",
+                    "surface-variant": "#333538",
+                    "outline-variant": "#3c494e",
+                    "surface-container-high": "#282a2d",
+                    "tertiary-fixed": "#ffddb8",
+                    "on-primary-fixed-variant": "#004e5f",
+                    "primary-fixed": "#b4ebff",
+                    "on-secondary-container": "#00311f",
+                    "secondary-fixed": "#6ffbbe",
+                    "surface-tint": "#3cd7ff",
+                    "primary-fixed-dim": "#3cd7ff",
+                    "tertiary": "#ffd8ae",
+                    "secondary-fixed-dim": "#4edea3"
+            },
+            "borderRadius": {
+                    "DEFAULT": "0.125rem",
+                    "lg": "0.25rem",
+                    "xl": "0.5rem",
+                    "full": "0.75rem"
+            },
+            "spacing": {
+                    "container-max": "1440px",
+                    "margin-desktop": "40px",
+                    "margin-mobile": "16px",
+                    "gutter": "24px",
+                    "unit": "4px"
+     
+<truncated 14433 bytes>
+
+NOTE: The output was truncated because it was too long. Use a more targeted query or a smaller range to get the information you need.

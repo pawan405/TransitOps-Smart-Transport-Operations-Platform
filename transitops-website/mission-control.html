@@ -193,6 +193,7 @@
             color: #e2e2e6 !important;
         }
     </style>
+  <link rel="stylesheet" href="css/command-center.css">
 </head>
 <body class="flex h-screen overflow-hidden">
 <div class="scanlines"></div>
@@ -204,41 +205,41 @@
 </div>
 <nav class="flex-1 space-y-2">
 <!-- Active: Dashboard -->
-<a class="flex items-center space-x-3 px-4 py-3 rounded bg-primary-container/10 text-primary border-l-4 border-primary shadow-[0_0_15px_rgba(0,240,255,0.2)] transition-all duration-300" href="#">
+<a class="flex items-center space-x-3 px-4 py-3 rounded bg-primary-container/10 text-primary border-l-4 border-primary shadow-[0_0_15px_rgba(0,240,255,0.2)] transition-all duration-300" href="mission-control.html">
 <span class="material-symbols-outlined text-[20px]">dashboard</span>
 <span class="font-label-caps text-label-caps">Dashboard</span>
 </a>
-<a class="flex items-center space-x-3 px-4 py-3 rounded text-on-surface-variant hover:bg-surface-container-low hover:text-primary transition-all duration-300" href="#">
+<a class="flex items-center space-x-3 px-4 py-3 rounded text-on-surface-variant hover:bg-surface-container-low hover:text-primary transition-all duration-300" href="operations.html?view=map-view">
 <span class="material-symbols-outlined text-[20px]">map</span>
 <span class="font-label-caps text-label-caps">Map View</span>
 </a>
-<a class="flex items-center space-x-3 px-4 py-3 rounded text-on-surface-variant hover:bg-surface-container-low hover:text-primary transition-all duration-300" href="#">
+<a class="flex items-center space-x-3 px-4 py-3 rounded text-on-surface-variant hover:bg-surface-container-low hover:text-primary transition-all duration-300" href="operations.html?view=fleet-status">
 <span class="material-symbols-outlined text-[20px]">precision_manufacturing</span>
 <span class="font-label-caps text-label-caps">Fleet Status</span>
 </a>
-<a class="flex items-center space-x-3 px-4 py-3 rounded text-on-surface-variant hover:bg-surface-container-low hover:text-primary transition-all duration-300" href="#">
+<a class="flex items-center space-x-3 px-4 py-3 rounded text-on-surface-variant hover:bg-surface-container-low hover:text-primary transition-all duration-300" href="operations.html?view=diagnostics">
 <span class="material-symbols-outlined text-[20px]">phonelink_setup</span>
 <span class="font-label-caps text-label-caps">Diagnostics</span>
 </a>
-<a class="flex items-center space-x-3 px-4 py-3 rounded text-on-surface-variant hover:bg-surface-container-low hover:text-primary transition-all duration-300" href="#">
+<a class="flex items-center space-x-3 px-4 py-3 rounded text-on-surface-variant hover:bg-surface-container-low hover:text-primary transition-all duration-300" href="operations.html?view=logistics">
 <span class="material-symbols-outlined text-[20px]">lan</span>
 <span class="font-label-caps text-label-caps">Logistics</span>
 </a>
-<a class="flex items-center space-x-3 px-4 py-3 rounded text-on-surface-variant hover:bg-surface-container-low hover:text-primary transition-all duration-300" href="#">
+<a class="flex items-center space-x-3 px-4 py-3 rounded text-on-surface-variant hover:bg-surface-container-low hover:text-primary transition-all duration-300" href="operations.html?view=security">
 <span class="material-symbols-outlined text-[20px]">shield_with_heart</span>
 <span class="font-label-caps text-label-caps">Security</span>
 </a>
 </nav>
 <div class="mt-auto pt-6 border-t border-outline-variant/30">
-<button class="w-full py-3 mb-4 border border-primary text-primary font-label-caps text-label-caps tracking-widest hover:bg-primary/10 transition-colors duration-300">
+<button data-route="trip-management.html" class="w-full py-3 mb-4 border border-primary text-primary font-label-caps text-label-caps tracking-widest hover:bg-primary/10 transition-colors duration-300">
                 DEPLOY UNIT
             </button>
 <div class="flex flex-col space-y-2">
-<a class="flex items-center space-x-3 px-4 py-2 text-on-surface-variant hover:text-primary transition-colors" href="#">
+<a class="flex items-center space-x-3 px-4 py-2 text-on-surface-variant hover:text-primary transition-colors" href="operations.html?view=support">
 <span class="material-symbols-outlined text-[18px]">help_center</span>
 <span class="font-label-caps text-label-caps uppercase">Support</span>
 </a>
-<a class="flex items-center space-x-3 px-4 py-2 text-on-surface-variant hover:text-primary transition-colors" href="#">
+<a class="flex items-center space-x-3 px-4 py-2 text-on-surface-variant hover:text-primary transition-colors" href="operations.html?view=terminal">
 <span class="material-symbols-outlined text-[18px]">terminal</span>
 <span class="font-label-caps text-label-caps uppercase">Terminal</span>
 </a>
@@ -251,10 +252,10 @@
 <header class="bg-surface-dim/80 backdrop-blur-md border-b border-outline-variant flex justify-between items-center w-full px-margin py-4 max-w-full sticky top-0 z-40">
 <div class="flex items-center space-x-8">
 <div class="flex items-center space-x-6">
-<a class="font-label-caps text-label-caps text-surface-tint border-b-2 border-surface-tint pb-2 uppercase" href="#">Telemetry</a>
-<a class="font-label-caps text-label-caps text-on-surface-variant hover:text-on-surface transition-colors uppercase" href="#">Fleet</a>
-<a class="font-label-caps text-label-caps text-on-surface-variant hover:text-on-surface transition-colors uppercase" href="#">Routes</a>
-<a class="font-label-caps text-label-caps text-on-surface-variant hover:text-on-surface transition-colors uppercase" href="#">Intelligence</a>
+<a class="font-label-caps text-label-caps text-surface-tint border-b-2 border-surface-tint pb-2 uppercase" href="mission-control.html">Telemetry</a>
+<a class="font-label-caps text-label-caps text-on-surface-variant hover:text-on-surface transition-colors uppercase" href="vehicle-registry.html">Fleet</a>
+<a class="font-label-caps text-label-caps text-on-surface-variant hover:text-on-surface transition-colors uppercase" href="trip-management.html">Routes</a>
+<a class="font-label-caps text-label-caps text-on-surface-variant hover:text-on-surface transition-colors uppercase" href="operations.html?view=intelligence">Intelligence</a>
 </div>
 </div>
 <div class="flex items-center space-x-4">
@@ -262,8 +263,8 @@
 <input class="bg-surface-container-low border-b border-outline focus:border-primary-container focus:ring-0 text-primary font-data-sm text-data-sm py-1 px-3 w-48 transition-all" placeholder="QUERY SYSTEM..." type="text"/>
 <span class="material-symbols-outlined absolute right-2 top-1/2 -translate-y-1/2 text-on-surface-variant text-[16px]">search</span>
 </div>
-<button class="p-2 hover:bg-surface-container-high hover:text-surface-tint transition-all"><span class="material-symbols-outlined">notifications_active</span></button>
-<button class="p-2 hover:bg-surface-container-high hover:text-surface-tint transition-all"><span class="material-symbols-outlined">settings</span></button>
+<button data-route="operations.html?view=notifications" class="p-2 hover:bg-surface-container-high hover:text-surface-tint transition-all"><span class="material-symbols-outlined">notifications_active</span></button>
+<button data-route="operations.html?view=settings" class="p-2 hover:bg-surface-container-high hover:text-surface-tint transition-all"><span class="material-symbols-outlined">settings</span></button>
 <div class="h-8 w-8 bg-surface-container-high rounded overflow-hidden border border-outline-variant">
 <img class="object-cover w-full h-full" data-alt="A portrait of a futuristic transit operator in a dark blue technical uniform with glowing cybernetic interface details reflected on a transparent glasses visor. High-tech mission control aesthetic with cyan and asphalt gray tones." src="https://lh3.googleusercontent.com/aida-public/AB6AXuBEx_04X3TpGdxRpI9xAGx4ErEVu84jvGFMgRzm5qUxUM8GAa0X11VaJPECM22wP7tXTZSZdXSRBP_lVpES3lMcERMkg_0mUEOGPTeEH4zCxWGJNAvhniLNTiyxWaLAwBngtBPFMjXNQVzBSm7FB7jkYGNhS37hDmT6uNpk4IFy1p6nr2dVUov2eMQnzHud1nlvD9HeBr2LNjkjJyW-s-BuheoawUcBT2X1meCHFsKpPTb6kj-tIF7_XBS8Z4GfDcjC3bkYhIEdMgw"/>
 </div>
@@ -440,7 +441,7 @@
 </div>
 </div>
 <div class="p-4 bg-surface-container-low border-t border-outline-variant">
-<button class="w-full py-2 bg-surface-container-high font-label-caps text-label-caps hover:bg-surface-bright transition-colors uppercase">View All Logs</button>
+<button data-route="operations.html?view=operational-logs" class="w-full py-2 bg-surface-container-high font-label-caps text-label-caps hover:bg-surface-bright transition-colors uppercase">View All Logs</button>
 </div>
 </div>
 </div>
@@ -457,7 +458,7 @@
 <span class="font-data-sm text-data-sm text-secondary-fixed-dim">System Uptime: 99.99%</span>
 <span class="font-data-sm text-data-sm text-on-surface-variant">Lat: 34.0522° N</span>
 <span class="font-data-sm text-data-sm text-on-surface-variant">Long: 118.2437° W</span>
-<a class="font-label-caps text-label-caps text-on-surface-variant hover:text-primary-fixed transition-colors uppercase underline decoration-outline-variant decoration-1 underline-offset-4" href="#">Operational Logs</a>
+<a class="font-label-caps text-label-caps text-on-surface-variant hover:text-primary-fixed transition-colors uppercase underline decoration-outline-variant decoration-1 underline-offset-4" href="operations.html?view=operational-logs">Operational Logs</a>
 </div>
 </footer>
 <script type="module">
@@ -488,4 +489,5 @@
             }
         }, 3000);
     </script>
+  <script src="js/command-center.js"></script>
 </body></html>

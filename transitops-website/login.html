@@ -170,7 +170,8 @@
              z-index: 1;
          }
      </style>
- </head>
+   <link rel="stylesheet" href="css/command-center.css">
+</head>
  <body class="font-body-md text-body-md antialiased scanlines">
  <!-- Particle Field Layer -->
  <canvas class="particle-canvas opacity-40" id="particles"></canvas>
@@ -213,7 +214,7 @@
  <input class="rounded-sm bg-surface-container-high border-outline-variant text-surface-tint focus:ring-0 w-4 h-4" type="checkbox"/>
  <span class="font-label-caps text-label-caps text-on-surface-variant uppercase">Remember Terminal</span>
  </label>
- <a class="font-label-caps text-label-caps text-surface-tint hover:underline uppercase transition-all" href="#">Recover Credentials</a>
+ <a class="font-label-caps text-label-caps text-surface-tint hover:underline uppercase transition-all" href="operations.html?view=recover-credentials">Recover Credentials</a>
  </div>
  <button class="w-full mt-stack-lg border border-primary-container text-primary font-label-caps text-[14px] py-4 tracking-[0.2em] uppercase transition-all duration-300 hover:bg-primary-container/10 hover:shadow-[0_0_20px_rgba(0,240,255,0.3)] active:scale-95 flex items-center justify-center space-x-3" id="submitBtn" type="submit">
  <span id="btnText">ESTABLISH CONNECTION</span>
@@ -242,6 +243,9 @@
  <!-- Decorative Elements -->
  <div class="fixed top-0 left-0 w-full h-full pointer-events-none z-50 pointer-events-none opacity-[0.03]" style="background-image: url('https://www.transparenttextures.com/patterns/carbon-fibre.png');"></div>
  <script>
+         // Clear session on loading the login page
+         localStorage.removeItem('transitopsSession');
+
          // Particle Background Logic
          const canvas = document.getElementById('particles');
          const ctx = canvas.getContext('2d');
@@ -307,6 +311,7 @@
                  btnLoader.classList.add('hidden');
                  // Redirect to mission control
                  setTimeout(() => {
+                     localStorage.setItem('transitopsSession', 'active');
                      window.location.href = 'mission-control.html';
                  }, 500);
              }, 1800);
@@ -323,4 +328,5 @@
              });
          });
      </script>
- </body></html>
+   <script src="js/command-center.js"></script>
+</body></html>

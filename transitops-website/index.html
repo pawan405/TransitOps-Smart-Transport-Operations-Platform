@@ -1,8 +1,4 @@
-<!DOCTYPE html><html lang="en" class="dark" style=""><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><link href="https://fonts.googleapis.com/css2?family=Hanken+Grotesk:wght@400;500;600;700;800&amp;family=JetBrains+Mono:wght@500;700&amp;display=swap" rel="stylesheet"><link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=block" rel="stylesheet"><script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script><meta charset="utf-8">
-<!-- Firebase SDKs -->
-<script src="https://www.gstatic.com/firebasejs/11.5.0/firebase-app-compat.js"></script>
-<script src="https://www.gstatic.com/firebasejs/11.5.0/firebase-auth-compat.js"></script>
-<script src="https://www.gstatic.com/firebasejs/11.5.0/firebase-analytics-compat.js"></script>
+<!DOCTYPE html><html lang="en" class="dark" style=""><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><title>TransitOps | Fleet Operations UI</title><link href="https://fonts.googleapis.com/css2?family=Hanken+Grotesk:wght@400;500;600;700;800&amp;family=JetBrains+Mono:wght@500;700&amp;display=swap" rel="stylesheet"><link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=block" rel="stylesheet"><script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script><meta charset="utf-8">
 <script id="tailwind-config">try{
          tailwind.config = {
              darkMode: "class",
@@ -134,17 +130,18 @@
     100% { opacity: 1; }
 }
 </style>
-</head><body class="scanlines">
+  <link rel="stylesheet" href="css/command-center.css">
+</head><body class="scanlines bg-background text-on-background min-h-screen">
  <div class="grain-overlay fixed inset-0 z-10"></div>
  <!-- Navigation Shell -->
  <nav class="fixed top-0 left-0 right-0 z-50 bg-background/80 backdrop-blur-md border-b border-outline-variant/30 px-margin-desktop py-4 flex justify-between items-center w-full max-w-container-max mx-auto">
  <div class="flex items-center gap-4">
  <span class="font-display-lg text-display-lg font-bold tracking-tighter text-primary">TRANSITOPS</span>
  <div class="hidden md:flex gap-8 ml-12">
- <a class="font-headline-sm text-headline-sm uppercase tracking-wider text-primary border-b-2 border-primary pb-1" href="#">Fleet</a>
- <a class="font-headline-sm text-headline-sm uppercase tracking-wider text-on-surface-variant hover:text-primary transition-colors" href="#">Telemetry</a>
- <a class="font-headline-sm text-headline-sm uppercase tracking-wider text-on-surface-variant hover:text-primary transition-colors" href="#">Integrity</a>
- <a class="font-headline-sm text-headline-sm uppercase tracking-wider text-on-surface-variant hover:text-primary transition-colors" href="#">Tech Stack</a>
+ <a class="font-headline-sm text-headline-sm uppercase tracking-wider text-on-surface-variant hover:text-primary transition-colors" href="vehicle-registry.html">Fleet</a>
+ <a class="font-headline-sm text-headline-sm uppercase tracking-wider text-on-surface-variant hover:text-primary transition-colors" href="mission-control.html">Telemetry</a>
+ <a class="font-headline-sm text-headline-sm uppercase tracking-wider text-on-surface-variant hover:text-primary transition-colors" href="trip-management.html">Integrity</a>
+ <a class="font-headline-sm text-headline-sm uppercase tracking-wider text-on-surface-variant hover:text-primary transition-colors" href="#tech-stack">Tech Stack</a>
  </div>
  </div>
  <button id="auth-button" class="bg-primary-container text-on-primary-container px-6 py-2 rounded font-label-caps uppercase tracking-widest hover:brightness-110 transition-all">Establish Connection</button>
@@ -155,7 +152,7 @@
  <!-- Background Image -->
 
  <!-- Route Line Reveal Animation -->
- <div class="absolute inset-0 z-5 pointer-events-none opacity-20">
+ <div class="absolute inset-0 z-[5] pointer-events-none opacity-20">
  <svg class="w-full h-full" fill="none" viewBox="0 0 1440 800" xmlns="http://www.w3.org/2000/svg">
  <path class="route-line" d="M-100 400C200 400 300 200 600 200C900 200 1000 600 1440 600" stroke="#3cd7ff" stroke-width="2"></path>
  <path class="route-line" d="M-100 500C300 500 500 300 800 300C1100 300 1200 700 1540 700" opacity="0.5" stroke="#4edea3" stroke-width="1"></path>
@@ -166,7 +163,7 @@
  <span class="w-2 h-2 rounded-full bg-primary animate-pulse"></span>
  <span class="font-label-caps text-primary text-[10px]">ALL SYSTEMS OPERATIONAL</span>
  </div>
- <h1 class="font-display-lg text-[120px] leading-none font-bold tracking-[ -0.05em] uppercase mb-4 flicker-text">
+ <h1 class="font-display-lg text-[120px] leading-none font-bold tracking-[-0.05em] uppercase mb-4 flicker-text">
                      TRANSITOPS
                  </h1>
  <p class="font-headline-md text-headline-md text-on-surface-variant max-w-2xl mb-12">
@@ -177,7 +174,7 @@
                          Enter Mission Control
                          <span class="material-symbols-outlined text-lg">arrow_forward</span>
  </button>
- <button class="border border-outline text-on-surface px-10 py-4 font-label-caps text-sm uppercase tracking-widest hover:bg-white/5 transition-colors">
+ <button id="view-tech-stack" class="border border-outline text-on-surface px-10 py-4 font-label-caps text-sm uppercase tracking-widest hover:bg-white/5 transition-colors">
                          View Tech Stack
                      </button>
  </div>
@@ -226,7 +223,7 @@
  </div>
  <div class="mb-4">
  <div class="font-data-mono text-[48px] text-secondary leading-none mb-2">12ms</div>
-
+ <h3 class="font-headline-sm text-headline-sm text-on-surface">Command Latency</h3>
  </div>
  <p class="text-on-surface-variant font-body-base text-sm">
                          Global mesh connectivity ensuring sub-second command delivery.
@@ -255,7 +252,7 @@
  </div>
  </section>
  <!-- Tech Stack Integrations -->
- <section class="py-20 px-margin-desktop border-y border-outline-variant/10">
+ <section id="tech-stack" class="py-20 px-margin-desktop border-y border-outline-variant/10">
  <div class="max-w-container-max mx-auto flex flex-col items-center">
  <span class="font-label-caps text-outline mb-12 uppercase">Stack Architecture</span>
  <div class="flex flex-wrap justify-center items-center gap-16 opacity-50 hover:opacity-100 transition-opacity duration-700">
@@ -297,10 +294,10 @@
  <span class="font-data-mono text-data-mono uppercase text-on-surface-variant">STATUS: ENCRYPTED</span>
  </div>
  <div class="flex gap-4">
- <a class="text-on-surface-variant hover:text-secondary transition-colors transition-opacity duration-500" href="#">
+ <a class="text-on-surface-variant hover:text-secondary transition-colors transition-opacity duration-500" href="operations.html?view=terminal">
  <span class="material-symbols-outlined">terminal</span>
  </a>
- <a class="text-on-surface-variant hover:text-secondary transition-colors transition-opacity duration-500" href="#">
+ <a class="text-on-surface-variant hover:text-secondary transition-colors transition-opacity duration-500" href="operations.html?view=network-hub">
  <span class="material-symbols-outlined">hub</span>
  </a>
  </div>
@@ -309,39 +306,25 @@
  <!-- Interactive Data Points Overlay (Atmospheric) -->
  <div class="fixed inset-0 pointer-events-none z-40 overflow-hidden" id="data-overlay"></div>
  <script>
-         // Firebase Configuration
-         const firebaseConfig = {
-             apiKey: "AIzaSyBDtPFdDrjn1l3luohv91ULgxcjLOoE0fo",
-             authDomain: "odoo-32f06.firebaseapp.com",
-             projectId: "odoo-32f06",
-             storageBucket: "odoo-32f06.firebasestorage.app",
-             messagingSenderId: "178882313559",
-             appId: "1:178882313559:web:25ee9c70d2c41864855212",
-             measurementId: "G-B4DLE850JX"
-         };
-
-         // Initialize Firebase
-         firebase.initializeApp(firebaseConfig);
-         const auth = firebase.auth();
-         const analytics = firebase.analytics();
-
-         // Check auth state and update button
          const authButton = document.getElementById('auth-button');
-         const enterMissionControlBtn = document.getElementById('enter-mission-control');
-         
-         auth.onAuthStateChanged((user) => {
-             if (user) {
-                 authButton.textContent = "Disconnect";
-                 authButton.onclick = () => auth.signOut();
-             } else {
-                 authButton.textContent = "Establish Connection";
-                 authButton.onclick = () => window.location.href = 'login.html';
+         const hasLocalSession = localStorage.getItem('transitopsSession') === 'active';
+         authButton.textContent = hasLocalSession ? 'Disconnect' : 'Establish Connection';
+         authButton.addEventListener('click', () => {
+             if (localStorage.getItem('transitopsSession') === 'active') {
+                 localStorage.removeItem('transitopsSession');
+                 authButton.textContent = 'Establish Connection';
+                 window.location.reload();
+                 return;
              }
+             window.location.href = 'login.html';
          });
 
          // Enter Mission Control button
          document.getElementById('enter-mission-control').addEventListener('click', () => {
              window.location.href = 'mission-control.html';
+         });
+         document.getElementById('view-tech-stack').addEventListener('click', () => {
+             document.getElementById('tech-stack').scrollIntoView({ behavior: 'smooth' });
          });
 
          // Micro-interaction: Random floating data particles
@@ -390,4 +373,5 @@
          });
      </script>
 
- </body></html>
+   <script src="js/command-center.js"></script>
+</body></html>

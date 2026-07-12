@@ -162,6 +162,7 @@
             border-radius: 50%;
         }
     </style>
+  <link rel="stylesheet" href="css/command-center.css">
 </head>
 <body class="font-body-md text-body-md selection:bg-primary-container selection:text-on-primary-container">
 <div class="scanlines"></div>
@@ -188,24 +189,24 @@
 <span class="material-symbols-outlined">phonelink_setup</span>
 <span class="font-label-caps text-label-caps">TRIP MANAGEMENT</span>
 </a>
-<a class="flex items-center gap-3 px-4 py-3 text-on-surface-variant hover:bg-surface-container-low hover:text-primary transition-all" href="#">
+<a class="flex items-center gap-3 px-4 py-3 text-on-surface-variant hover:bg-surface-container-low hover:text-primary transition-all" href="operations.html?view=logistics">
 <span class="material-symbols-outlined">lan</span>
 <span class="font-label-caps text-label-caps">LOGISTICS</span>
 </a>
-<a class="flex items-center gap-3 px-4 py-3 text-on-surface-variant hover:bg-surface-container-low hover:text-primary transition-all" href="#">
+<a class="flex items-center gap-3 px-4 py-3 text-on-surface-variant hover:bg-surface-container-low hover:text-primary transition-all" href="operations.html?view=security">
 <span class="material-symbols-outlined">shield_with_heart</span>
 <span class="font-label-caps text-label-caps">SECURITY</span>
 </a>
 </div>
-<button class="mt-auto w-full py-4 border border-primary-container text-primary-container font-label-caps text-label-caps tracking-widest hover:bg-primary-container/20 transition-all uppercase glow-hover">
+<button data-route="trip-management.html" class="mt-auto w-full py-4 border border-primary-container text-primary-container font-label-caps text-label-caps tracking-widest hover:bg-primary-container/20 transition-all uppercase glow-hover">
             DEPLOY UNIT
         </button>
 <div class="pt-4 border-t border-outline-variant space-y-2">
-<a class="flex items-center gap-3 px-4 py-2 text-on-surface-variant hover:text-primary transition-colors" href="#">
+<a class="flex items-center gap-3 px-4 py-2 text-on-surface-variant hover:text-primary transition-colors" href="operations.html?view=support">
 <span class="material-symbols-outlined text-sm">help_center</span>
 <span class="font-label-caps text-label-caps">SUPPORT</span>
 </a>
-<a class="flex items-center gap-3 px-4 py-2 text-on-surface-variant hover:text-primary transition-colors" href="login.html">
+<a class="flex items-center gap-3 px-4 py-2 text-on-surface-variant hover:text-primary transition-colors" href="login.html" onclick="localStorage.removeItem('transitopsSession')">
 <span class="material-symbols-outlined text-sm">logout</span>
 <span class="font-label-caps text-label-caps">LOGOUT</span>
 </a>
@@ -216,15 +217,15 @@
 <div class="flex items-center gap-8">
 <h2 class="font-headline-lg text-headline-lg font-bold text-primary tracking-tighter uppercase">Telemetry / Registry</h2>
 <div class="hidden md:flex gap-6">
-<a class="text-surface-tint border-b-2 border-surface-tint pb-2 font-body-md" href="#">Telemetry</a>
-<a class="text-on-surface-variant hover:text-on-surface transition-colors font-body-md" href="#">Fleet</a>
-<a class="text-on-surface-variant hover:text-on-surface transition-colors font-body-md" href="#">Routes</a>
-<a class="text-on-surface-variant hover:text-on-surface transition-colors font-body-md" href="#">Intelligence</a>
+<a class="text-surface-tint border-b-2 border-surface-tint pb-2 font-body-md" href="mission-control.html">Telemetry</a>
+<a class="text-on-surface-variant hover:text-on-surface transition-colors font-body-md" href="vehicle-registry.html">Fleet</a>
+<a class="text-on-surface-variant hover:text-on-surface transition-colors font-body-md" href="trip-management.html">Routes</a>
+<a class="text-on-surface-variant hover:text-on-surface transition-colors font-body-md" href="operations.html?view=intelligence">Intelligence</a>
 </div>
 </div>
 <div class="flex items-center gap-4">
-<button class="material-symbols-outlined text-on-surface-variant hover:text-surface-tint transition-all scale-95 active:scale-90">notifications_active</button>
-<button class="material-symbols-outlined text-on-surface-variant hover:text-surface-tint transition-all scale-95 active:scale-90">settings</button>
+<button data-route="operations.html?view=notifications" class="material-symbols-outlined text-on-surface-variant hover:text-surface-tint transition-all scale-95 active:scale-90">notifications_active</button>
+<button data-route="operations.html?view=settings" class="material-symbols-outlined text-on-surface-variant hover:text-surface-tint transition-all scale-95 active:scale-90">settings</button>
 <div class="w-8 h-8 rounded-full border border-outline bg-surface-container flex items-center justify-center overflow-hidden">
 <img class="w-full h-full object-cover" data-alt="A professional close-up headshot of a futuristic transit operator in a dark tech-wear uniform, illuminated by a soft cyan holographic glow from a nearby terminal in a dark control room." src="https://lh3.googleusercontent.com/aida-public/AB6AXuDe0Meu38CCDeE1ch5QCj2NWuZjW9OmMzO_FCSFrHtm5YcSq5kVx6Kurd0OEcX36mtYJBkCtRd0_5J1ZD2K-Nuq78XWSVyUPeuAdocoyDKC2CWlbj9BPYkwu2Q0GBeTPaF81uyiBWt9ZQoXDaAekEcvMzr0y88Z112raJL5PjTxjRei0onndjKnpIVcyyGDBuXHgPJGf3ndKCTKTg5nDgi7Y47tJ-_K9TofNAmDrhppzUvU12tFP7mP9IgRd-lva299entv35HzL1Co"/>
 </div>
@@ -433,7 +434,7 @@
 <span class="font-data-sm text-data-sm text-on-surface">1,598 KM</span>
 </div>
 </div>
-<button class="mt-auto w-full py-2 border border-outline-variant hover:border-surface-tint hover:text-surface-tint transition-all font-label-caps text-label-caps uppercase">
+<button data-route="operations.html?view=diagnostics" class="mt-auto w-full py-2 border border-outline-variant hover:border-surface-tint hover:text-surface-tint transition-all font-label-caps text-label-caps uppercase">
                 View Full Diagnostics
             </button>
 </div>
@@ -452,7 +453,7 @@
 <div class="flex gap-6">
 <span class="font-data-sm text-data-sm text-on-surface-variant">Lat: 34.0522° N</span>
 <span class="font-data-sm text-data-sm text-on-surface-variant">Long: 118.2437° W</span>
-<a class="font-label-caps text-label-caps text-on-surface-variant hover:text-primary-fixed transition-colors" href="#">Operational Logs</a>
+<a class="font-label-caps text-label-caps text-on-surface-variant hover:text-primary-fixed transition-colors" href="operations.html?view=operational-logs">Operational Logs</a>
 </div>
 </footer>
 <script>
@@ -472,12 +473,7 @@
         const auth = firebase.auth();
         const analytics = firebase.analytics();
 
-        // Check auth state
-        auth.onAuthStateChanged((user) => {
-            if (!user) {
-                window.location.href = 'login.html';
-            }
-        });
+
 
         // Micro-interactions and staggering animations
         document.addEventListener('DOMContentLoaded', () => {
@@ -503,4 +499,5 @@
             });
         });
     </script>
+  <script src="js/command-center.js"></script>
 </body></html>

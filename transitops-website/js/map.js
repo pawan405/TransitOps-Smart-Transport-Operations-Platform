@@ -1,93 +1,142 @@
+﻿import { warehouses, routes, vehicles } from './mapData.js';
 
-import { mapCenter, mapZoom, warehouses, routes, vehicles } from './mapData.js';
+let initialized = false;
+let rafId = 0;
 
-let map;
+const colors = {
+  truck: '#00f0ff',
+  van: '#00e383',
+  maintenance: '#ffba20',
+  fuel: '#ffb4ab',
+  warehouse: '#7df4ff',
+  depot: '#00dbe9'
+};
 
-// Custom marker icons using SVG
-function createCustomIcon(type) {
-  const colors = {
-    truck: '#00f0ff',
-    van: '#00e383',
-    maintenance: '#ffba20',
-    fuel: '#ffb4ab',
-    warehouse: '#7df4ff',
-    depot: '#00dbe9'
+function boundsFor(points) {
+  const lats = points.map((point) => point.lat);
+  const lngs = points.map((point) => point.lng);
+  return {
+    minLat: Math.min(...lats),
+    maxLat: Math.max(...lats),
+    minLng: Math.min(...lngs),
+    maxLng: Math.max(...lngs)
   };
-  
-  const svg = `
-    <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 32 32">
-      <circle cx="16" cy="16" r="14" fill="${colors[type]}20" stroke="${colors[type]}" stroke-width="2"/>
-      <circle cx="16" cy="16" r="8" fill="${colors[type]}"/>
-    </svg>
-  `;
-  
-  return L.divIcon({
-    className: 'custom-marker',
-    html: svg,
-    iconSize: [32, 32],
-    iconAnchor: [16, 16]
+}
+
+function projector(bounds) {
+  const pad = 9;
+  const latSpan = Math.max(0.0001, bounds.maxLat - bounds.minLat);
+  const lngSpan = Math.max(0.0001, bounds.maxLng - bounds.minLng);
+  return function project(lat, lng) {
+    const x = pad + ((lng - bounds.minLng) / lngSpan) * (100 - pad * 2);
+    const y = pad + (1 - ((lat - bounds.minLat) / latSpan)) * (100 - pad * 2);
+    return { x, y };
+  };
+}
+
+function pathFor(route, project) {
+  return route.coordinates.map(([lat, lng], index) => {
+    const { x, y } = project(lat, lng);
+    return `${index === 0 ? 'M' : 'L'} ${x.toFixed(2)} ${y.toFixed(2)}`;
+  }).join(' ');
+}
+
+function routeSegments(project) {
+  const segments = [];
+  routes.forEach((route) => {
+    for (let i = 1; i < route.coordinates.length; i += 1) {
+      const start = route.coordinates[i - 1];
+      const end = route.coordinates[i];
+      segments.push({
+        color: route.color,
+        start: project(start[0], start[1]),
+        end: project(end[0], end[1])
+      });
+    }
   });
+  return segments;
+}
+
+function pointAlong(segment, t) {
+  const x = segment.start.x + (segment.end.x - segment.start.x) * t;
+  const y = segment.start.y + (segment.end.y - segment.start.y) * t;
+  const angle = Math.atan2(segment.end.y - segment.start.y, segment.end.x - segment.start.x) * 180 / Math.PI + 90;
+  return { x, y, angle };
+}
+
+function renderMap(container, project) {
+  const routeMarkup = routes.map((route, index) => {
+    const d = pathFor(route, project);
+    const width = route.weight || 3;
+    const dash = route.dashArray ? '12 11' : 'none';
+    return `
+      <path class="ops-route-line" d="${d}" stroke="${route.color}" stroke-width="${width}" stroke-dasharray="${dash}" style="animation-delay:${index * 120}ms"></path>
+      <path class="ops-route-flow" d="${d}" style="animation-delay:${index * 80}ms"></path>
+    `;
+  }).join('');
+
+  const nodes = warehouses.map((warehouse) => {
+    const point = project(warehouse.lat, warehouse.lng);
+    const color = colors[warehouse.type] || colors.warehouse;
+    return `<div class="ops-node" style="--x:${point.x.toFixed(2)};--y:${point.y.toFixed(2)};color:${color}"><span class="ops-node-label">${warehouse.name}</span></div>`;
+  }).join('');
+
+  const markers = vehicles.map((vehicle, index) => {
+    const point = project(vehicle.lat, vehicle.lng);
+    return `<div class="ops-vehicle-marker" data-vehicle="${vehicle.id}" data-type="${vehicle.type}" style="--x:${point.x.toFixed(2)};--y:${point.y.toFixed(2)}"><span class="ops-vehicle-tag">${vehicle.id}</span></div>`;
+  }).join('');
+
+  container.innerHTML = `
+    <svg class="ops-map-svg" viewBox="0 0 100 100" preserveAspectRatio="none" aria-hidden="true">
+      <defs>
+        <filter id="ops-map-glow"><feGaussianBlur stdDeviation="1.4" result="blur"></feGaussianBlur><feMerge><feMergeNode in="blur"></feMergeNode><feMergeNode in="SourceGraphic"></feMergeNode></feMerge></filter>
+      </defs>
+      <g filter="url(#ops-map-glow)">${routeMarkup}</g>
+      <circle cx="50" cy="50" r="44" fill="none" stroke="rgba(0,240,255,.14)" stroke-width=".3"></circle>
+      <circle cx="50" cy="50" r="26" fill="none" stroke="rgba(0,227,131,.12)" stroke-width=".25"></circle>
+    </svg>
+    ${nodes}
+    ${markers}
+  `;
 }
 
 export function initMap() {
-  if (map) {
-    return; // Avoid duplicate initialization
+  const container = document.getElementById('map-container');
+  if (!container || initialized) return;
+  initialized = true;
+
+  const points = [
+    ...warehouses.map((item) => ({ lat: item.lat, lng: item.lng })),
+    ...vehicles.map((item) => ({ lat: item.lat, lng: item.lng })),
+    ...routes.flatMap((route) => route.coordinates.map(([lat, lng]) => ({ lat, lng })))
+  ];
+  const project = projector(boundsFor(points));
+  const segments = routeSegments(project);
+  renderMap(container, project);
+
+  const markerNodes = Array.from(container.querySelectorAll('.ops-vehicle-marker'));
+  const assignments = markerNodes.map((node, index) => ({
+    node,
+    segment: segments[index % segments.length],
+    speed: 0.035 + (index % 5) * 0.009,
+    offset: (index * 0.137) % 1,
+    reverse: index % 3 === 0
+  }));
+
+  const start = performance.now();
+  function animate(now) {
+    const elapsed = (now - start) / 1000;
+    assignments.forEach((assignment) => {
+      let t = (assignment.offset + elapsed * assignment.speed) % 1;
+      if (assignment.reverse) t = 1 - t;
+      const point = pointAlong(assignment.segment, t);
+      assignment.node.style.setProperty('--x', point.x.toFixed(2));
+      assignment.node.style.setProperty('--y', point.y.toFixed(2));
+      assignment.node.style.transform = `translate(-50%, -50%) rotate(${point.angle.toFixed(1)}deg)`;
+    });
+    rafId = requestAnimationFrame(animate);
   }
+  rafId = requestAnimationFrame(animate);
 
-  // Initialize the map
-  map = L.map('map-container', {
-    zoomControl: true,
-    scrollWheelZoom: true,
-    doubleClickZoom: true,
-    dragging: true
-  }).setView(mapCenter, mapZoom);
-
-  // Add OpenStreetMap tiles
-  L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-    attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
-  }).addTo(map);
-
-  // Add scale control
-  L.control.scale({ position: 'bottomleft' }).addTo(map);
-
-  // Draw routes
-  routes.forEach(route => {
-    L.polyline(route.coordinates, {
-      color: route.color,
-      weight: route.weight,
-      dashArray: route.dashArray || null
-    }).addTo(map);
-  });
-
-  // Add warehouses
-  warehouses.forEach(warehouse => {
-    const icon = createCustomIcon(warehouse.type);
-    const marker = L.marker([warehouse.lat, warehouse.lng], { icon }).addTo(map);
-    marker.bindPopup(`
-      <div style="color: #e2e2e6;">
-        <h4 style="color: #00f0ff; margin: 0 0 8px 0;">${warehouse.name}</h4>
-        <p style="margin: 0; text-transform: capitalize;">Type: ${warehouse.type}</p>
-      </div>
-    `);
-  });
-
-  // Add vehicles
-  vehicles.forEach(vehicle => {
-    const icon = createCustomIcon(vehicle.type);
-    const marker = L.marker([vehicle.lat, vehicle.lng], { icon }).addTo(map);
-    
-    const popupContent = `
-      <div style="color: #e2e2e6;">
-        <h4 style="color: #00f0ff; margin: 0 0 8px 0;">Vehicle: ${vehicle.id}</h4>
-        <p style="margin: 4px 0;">Driver: ${vehicle.driver}</p>
-        <p style="margin: 4px 0;">Status: <span style="color: #00e383;">${vehicle.status}</span></p>
-        <p style="margin: 4px 0;">Speed: ${vehicle.speed} km/h</p>
-        <p style="margin: 4px 0;">Fuel: ${vehicle.fuel}%</p>
-        ${vehicle.eta ? `<p style="margin: 4px 0;">ETA: ${vehicle.eta}</p>` : ''}
-      </div>
-    `;
-    
-    marker.bindPopup(popupContent);
-  });
+  window.addEventListener('beforeunload', () => cancelAnimationFrame(rafId), { once: true });
 }
-

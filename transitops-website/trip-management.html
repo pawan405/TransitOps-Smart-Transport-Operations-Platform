@@ -134,6 +134,7 @@
             font-variation-settings: 'FILL' 0, 'wght' 300, 'GRAD' 0, 'opsz' 24;
         }
     </style>
+  <link rel="stylesheet" href="css/command-center.css">
 </head>
 <body class="bg-surface-lowest text-on-surface font-body-md selection:bg-primary-container selection:text-on-primary-container overflow-hidden">
 <!-- Global Scanline Overlay -->
@@ -164,11 +165,11 @@
 <span class="material-symbols-outlined">precision_manufacturing</span>
 <span class="font-label-caps text-label-caps">Vehicle Registry</span>
 </a>
-<a class="flex items-center space-x-3 p-3 transition-all duration-300 text-on-surface-variant hover:bg-surface-container-low" href="#">
+<a class="flex items-center space-x-3 p-3 transition-all duration-300 text-on-surface-variant hover:bg-surface-container-low" href="operations.html?view=diagnostics">
 <span class="material-symbols-outlined">phonelink_setup</span>
 <span class="font-label-caps text-label-caps">Diagnostics</span>
 </a>
-<a class="flex items-center space-x-3 p-3 transition-all duration-300 text-on-surface-variant hover:bg-surface-container-low" href="#">
+<a class="flex items-center space-x-3 p-3 transition-all duration-300 text-on-surface-variant hover:bg-surface-container-low" href="operations.html?view=security">
 <span class="material-symbols-outlined">shield_with_heart</span>
 <span class="font-label-caps text-label-caps">Security</span>
 </a>
@@ -180,11 +181,11 @@
 </span>
 </button>
 <div class="pt-4 border-t border-outline-variant">
-<a class="flex items-center space-x-3 p-2 text-on-surface-variant hover:text-primary font-label-caps text-label-caps" href="#">
+<a class="flex items-center space-x-3 p-2 text-on-surface-variant hover:text-primary font-label-caps text-label-caps" href="operations.html?view=support">
 <span class="material-symbols-outlined">help_center</span>
 <span>Support</span>
 </a>
-<a class="flex items-center space-x-3 p-2 text-on-surface-variant hover:text-primary font-label-caps text-label-caps" href="login.html">
+<a class="flex items-center space-x-3 p-2 text-on-surface-variant hover:text-primary font-label-caps text-label-caps" href="login.html" onclick="localStorage.removeItem('transitopsSession')">
 <span class="material-symbols-outlined">logout</span>
 <span>Logout</span>
 </a>
@@ -197,10 +198,10 @@
 <div class="flex items-center space-x-8">
 <h1 class="font-headline-lg text-headline-lg font-bold text-primary tracking-tighter uppercase">TransitOps Intelligence</h1>
 <nav class="hidden md:flex space-x-6">
-<a class="font-body-md text-body-md text-on-surface-variant hover:text-on-surface transition-colors" href="#">Telemetry</a>
-<a class="font-body-md text-body-md text-surface-tint border-b-2 border-surface-tint pb-2" href="#">Fleet</a>
-<a class="font-body-md text-body-md text-on-surface-variant hover:text-on-surface transition-colors" href="#">Routes</a>
-<a class="font-body-md text-body-md text-on-surface-variant hover:text-on-surface transition-colors" href="#">Intelligence</a>
+<a class="font-body-md text-body-md text-on-surface-variant hover:text-on-surface transition-colors" href="mission-control.html">Telemetry</a>
+<a class="font-body-md text-body-md text-surface-tint border-b-2 border-surface-tint pb-2" href="vehicle-registry.html">Fleet</a>
+<a class="font-body-md text-body-md text-on-surface-variant hover:text-on-surface transition-colors" href="trip-management.html">Routes</a>
+<a class="font-body-md text-body-md text-on-surface-variant hover:text-on-surface transition-colors" href="operations.html?view=intelligence">Intelligence</a>
 </nav>
 </div>
 <div class="flex items-center space-x-6">
@@ -356,7 +357,7 @@
 <div class="flex space-x-6">
 <span class="font-data-sm text-data-sm text-on-surface-variant">Lat: 34.0522° N</span>
 <span class="font-data-sm text-data-sm text-on-surface-variant">Long: 118.2437° W</span>
-<a class="font-label-caps text-label-caps text-on-surface-variant hover:text-primary-fixed transition-colors" href="#">Operational Logs</a>
+<a class="font-label-caps text-label-caps text-on-surface-variant hover:text-primary-fixed transition-colors" href="operations.html?view=operational-logs">Operational Logs</a>
 </div>
 </footer>
 </main>
@@ -441,12 +442,7 @@
         const auth = firebase.auth();
         const analytics = firebase.analytics();
 
-        // Check auth state
-        auth.onAuthStateChanged((user) => {
-            if (!user) {
-                window.location.href = 'login.html';
-            }
-        });
+
 
         function toggleModal(id) {
             const modal = document.getElementById(id);
@@ -477,4 +473,5 @@
             toggleModal('dispatch-modal');
         });
     </script>
+  <script src="js/command-center.js"></script>
 </body></html>

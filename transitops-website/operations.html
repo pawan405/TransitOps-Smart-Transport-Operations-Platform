@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html class="dark" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>TransitOps Operations Route</title>
+<link href="https://fonts.googleapis.com/css2?family=Archivo+Narrow:wght@400;600;700&amp;family=Inter:wght@400;500&amp;family=JetBrains+Mono:wght@400;500;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<script>
+  tailwind.config = {
+    darkMode: 'class',
+    theme: {
+      extend: {
+        colors: {
+          primary: '#dbfcff', 'primary-container': '#00f0ff', 'on-primary-container': '#006970',
+          'surface-tint': '#00dbe9', 'secondary-fixed-dim': '#00e383', tertiary: '#fff4e8',
+          background: '#111317', surface: '#111317', 'surface-dim': '#111317',
+          'surface-container-lowest': '#0c0e11', 'surface-container-low': '#1a1c1f',
+          'surface-container': '#1e2023', 'surface-container-high': '#282a2d',
+          'surface-container-highest': '#333538', 'on-surface': '#e2e2e6',
+          'on-surface-variant': '#b9cacb', outline: '#849495', 'outline-variant': '#3b494b', error: '#ffb4ab'
+        },
+        fontFamily: { mono: ['JetBrains Mono'], headline: ['Archivo Narrow'], body: ['Inter'] },
+        borderRadius: { DEFAULT: '0.125rem', lg: '0.25rem', xl: '0.5rem' }
+      }
+    }
+  };
+</script>
+<style>
+  body { background:#0d0f12; color:#e2e2e6; overflow:hidden; font-family:Inter, sans-serif; }
+  .glass-panel { background:linear-gradient(180deg, rgba(30,32,35,.84), rgba(12,14,17,.72)); border:1px solid rgba(132,148,149,.28); }
+</style>
+<link rel="stylesheet" href="css/command-center.css">
+</head>
+<body class="bg-background text-on-surface min-h-screen">
+<div class="scanlines"></div>
+<aside class="flex flex-col h-screen p-4 space-y-4 bg-surface-container-lowest border-r border-outline-variant w-64 fixed left-0 top-0 z-50">
+  <div class="mb-8 px-2">
+    <h1 class="font-headline text-2xl text-primary tracking-tighter font-bold">TRANSIT OPS</h1>
+    <p class="font-mono text-[10px] text-on-surface-variant tracking-widest mt-1">SECTOR-07 ACTIVE</p>
+  </div>
+  <nav class="flex-1 space-y-2">
+    <a class="flex items-center space-x-3 px-4 py-3 rounded text-on-surface-variant hover:bg-surface-container-low hover:text-primary transition-all" href="mission-control.html"><span class="material-symbols-outlined text-[20px]">dashboard</span><span class="font-mono text-[10px] uppercase tracking-widest">Dashboard</span></a>
+    <a class="flex items-center space-x-3 px-4 py-3 rounded text-on-surface-variant hover:bg-surface-container-low hover:text-primary transition-all" href="operations.html?view=map-view"><span class="material-symbols-outlined text-[20px]">map</span><span class="font-mono text-[10px] uppercase tracking-widest">Map View</span></a>
+    <a class="flex items-center space-x-3 px-4 py-3 rounded text-on-surface-variant hover:bg-surface-container-low hover:text-primary transition-all" href="operations.html?view=fleet-status"><span class="material-symbols-outlined text-[20px]">precision_manufacturing</span><span class="font-mono text-[10px] uppercase tracking-widest">Fleet Status</span></a>
+    <a class="flex items-center space-x-3 px-4 py-3 rounded text-on-surface-variant hover:bg-surface-container-low hover:text-primary transition-all" href="operations.html?view=diagnostics"><span class="material-symbols-outlined text-[20px]">phonelink_setup</span><span class="font-mono text-[10px] uppercase tracking-widest">Diagnostics</span></a>
+    <a class="flex items-center space-x-3 px-4 py-3 rounded text-on-surface-variant hover:bg-surface-container-low hover:text-primary transition-all" href="operations.html?view=logistics"><span class="material-symbols-outlined text-[20px]">lan</span><span class="font-mono text-[10px] uppercase tracking-widest">Logistics</span></a>
+    <a class="flex items-center space-x-3 px-4 py-3 rounded text-on-surface-variant hover:bg-surface-container-low hover:text-primary transition-all" href="operations.html?view=security"><span class="material-symbols-outlined text-[20px]">shield_with_heart</span><span class="font-mono text-[10px] uppercase tracking-widest">Security</span></a>
+  </nav>
+  <div class="pt-6 border-t border-outline-variant/30 space-y-2">
+    <a class="flex items-center space-x-3 px-4 py-2 text-on-surface-variant hover:text-primary transition-colors" href="operations.html?view=support"><span class="material-symbols-outlined text-[18px]">help_center</span><span class="font-mono text-[10px] uppercase tracking-widest">Support</span></a>
+    <a class="flex items-center space-x-3 px-4 py-2 text-on-surface-variant hover:text-primary transition-colors" href="operations.html?view=terminal"><span class="material-symbols-outlined text-[18px]">terminal</span><span class="font-mono text-[10px] uppercase tracking-widest">Terminal</span></a>
+  </div>
+</aside>
+<main class="ml-64 min-h-screen flex flex-col pb-10">
+  <header class="bg-surface-dim/80 backdrop-blur-md border-b border-outline-variant flex justify-between items-center w-full px-8 py-4 sticky top-0 z-40">
+    <div class="flex items-center space-x-8">
+      <h2 class="font-headline text-3xl font-bold text-primary tracking-tighter uppercase" id="route-title">Operations</h2>
+      <nav class="hidden md:flex space-x-6">
+        <a class="font-mono text-[10px] text-on-surface-variant hover:text-on-surface transition-colors uppercase tracking-widest" href="mission-control.html">Telemetry</a>
+        <a class="font-mono text-[10px] text-on-surface-variant hover:text-on-surface transition-colors uppercase tracking-widest" href="vehicle-registry.html">Fleet</a>
+        <a class="font-mono text-[10px] text-on-surface-variant hover:text-on-surface transition-colors uppercase tracking-widest" href="trip-management.html">Routes</a>
+        <a class="font-mono text-[10px] text-surface-tint border-b-2 border-surface-tint pb-2 uppercase tracking-widest" href="operations.html?view=intelligence">Intelligence</a>
+      </nav>
+    </div>
+    <div class="flex items-center space-x-4">
+      <a class="p-2 hover:bg-surface-container-high hover:text-surface-tint transition-all" href="operations.html?view=notifications"><span class="material-symbols-outlined">notifications_active</span></a>
+      <a class="p-2 hover:bg-surface-container-high hover:text-surface-tint transition-all" href="operations.html?view=settings"><span class="material-symbols-outlined">settings</span></a>
+    </div>
+  </header>
+  <section class="flex-1 p-8 grid grid-cols-12 gap-6 overflow-hidden">
+    <div class="col-span-12 xl:col-span-8 glass-panel p-8 overflow-hidden relative">
+      <div class="flex items-center justify-between border-b border-outline-variant pb-4 mb-6">
+        <div>
+          <span class="font-mono text-[10px] text-surface-tint uppercase tracking-[0.25em]" id="route-kicker">LIVE ROUTE</span>
+          <h1 class="font-headline text-5xl text-on-surface uppercase tracking-tight" id="view-heading">Operations</h1>
+        </div>
+        <div class="font-mono text-[10px] text-secondary-fixed-dim uppercase tracking-widest">Secure Link Established</div>
+      </div>
+      <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6" id="kpi-grid"></div>
+      <div class="relative h-[360px] border border-outline-variant bg-surface-container-lowest overflow-hidden">
+        <div class="absolute inset-0 opacity-40" style="background-image:linear-gradient(rgba(0,240,255,.12) 1px, transparent 1px),linear-gradient(90deg, rgba(0,227,131,.1) 1px, transparent 1px);background-size:36px 36px;"></div>
+        <svg class="absolute inset-0 w-full h-full" viewBox="0 0 900 360" fill="none" aria-hidden="true">
+          <path d="M-20 260 C160 160 230 310 390 190 S650 120 920 220" stroke="#00f0ff" stroke-width="2" stroke-dasharray="12 18" opacity=".8"/>
+          <path d="M-40 130 C180 40 300 190 470 110 S700 40 940 118" stroke="#00e383" stroke-width="1.5" stroke-dasharray="8 16" opacity=".65"/>
+          <circle cx="170" cy="164" r="7" fill="#00f0ff"/><circle cx="390" cy="190" r="6" fill="#ffba20"/><circle cx="650" cy="122" r="7" fill="#00e383"/>
+        </svg>
+        <div class="absolute left-[18%] top-[42%] w-3 h-3 rounded-full bg-primary-container shadow-[0_0_24px_#00f0ff]"></div>
+        <div class="absolute left-[43%] top-[51%] w-3 h-3 rounded-full bg-yellow-300 shadow-[0_0_24px_#ffba20]"></div>
+        <div class="absolute left-[72%] top-[31%] w-3 h-3 rounded-full bg-secondary-fixed-dim shadow-[0_0_24px_#00e383]"></div>
+      </div>
+    </div>
+    <aside class="col-span-12 xl:col-span-4 space-y-4 overflow-hidden">
+      <div class="glass-panel p-6">
+        <span class="font-mono text-[10px] text-on-surface-variant uppercase tracking-widest">Operational Queue</span>
+        <div class="space-y-3 mt-4" id="event-list"></div>
+      </div>
+      <div class="glass-panel p-6">
+        <span class="font-mono text-[10px] text-on-surface-variant uppercase tracking-widest">Command Summary</span>
+        <p class="font-body text-sm text-on-surface-variant mt-4 leading-7" id="view-summary"></p>
+      </div>
+    </aside>
+  </section>
+  <footer class="fixed bottom-0 left-64 right-0 border-t border-outline-variant bg-surface-dim/95 backdrop-blur-sm flex items-center justify-between px-8 py-2 z-40">
+    <span class="font-mono text-[10px] text-on-surface-variant uppercase tracking-widest">TRANSITOPS v4.2.0 - SECURE LINK ESTABLISHED</span>
+    <a class="font-mono text-[10px] text-on-surface-variant hover:text-primary-fixed transition-colors uppercase tracking-widest" href="operations.html?view=operational-logs">Operational Logs</a>
+  </footer>
+</main>
+<script>
+  const views = {
+    'map-view': ['Map View', 'Route mesh, depots, and moving fleet telemetry are synchronized across active corridors.', ['12 Active Routes','48 Moving Units','07 Depots'], ['Grid stable','Route corridor recalculated','Live vehicle stream active']],
+    'fleet-status': ['Fleet Status', 'Fleet health, driver readiness, and unit availability remain visible for rapid dispatch decisions.', ['128 Vehicles','94 Active','08 Maintenance'], ['Driver pool refreshed','Unit VT-902 ready','Battery cohort balanced']],
+    diagnostics: ['Diagnostics', 'Predictive maintenance windows, sensor drift, and fault clusters are grouped for fast engineering review.', ['03 Warnings','98.2% Health','14 Sensors'], ['UNIT-088 tire pressure watch','Engine telemetry normalized','Service window reserved']],
+    logistics: ['Logistics', 'Cargo flow, depot capacity, route demand, and dispatch priority are tracked as one live logistics layer.', ['31 Trips','82% Capacity','12ms Latency'], ['North depot accepting cargo','Route 17 opened','Priority alpha cleared']],
+    security: ['Security', 'RBAC, session integrity, and command access controls are monitored as mission critical systems.', ['0 Breaches','24 Roles','99.99% Uptime'], ['Session integrity confirmed','RBAC policy synchronized','Audit stream locked']],
+    support: ['Support', 'Operator support requests and field escalations are triaged with live severity and response telemetry.', ['06 Tickets','02 Critical','4m SLA'], ['Support channel online','Field case assigned','Escalation queue trimmed']],
+    terminal: ['Terminal', 'A read-only command terminal surface for operators to inspect dispatch and system events.', ['744 Events','18 Streams','05 Nodes'], ['terminal: link established','tail route-mesh.log','watch fleet.health']],
+    telemetry: ['Telemetry', 'Live fleet count, fuel, trip, revenue, and system health signals remain in continuous motion.', ['99.9% Health','12ms Ping','44 Signals'], ['Telemetry stream active','Fuel values refreshed','Revenue pulse updated']],
+    intelligence: ['Intelligence', 'Decision support combines route risk, expense signals, fuel variance, and maintenance probability.', ['87 Score','11 Alerts','05 Models'], ['Risk model updated','Expense anomaly scored','Route confidence improved']],
+    notifications: ['Notifications', 'Dispatch alerts, fuel updates, maintenance warnings, and emergency signals are collected here.', ['18 New','04 Urgent','92% Read'], ['Route update received','Maintenance warning acknowledged','Emergency drill passed']],
+    settings: ['Settings', 'Operator preferences, command center display density, and notification routing are managed here.', ['06 Profiles','03 Modes','24 Rules'], ['Display mode synced','Notification routing saved','Operator profile active']],
+    'operational-logs': ['Operational Logs', 'A live audit trail for dispatch, diagnostics, routing, authentication, and system health.', ['2.8k Logs','09 Sources','0 Errors'], ['Auth check passed','Dispatch executed','Route mesh recalibrated']],
+    'recover-credentials': ['Recover Credentials', 'Credential recovery is protected by role verification, secure audit logging, and operator confirmation.', ['02 Steps','1m ETA','Secure'], ['Identity challenge ready','Recovery channel armed','Audit entry prepared']],
+    'network-hub': ['Network Hub', 'Regional depots, telemetry relays, and command uplinks are represented as a resilient network mesh.', ['07 Relays','99.99% Link','03 Regions'], ['Hub relay online','Mesh latency normal','Failover path warm']],
+    docs: ['Documentation', 'System references, workflow guides, and implementation notes are available for operator review.', ['14 Guides','05 APIs','Ready'], ['Docs indexed','Workflow card opened','Command guide refreshed']]
+  };
+  const params = new URLSearchParams(location.search);
+  const key = params.get('view') || 'telemetry';
+  const view = views[key] || views.telemetry;
+  document.title = `TransitOps ${view[0]}`;
+  document.getElementById('route-title').textContent = view[0];
+  document.getElementById('view-heading').textContent = view[0];
+  document.getElementById('route-kicker').textContent = key.replace(/-/g, ' ');
+  document.getElementById('view-summary').textContent = view[1];
+  document.getElementById('kpi-grid').innerHTML = view[2].map((item, index) => `<div class="glass-panel p-5"><span class="font-mono text-[10px] text-on-surface-variant uppercase tracking-widest">Metric 0${index + 1}</span><div class="font-mono text-2xl text-primary mt-3">${item}</div></div>`).join('');
+  document.getElementById('event-list').innerHTML = view[3].map((item, index) => `<div class="border-l-2 ${index === 1 ? 'border-yellow-400' : 'border-primary-container'} bg-surface-container-lowest p-3"><div class="font-mono text-[10px] text-surface-tint uppercase tracking-widest">EVENT 0${index + 1}</div><div class="font-mono text-xs text-on-surface mt-2">${item}</div></div>`).join('');
+</script>
+<script src="js/command-center.js"></script>
+</body></html>
