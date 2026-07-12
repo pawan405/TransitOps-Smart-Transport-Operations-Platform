@@ -1,0 +1,480 @@
+<!DOCTYPE html>
+
+<html class="dark" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>TransitOps | Trip Management</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<!-- Firebase SDKs -->
+<script src="https://www.gstatic.com/firebasejs/11.5.0/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/11.5.0/firebase-auth-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/11.5.0/firebase-analytics-compat.js"></script>
+<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;700&amp;family=Archivo+Narrow:wght@600;700&amp;family=Inter:wght@400;500&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    "colors": {
+                        "tertiary-container": "#ffd386",
+                        "surface-tint": "#00dbe9",
+                        "on-surface": "#e2e2e6",
+                        "secondary": "#f5fff3",
+                        "on-primary-container": "#006970",
+                        "primary-fixed-dim": "#00dbe9",
+                        "on-error-container": "#ffdad6",
+                        "surface-container-low": "#1a1c1f",
+                        "surface-bright": "#37393d",
+                        "surface-container-lowest": "#0c0e11",
+                        "on-primary": "#00363a",
+                        "primary": "#dbfcff",
+                        "on-secondary-container": "#00723f",
+                        "on-primary-fixed": "#002022",
+                        "surface-container-highest": "#333538",
+                        "tertiary-fixed": "#ffdea8",
+                        "outline-variant": "#3b494b",
+                        "surface-container-high": "#282a2d",
+                        "on-error": "#690005",
+                        "on-background": "#e2e2e6",
+                        "surface-dim": "#111317",
+                        "on-secondary-fixed": "#00210e",
+                        "surface-variant": "#333538",
+                        "on-tertiary-fixed-variant": "#5e4200",
+                        "surface-container": "#1e2023",
+                        "tertiary": "#fff4e8",
+                        "on-primary-fixed-variant": "#004f54",
+                        "on-surface-variant": "#b9cacb",
+                        "on-tertiary-fixed": "#271900",
+                        "primary-fixed": "#7df4ff",
+                        "primary-container": "#00f0ff",
+                        "on-tertiary": "#412d00",
+                        "inverse-surface": "#e2e2e6",
+                        "error": "#ffb4ab",
+                        "inverse-on-surface": "#2f3034",
+                        "tertiary-fixed-dim": "#ffba20",
+                        "background": "#111317",
+                        "secondary-fixed-dim": "#00e383",
+                        "on-secondary-fixed-variant": "#00522c",
+                        "error-container": "#93000a",
+                        "secondary-fixed": "#5bffa1",
+                        "on-secondary": "#00391d",
+                        "surface": "#111317",
+                        "on-tertiary-container": "#7d5800",
+                        "inverse-primary": "#006970",
+                        "secondary-container": "#27ff97",
+                        "outline": "#849495"
+                    },
+                    "borderRadius": {
+                        "DEFAULT": "0.125rem",
+                        "lg": "0.25rem",
+                        "xl": "0.5rem",
+                        "full": "0.75rem"
+                    },
+                    "spacing": {
+                        "margin": "24px",
+                        "unit": "4px",
+                        "container-padding": "32px",
+                        "stack-md": "16px",
+                        "gutter": "16px",
+                        "stack-lg": "32px",
+                        "stack-sm": "8px"
+                    },
+                    "fontFamily": {
+                        "data-sm": ["JetBrains Mono"],
+                        "label-caps": ["JetBrains Mono"],
+                        "headline-lg": ["Archivo Narrow"],
+                        "body-md": ["Inter"],
+                        "headline-lg-mobile": ["Archivo Narrow"],
+                        "headline-xl": ["Archivo Narrow"],
+                        "data-lg": ["JetBrains Mono"]
+                    },
+                    "fontSize": {
+                        "data-sm": ["12px", {"lineHeight": "1.4", "letterSpacing": "0.1em", "fontWeight": "400"}],
+                        "label-caps": ["10px", {"lineHeight": "1.2", "fontWeight": "700"}],
+                        "headline-lg": ["32px", {"lineHeight": "1.2", "letterSpacing": "-0.01em", "fontWeight": "600"}],
+                        "body-md": ["16px", {"lineHeight": "1.6", "fontWeight": "400"}],
+                        "headline-lg-mobile": ["24px", {"lineHeight": "1.2", "fontWeight": "600"}],
+                        "headline-xl": ["48px", {"lineHeight": "1.1", "letterSpacing": "-0.02em", "fontWeight": "700"}],
+                        "data-lg": ["20px", {"lineHeight": "1.4", "letterSpacing": "0.05em", "fontWeight": "500"}]
+                    }
+                },
+            },
+        }
+    </script>
+<style>
+        .scanline {
+            background: linear-gradient(to bottom, transparent 50%, rgba(255, 255, 255, 0.02) 50%);
+            background-size: 100% 4px;
+            pointer-events: none;
+        }
+        .glass {
+            backdrop-filter: blur(20px);
+            background: rgba(20, 24, 29, 0.8);
+            border-top: 1px solid rgba(0, 240, 255, 0.2);
+        }
+        .pulse-dot {
+            animation: pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+        }
+        @keyframes pulse {
+            0%, 100% { opacity: 1; transform: scale(1); }
+            50% { opacity: 0.4; transform: scale(1.5); }
+        }
+        .shimmer {
+            background: linear-gradient(90deg, transparent, rgba(0, 240, 255, 0.1), transparent);
+            background-size: 200% 100%;
+            animation: shimmer 3s infinite linear;
+        }
+        @keyframes shimmer {
+            0% { background-position: -200% 0; }
+            100% { background-position: 200% 0; }
+        }
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 300, 'GRAD' 0, 'opsz' 24;
+        }
+    </style>
+</head>
+<body class="bg-surface-lowest text-on-surface font-body-md selection:bg-primary-container selection:text-on-primary-container overflow-hidden">
+<!-- Global Scanline Overlay -->
+<div class="fixed inset-0 scanline z-50 pointer-events-none opacity-30"></div>
+<!-- Side Navigation Shell -->
+<aside class="fixed left-0 top-0 h-full w-64 border-r border-outline-variant bg-surface-container-lowest flex flex-col p-4 space-y-stack-md z-40">
+<div class="flex flex-col space-y-2 mb-8">
+<span class="font-headline-lg-mobile text-headline-lg-mobile text-primary tracking-tighter uppercase">TRANSIT OPS</span>
+<div class="flex items-center space-x-2">
+<span class="w-2 h-2 rounded-full bg-secondary-fixed-dim pulse-dot"></span>
+<span class="font-data-sm text-data-sm text-on-surface-variant uppercase">SECTOR-07 ACTIVE</span>
+</div>
+</div>
+<nav class="flex-1 space-y-1">
+<a class="flex items-center space-x-3 p-3 transition-all duration-300 text-on-surface-variant hover:bg-surface-container-low" href="mission-control.html">
+<span class="material-symbols-outlined">dashboard</span>
+<span class="font-label-caps text-label-caps">Dashboard</span>
+</a>
+<a class="flex items-center space-x-3 p-3 transition-all duration-300 bg-primary-container/10 text-primary border-l-4 border-primary shadow-[0_0_15px_rgba(0,240,255,0.2)]" href="trip-management.html">
+<span class="material-symbols-outlined">lan</span>
+<span class="font-label-caps text-label-caps">Trip Management</span>
+</a>
+<a class="flex items-center space-x-3 p-3 transition-all duration-300 text-on-surface-variant hover:bg-surface-container-low" href="index.html">
+<span class="material-symbols-outlined">map</span>
+<span class="font-label-caps text-label-caps">Fleet Manager</span>
+</a>
+<a class="flex items-center space-x-3 p-3 transition-all duration-300 text-on-surface-variant hover:bg-surface-container-low" href="vehicle-registry.html">
+<span class="material-symbols-outlined">precision_manufacturing</span>
+<span class="font-label-caps text-label-caps">Vehicle Registry</span>
+</a>
+<a class="flex items-center space-x-3 p-3 transition-all duration-300 text-on-surface-variant hover:bg-surface-container-low" href="#">
+<span class="material-symbols-outlined">phonelink_setup</span>
+<span class="font-label-caps text-label-caps">Diagnostics</span>
+</a>
+<a class="flex items-center space-x-3 p-3 transition-all duration-300 text-on-surface-variant hover:bg-surface-container-low" href="#">
+<span class="material-symbols-outlined">shield_with_heart</span>
+<span class="font-label-caps text-label-caps">Security</span>
+</a>
+</nav>
+<button class="w-full border border-primary text-primary font-label-caps text-label-caps py-4 tracking-widest hover:bg-primary hover:text-on-primary transition-all duration-300 group" onclick="toggleModal('dispatch-modal')">
+<span class="flex items-center justify-center space-x-2">
+<span class="material-symbols-outlined text-sm">rocket_launch</span>
+<span>DEPLOY UNIT</span>
+</span>
+</button>
+<div class="pt-4 border-t border-outline-variant">
+<a class="flex items-center space-x-3 p-2 text-on-surface-variant hover:text-primary font-label-caps text-label-caps" href="#">
+<span class="material-symbols-outlined">help_center</span>
+<span>Support</span>
+</a>
+<a class="flex items-center space-x-3 p-2 text-on-surface-variant hover:text-primary font-label-caps text-label-caps" href="login.html">
+<span class="material-symbols-outlined">logout</span>
+<span>Logout</span>
+</a>
+</div>
+</aside>
+<!-- Main Content Area -->
+<main class="ml-64 min-h-screen flex flex-col relative">
+<!-- Top Bar Shell -->
+<header class="sticky top-0 w-full bg-surface-dim/80 backdrop-blur-md border-b border-outline-variant px-margin py-4 flex justify-between items-center z-30">
+<div class="flex items-center space-x-8">
+<h1 class="font-headline-lg text-headline-lg font-bold text-primary tracking-tighter uppercase">TransitOps Intelligence</h1>
+<nav class="hidden md:flex space-x-6">
+<a class="font-body-md text-body-md text-on-surface-variant hover:text-on-surface transition-colors" href="#">Telemetry</a>
+<a class="font-body-md text-body-md text-surface-tint border-b-2 border-surface-tint pb-2" href="#">Fleet</a>
+<a class="font-body-md text-body-md text-on-surface-variant hover:text-on-surface transition-colors" href="#">Routes</a>
+<a class="font-body-md text-body-md text-on-surface-variant hover:text-on-surface transition-colors" href="#">Intelligence</a>
+</nav>
+</div>
+<div class="flex items-center space-x-6">
+<div class="relative group">
+<span class="material-symbols-outlined text-on-surface-variant cursor-pointer hover:text-primary">notifications_active</span>
+<span class="absolute -top-1 -right-1 w-2 h-2 bg-error rounded-full"></span>
+</div>
+<span class="material-symbols-outlined text-on-surface-variant cursor-pointer hover:text-primary">settings</span>
+<div class="w-8 h-8 rounded-full border border-primary flex items-center justify-center overflow-hidden">
+<img class="w-full h-full object-cover" data-alt="A professional operator avatar in a dark high-tech flight suit, minimalist lighting against a deep blue sci-fi background, high fidelity digital illustration for a mission control interface." src="https://lh3.googleusercontent.com/aida-public/AB6AXuD2C8d3q5-OkkHoEWT3-O92PRlSXo1VVQM0cIFdBOWEGdGTFdjV5oAsRg3zdctLmAkpaA1p28ErDLjGskG5QubdFN53AfQ9e1CowFbutHQxsh6dxZbox9adJxadRsIpEt2z-DRSe-OBAhkvBq4I6ypQlVMc29-cDm4kokuD3FkvVFHN9l1jP-VozGxdRz09dTVAn6XeaSTqgpyYe2gn8_uYf48lgJHpkn6BkLGOSjsiVY5IrZYlNqY4GqfWf2t4TkWB9vrzIJ-PTDg"/>
+</div>
+</div>
+</header>
+<!-- Content Canvas -->
+<div class="flex-1 p-8 space-y-stack-lg pb-16">
+<!-- Filters / Tabs -->
+<div class="flex items-center justify-between">
+<div class="flex space-x-2 bg-surface-container-low p-1 rounded-lg border border-outline-variant">
+<button class="px-6 py-2 font-label-caps text-label-caps text-primary bg-surface-container-high rounded-md">Draft [04]</button>
+<button class="px-6 py-2 font-label-caps text-label-caps text-on-surface-variant hover:text-on-surface">Dispatched [12]</button>
+<button class="px-6 py-2 font-label-caps text-label-caps text-on-surface-variant hover:text-on-surface">Completed [84]</button>
+<button class="px-6 py-2 font-label-caps text-label-caps text-on-surface-variant hover:text-on-surface">Cancelled [02]</button>
+</div>
+<div class="flex items-center space-x-4">
+<div class="relative">
+<span class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-on-surface-variant text-sm">search</span>
+<input class="bg-surface-container-lowest border-b border-outline-variant text-primary font-data-sm text-data-sm focus:border-surface-tint focus:ring-0 pl-10 pr-4 py-2 w-64 uppercase tracking-widest placeholder:text-outline" placeholder="QUERY TRIP ID..." type="text"/>
+</div>
+</div>
+</div>
+<!-- Bento Grid of Trip Cards -->
+<div class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-gutter">
+<!-- Trip Card 1 (Active/Dispatched) -->
+<div class="bg-surface-container-lowest border border-outline-variant p-6 relative group hover:border-primary-container transition-all duration-500 overflow-hidden">
+<div class="absolute top-0 right-0 p-2 font-data-sm text-[10px] text-outline opacity-50 uppercase tracking-tighter">REF-00192 / COORD: 34.0N</div>
+<div class="flex justify-between items-start mb-6">
+<div>
+<span class="font-label-caps text-label-caps text-surface-tint uppercase tracking-[0.2em] mb-1 block">Active Operations</span>
+<h3 class="font-headline-lg-mobile text-headline-lg-mobile text-primary font-bold">TRIP-A982-Z</h3>
+</div>
+<div class="flex flex-col items-end">
+<span class="font-data-sm text-data-sm text-secondary-fixed-dim">IN TRANSIT</span>
+<span class="w-1.5 h-1.5 bg-secondary-fixed-dim rounded-full pulse-dot mt-1"></span>
+</div>
+</div>
+<!-- Four-Stage Progress Line -->
+<div class="flex items-center space-x-1 mb-8">
+<div class="h-1 flex-1 bg-primary-container shadow-[0_0_8px_rgba(0,240,255,0.5)]"></div>
+<div class="h-1 flex-1 bg-primary-container shadow-[0_0_8px_rgba(0,240,255,0.5)]"></div>
+<div class="h-1 flex-1 bg-surface-container-high relative overflow-hidden">
+<div class="shimmer absolute inset-0"></div>
+</div>
+<div class="h-1 flex-1 bg-surface-container-high"></div>
+</div>
+<div class="grid grid-cols-2 gap-4 mb-6">
+<div class="space-y-1">
+<span class="font-label-caps text-label-caps text-on-surface-variant uppercase">Vehicle ID</span>
+<span class="font-data-sm text-data-sm text-on-surface block">VT-902 / STRIKER</span>
+</div>
+<div class="space-y-1">
+<span class="font-label-caps text-label-caps text-on-surface-variant uppercase">Cargo Load</span>
+<span class="font-data-sm text-data-sm text-on-surface block">12,450 KG / OPTIMAL</span>
+</div>
+</div>
+<div class="flex justify-between items-center border-t border-outline-variant/30 pt-4">
+<div class="flex -space-x-2">
+<div class="w-6 h-6 rounded-full border border-outline bg-surface-container-high flex items-center justify-center text-[8px] font-bold">OP</div>
+<div class="w-6 h-6 rounded-full border border-outline bg-surface-container-high flex items-center justify-center text-[8px] font-bold">DV</div>
+</div>
+<button class="font-label-caps text-label-caps text-primary hover:tracking-[0.2em] transition-all">VIEW TELEMETRY -&gt;</button>
+</div>
+</div>
+<!-- Trip Card 2 (Draft) -->
+<div class="bg-surface-container-lowest border border-outline-variant p-6 relative group opacity-80 hover:opacity-100 transition-all">
+<div class="absolute top-0 right-0 p-2 font-data-sm text-[10px] text-outline opacity-50 uppercase tracking-tighter">REF-00194 / COORD: 12.1S</div>
+<div class="flex justify-between items-start mb-6">
+<div>
+<span class="font-label-caps text-label-caps text-on-surface-variant uppercase tracking-[0.2em] mb-1 block">Pending Status</span>
+<h3 class="font-headline-lg-mobile text-headline-lg-mobile text-on-surface font-bold">TRIP-B110-X</h3>
+</div>
+<div class="flex flex-col items-end">
+<span class="font-data-sm text-data-sm text-on-surface-variant">DRAFTING</span>
+</div>
+</div>
+<div class="flex items-center space-x-1 mb-8">
+<div class="h-1 flex-1 bg-surface-container-high relative overflow-hidden">
+<div class="shimmer absolute inset-0"></div>
+</div>
+<div class="h-1 flex-1 bg-surface-container-lowest border border-outline-variant"></div>
+<div class="h-1 flex-1 bg-surface-container-lowest border border-outline-variant"></div>
+<div class="h-1 flex-1 bg-surface-container-lowest border border-outline-variant"></div>
+</div>
+<div class="grid grid-cols-2 gap-4 mb-6">
+<div class="space-y-1">
+<span class="font-label-caps text-label-caps text-on-surface-variant uppercase">Vehicle ID</span>
+<span class="font-data-sm text-data-sm text-on-surface block">UNASSIGNED</span>
+</div>
+<div class="space-y-1">
+<span class="font-label-caps text-label-caps text-on-surface-variant uppercase">Cargo Load</span>
+<span class="font-data-sm text-data-sm text-on-surface block">4,200 KG / LIGHT</span>
+</div>
+</div>
+<div class="flex justify-between items-center border-t border-outline-variant/30 pt-4">
+<span class="font-data-sm text-data-sm text-outline">AUTO-SAVED: 02:14</span>
+<button class="font-label-caps text-label-caps text-on-surface hover:text-primary transition-all">CONTINUE SETUP</button>
+</div>
+</div>
+<!-- Trip Card 3 (Complete) -->
+<div class="bg-surface-container-lowest border border-outline-variant p-6 relative group">
+<div class="absolute top-0 right-0 p-2 font-data-sm text-[10px] text-outline opacity-50 uppercase tracking-tighter">REF-00188 / COORD: 05.5N</div>
+<div class="flex justify-between items-start mb-6">
+<div>
+<span class="font-label-caps text-label-caps text-on-surface-variant uppercase tracking-[0.2em] mb-1 block">Archive Record</span>
+<h3 class="font-headline-lg-mobile text-headline-lg-mobile text-on-surface font-bold opacity-60">TRIP-Z223-K</h3>
+</div>
+<div class="flex flex-col items-end">
+<span class="font-data-sm text-data-sm text-secondary">ARCHIVED</span>
+<span class="material-symbols-outlined text-secondary text-sm">verified</span>
+</div>
+</div>
+<div class="flex items-center space-x-1 mb-8 opacity-40">
+<div class="h-1 flex-1 bg-secondary-fixed"></div>
+<div class="h-1 flex-1 bg-secondary-fixed"></div>
+<div class="h-1 flex-1 bg-secondary-fixed"></div>
+<div class="h-1 flex-1 bg-secondary-fixed"></div>
+</div>
+<div class="grid grid-cols-2 gap-4 mb-6 opacity-60">
+<div class="space-y-1">
+<span class="font-label-caps text-label-caps text-on-surface-variant uppercase">Vehicle ID</span>
+<span class="font-data-sm text-data-sm text-on-surface block">VT-881 / COURIER</span>
+</div>
+<div class="space-y-1">
+<span class="font-label-caps text-label-caps text-on-surface-variant uppercase">Final Cargo</span>
+<span class="font-data-sm text-data-sm text-on-surface block">8,000 KG / SECURE</span>
+</div>
+</div>
+<div class="flex justify-between items-center border-t border-outline-variant/30 pt-4">
+<span class="font-data-sm text-data-sm text-outline italic">0.02ms latency at endpoint</span>
+<button class="font-label-caps text-label-caps text-outline hover:text-on-surface">LOG REPORT</button>
+</div>
+</div>
+</div>
+</div>
+<!-- Footer Shell -->
+<footer class="fixed bottom-0 left-64 right-0 border-t border-outline-variant bg-surface-dim/95 backdrop-blur-sm px-margin py-2 z-40 flex items-center justify-between">
+<div class="flex items-center space-x-6">
+<span class="font-label-caps text-label-caps text-on-surface-variant uppercase">TRANSITOPS v4.2.0 - SECURE LINK ESTABLISHED</span>
+<div class="flex items-center space-x-2">
+<span class="w-1.5 h-1.5 bg-secondary-fixed-dim rounded-full animate-ping"></span>
+<span class="font-data-sm text-data-sm text-secondary-fixed-dim">99.99% Uptime</span>
+</div>
+</div>
+<div class="flex space-x-6">
+<span class="font-data-sm text-data-sm text-on-surface-variant">Lat: 34.0522° N</span>
+<span class="font-data-sm text-data-sm text-on-surface-variant">Long: 118.2437° W</span>
+<a class="font-label-caps text-label-caps text-on-surface-variant hover:text-primary-fixed transition-colors" href="#">Operational Logs</a>
+</div>
+</footer>
+</main>
+<!-- Dispatch New Trip Modal -->
+<div class="fixed inset-0 z-[60] flex items-center justify-center p-8 bg-black/80 backdrop-blur-md hidden opacity-0 transition-opacity duration-300" id="dispatch-modal">
+<div class="glass w-full max-w-2xl border border-outline-variant p-8 shadow-2xl relative">
+<div class="absolute top-0 right-0 p-4">
+<button class="text-on-surface-variant hover:text-primary transition-colors" onclick="toggleModal('dispatch-modal')">
+<span class="material-symbols-outlined">close</span>
+</button>
+</div>
+<div class="mb-8">
+<h2 class="font-headline-lg text-headline-lg text-primary uppercase font-bold tracking-tighter">DISPATCH NEW TRIP</h2>
+<p class="font-data-sm text-data-sm text-on-surface-variant mt-2">INITIALIZE SECURE LOGISTICS PROTOCOL // SECTOR 07</p>
+</div>
+<form class="space-y-6" id="dispatchForm">
+<div class="grid grid-cols-2 gap-6">
+<div class="space-y-2">
+<label class="font-label-caps text-label-caps text-on-surface-variant block">SELECT VEHICLE UNIT</label>
+<select class="w-full bg-surface-container-lowest border-0 border-b border-outline-variant text-on-surface font-data-sm text-data-sm focus:border-primary-container focus:ring-0 py-3 uppercase tracking-widest" required="">
+<option value="">- SELECT ACTIVE UNIT -</option>
+<option value="vt-902">VT-902 | STRIKER [READY]</option>
+<option value="vt-881">VT-881 | COURIER [READY]</option>
+<option disabled="" value="vt-001">VT-001 | TITAN [MAINTENANCE]</option>
+</select>
+</div>
+<div class="space-y-2">
+<label class="font-label-caps text-label-caps text-on-surface-variant block">ASSIGN OPERATOR</label>
+<select class="w-full bg-surface-container-lowest border-0 border-b border-outline-variant text-on-surface font-data-sm text-data-sm focus:border-primary-container focus:ring-0 py-3 uppercase tracking-widest" required="">
+<option value="">- SELECT OPERATOR -</option>
+<option value="op-red">COMMANDER RED [READY]</option>
+<option value="op-echo">ECHO SEVEN [IN FIELD]</option>
+<option value="op-ghost">OPERATOR GHOST [READY]</option>
+</select>
+</div>
+</div>
+<div class="space-y-2">
+<label class="font-label-caps text-label-caps text-on-surface-variant block">CARGO WEIGHT (KG)</label>
+<input class="w-full bg-surface-container-lowest border-0 border-b border-outline-variant text-primary font-data-lg text-data-lg focus:border-primary-container focus:ring-0 py-3 placeholder:text-outline/30" placeholder="ENTER NUMERIC VALUE" step="0.1" type="number"/>
+<div class="hidden font-data-sm text-data-sm text-error uppercase mt-1" id="weight-alert">Warning: Cargo exceeds unit threshold</div>
+</div>
+<div class="grid grid-cols-2 gap-6 pt-4">
+<div class="space-y-2">
+<label class="font-label-caps text-label-caps text-on-surface-variant block">DESTINATION NODE</label>
+<input class="w-full bg-surface-container-lowest border-0 border-b border-outline-variant text-on-surface font-data-sm text-data-sm focus:border-primary-container focus:ring-0 py-3 uppercase tracking-widest" placeholder="COORD / SECTOR" type="text"/>
+</div>
+<div class="space-y-2">
+<label class="font-label-caps text-label-caps text-on-surface-variant block">PRIORITY LVL</label>
+<div class="flex items-center space-x-4 pt-2">
+<label class="flex items-center space-x-2 cursor-pointer">
+<input class="form-radio text-primary-container bg-surface-container focus:ring-0 border-outline-variant" name="priority" type="radio"/>
+<span class="font-label-caps text-label-caps">ALPHA</span>
+</label>
+<label class="flex items-center space-x-2 cursor-pointer">
+<input class="form-radio text-surface-tint bg-surface-container focus:ring-0 border-outline-variant" name="priority" type="radio"/>
+<span class="font-label-caps text-label-caps">BETA</span>
+</label>
+</div>
+</div>
+</div>
+<div class="flex justify-end space-x-4 pt-8">
+<button class="px-8 py-3 font-label-caps text-label-caps text-on-surface-variant hover:text-on-surface" onclick="toggleModal('dispatch-modal')" type="button">ABORT</button>
+<button class="px-10 py-3 bg-primary text-on-primary font-label-caps text-label-caps hover:shadow-[0_0_20px_rgba(0,240,255,0.4)] transition-all" type="submit">EXECUTE DISPATCH</button>
+</div>
+</form>
+</div>
+</div>
+<script>
+        // Firebase Configuration
+        const firebaseConfig = {
+            apiKey: "AIzaSyBDtPFdDrjn1l3luohv91ULgxcjLOoE0fo",
+            authDomain: "odoo-32f06.firebaseapp.com",
+            projectId: "odoo-32f06",
+            storageBucket: "odoo-32f06.firebasestorage.app",
+            messagingSenderId: "178882313559",
+            appId: "1:178882313559:web:25ee9c70d2c41864855212",
+            measurementId: "G-B4DLE850JX"
+        };
+
+        // Initialize Firebase
+        firebase.initializeApp(firebaseConfig);
+        const auth = firebase.auth();
+        const analytics = firebase.analytics();
+
+        // Check auth state
+        auth.onAuthStateChanged((user) => {
+            if (!user) {
+                window.location.href = 'login.html';
+            }
+        });
+
+        function toggleModal(id) {
+            const modal = document.getElementById(id);
+            if (modal.classList.contains('hidden')) {
+                modal.classList.remove('hidden');
+                setTimeout(() => modal.classList.replace('opacity-0', 'opacity-100'), 10);
+            } else {
+                modal.classList.replace('opacity-100', 'opacity-0');
+                setTimeout(() => modal.classList.add('hidden'), 300);
+            }
+        }
+
+        // Simple validation logic
+        const weightInput = document.querySelector('input[type="number"]');
+        const alertBox = document.getElementById('weight-alert');
+        
+        weightInput?.addEventListener('input', (e) => {
+            if (e.target.value > 15000) {
+                alertBox.classList.remove('hidden');
+            } else {
+                alertBox.classList.add('hidden');
+            }
+        });
+
+        document.getElementById('dispatchForm')?.addEventListener('submit', (e) => {
+            e.preventDefault();
+            alert("DISPATCH PROTOCOL INITIATED. STANDBY FOR CONFIRMATION.");
+            toggleModal('dispatch-modal');
+        });
+    </script>
+</body></html>

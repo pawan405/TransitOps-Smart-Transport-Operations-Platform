@@ -1,0 +1,451 @@
+<!DOCTYPE html>
+
+<html class="dark" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>TransitOps Mission Control</title>
+<!-- Google Fonts -->
+<link href="https://fonts.googleapis.com/css2?family=Archivo+Narrow:wght@400;600;700&amp;family=Inter:wght@400;500&amp;family=JetBrains+Mono:wght@400;500;700&amp;display=swap" rel="stylesheet"/>
+<!-- Material Symbols -->
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    "colors": {
+                        "tertiary-container": "#ffd386",
+                        "surface-tint": "#00dbe9",
+                        "on-surface": "#e2e2e6",
+                        "secondary": "#f5fff3",
+                        "on-primary-container": "#006970",
+                        "primary-fixed-dim": "#00dbe9",
+                        "on-error-container": "#ffdad6",
+                        "surface-container-low": "#1a1c1f",
+                        "surface-bright": "#37393d",
+                        "surface-container-lowest": "#0c0e11",
+                        "on-primary": "#00363a",
+                        "primary": "#dbfcff",
+                        "on-secondary-container": "#00723f",
+                        "on-primary-fixed": "#002022",
+                        "surface-container-highest": "#333538",
+                        "tertiary-fixed": "#ffdea8",
+                        "outline-variant": "#3b494b",
+                        "surface-container-high": "#282a2d",
+                        "on-error": "#690005",
+                        "on-background": "#e2e2e6",
+                        "surface-dim": "#111317",
+                        "on-secondary-fixed": "#00210e",
+                        "surface-variant": "#333538",
+                        "on-tertiary-fixed-variant": "#5e4200",
+                        "surface-container": "#1e2023",
+                        "tertiary": "#fff4e8",
+                        "on-primary-fixed-variant": "#004f54",
+                        "on-surface-variant": "#b9cacb",
+                        "on-tertiary-fixed": "#271900",
+                        "primary-fixed": "#7df4ff",
+                        "primary-container": "#00f0ff",
+                        "on-tertiary": "#412d00",
+                        "inverse-surface": "#e2e2e6",
+                        "error": "#ffb4ab",
+                        "inverse-on-surface": "#2f3034",
+                        "tertiary-fixed-dim": "#ffba20",
+                        "background": "#111317",
+                        "secondary-fixed-dim": "#00e383",
+                        "on-secondary-fixed-variant": "#00522c",
+                        "error-container": "#93000a",
+                        "secondary-fixed": "#5bffa1",
+                        "on-secondary": "#00391d",
+                        "surface": "#111317",
+                        "on-tertiary-container": "#7d5800",
+                        "inverse-primary": "#006970",
+                        "secondary-container": "#27ff97",
+                        "outline": "#849495"
+                    },
+                    "borderRadius": {
+                        "DEFAULT": "0.125rem",
+                        "lg": "0.25rem",
+                        "xl": "0.5rem",
+                        "full": "0.75rem"
+                    },
+                    "spacing": {
+                        "margin": "24px",
+                        "unit": "4px",
+                        "container-padding": "32px",
+                        "stack-md": "16px",
+                        "gutter": "16px",
+                        "stack-lg": "32px",
+                        "stack-sm": "8px"
+                    },
+                    "fontFamily": {
+                        "data-sm": ["JetBrains Mono"],
+                        "label-caps": ["JetBrains Mono"],
+                        "headline-lg": ["Archivo Narrow"],
+                        "body-md": ["Inter"],
+                        "headline-lg-mobile": ["Archivo Narrow"],
+                        "headline-xl": ["Archivo Narrow"],
+                        "data-lg": ["JetBrains Mono"]
+                    },
+                    "fontSize": {
+                        "data-sm": ["12px", {"lineHeight": "1.4", "letterSpacing": "0.1em", "fontWeight": "400"}],
+                        "label-caps": ["10px", {"lineHeight": "1.2", "fontWeight": "700"}],
+                        "headline-lg": ["32px", {"lineHeight": "1.2", "letterSpacing": "-0.01em", "fontWeight": "600"}],
+                        "body-md": ["16px", {"lineHeight": "1.6", "fontWeight": "400"}],
+                        "headline-lg-mobile": ["24px", {"lineHeight": "1.2", "fontWeight": "600"}],
+                        "headline-xl": ["48px", {"lineHeight": "1.1", "letterSpacing": "-0.02em", "fontWeight": "700"}],
+                        "data-lg": ["20px", {"lineHeight": "1.4", "letterSpacing": "0.05em", "fontWeight": "500"}]
+                    }
+                },
+            },
+        }
+    </script>
+<style>
+        body {
+            background-color: #0D0F12;
+            color: #e2e2e6;
+            overflow: hidden;
+            font-family: 'Inter', sans-serif;
+        }
+        .scanlines {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(rgba(18, 16, 16, 0) 50%, rgba(0, 0, 0, 0.05) 50%), linear-gradient(90deg, rgba(255, 0, 0, 0.01), rgba(0, 255, 0, 0.01), rgba(0, 0, 255, 0.01));
+            background-size: 100% 2px, 3px 100%;
+            pointer-events: none;
+            z-index: 100;
+        }
+        .glass-panel {
+            background: rgba(20, 24, 29, 0.8);
+            backdrop-filter: blur(20px);
+            border: 1px solid rgba(255, 255, 255, 0.05);
+            box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.02);
+        }
+        .cyan-glow {
+            box-shadow: 0 0 15px rgba(0, 240, 255, 0.2);
+        }
+        .amber-glow {
+            box-shadow: 0 0 15px rgba(255, 186, 32, 0.2);
+        }
+        .pulse-alert {
+            animation: pulse-red 2s infinite;
+        }
+        @keyframes pulse-red {
+            0% { opacity: 1; transform: scale(1); }
+            50% { opacity: 0.5; transform: scale(1.2); }
+            100% { opacity: 1; transform: scale(1); }
+        }
+        .data-grid-item {
+            border-bottom: 1px solid rgba(132, 148, 149, 0.1);
+        }
+        .custom-scrollbar::-webkit-scrollbar {
+            width: 4px;
+        }
+        .custom-scrollbar::-webkit-scrollbar-track {
+            background: transparent;
+        }
+        .custom-scrollbar::-webkit-scrollbar-thumb {
+            background: #3b494b;
+        }
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+    </style>
+</head>
+<body class="flex h-screen overflow-hidden">
+<div class="scanlines"></div>
+<!-- SideNavBar (Shared Component) -->
+<aside class="flex flex-col h-screen p-4 space-y-stack-md bg-surface-container-lowest border-r border-outline-variant w-64 fixed left-0 top-0 z-50">
+<div class="mb-8 px-2">
+<h1 class="font-headline-lg-mobile text-headline-lg-mobile text-primary tracking-tighter font-bold">TRANSIT OPS</h1>
+<p class="font-label-caps text-label-caps text-on-surface-variant tracking-widest mt-1">SECTOR-07 ACTIVE</p>
+</div>
+<nav class="flex-1 space-y-2">
+<!-- Active: Dashboard -->
+<a class="flex items-center space-x-3 px-4 py-3 rounded bg-primary-container/10 text-primary border-l-4 border-primary shadow-[0_0_15px_rgba(0,240,255,0.2)] transition-all duration-300" href="#">
+<span class="material-symbols-outlined text-[20px]">dashboard</span>
+<span class="font-label-caps text-label-caps">Dashboard</span>
+</a>
+<a class="flex items-center space-x-3 px-4 py-3 rounded text-on-surface-variant hover:bg-surface-container-low hover:text-primary transition-all duration-300" href="#">
+<span class="material-symbols-outlined text-[20px]">map</span>
+<span class="font-label-caps text-label-caps">Map View</span>
+</a>
+<a class="flex items-center space-x-3 px-4 py-3 rounded text-on-surface-variant hover:bg-surface-container-low hover:text-primary transition-all duration-300" href="#">
+<span class="material-symbols-outlined text-[20px]">precision_manufacturing</span>
+<span class="font-label-caps text-label-caps">Fleet Status</span>
+</a>
+<a class="flex items-center space-x-3 px-4 py-3 rounded text-on-surface-variant hover:bg-surface-container-low hover:text-primary transition-all duration-300" href="#">
+<span class="material-symbols-outlined text-[20px]">phonelink_setup</span>
+<span class="font-label-caps text-label-caps">Diagnostics</span>
+</a>
+<a class="flex items-center space-x-3 px-4 py-3 rounded text-on-surface-variant hover:bg-surface-container-low hover:text-primary transition-all duration-300" href="#">
+<span class="material-symbols-outlined text-[20px]">lan</span>
+<span class="font-label-caps text-label-caps">Logistics</span>
+</a>
+<a class="flex items-center space-x-3 px-4 py-3 rounded text-on-surface-variant hover:bg-surface-container-low hover:text-primary transition-all duration-300" href="#">
+<span class="material-symbols-outlined text-[20px]">shield_with_heart</span>
+<span class="font-label-caps text-label-caps">Security</span>
+</a>
+</nav>
+<div class="mt-auto pt-6 border-t border-outline-variant/30">
+<button class="w-full py-3 mb-4 border border-primary text-primary font-label-caps text-label-caps tracking-widest hover:bg-primary/10 transition-colors duration-300">
+                DEPLOY UNIT
+            </button>
+<div class="flex flex-col space-y-2">
+<a class="flex items-center space-x-3 px-4 py-2 text-on-surface-variant hover:text-primary transition-colors" href="#">
+<span class="material-symbols-outlined text-[18px]">help_center</span>
+<span class="font-label-caps text-label-caps uppercase">Support</span>
+</a>
+<a class="flex items-center space-x-3 px-4 py-2 text-on-surface-variant hover:text-primary transition-colors" href="#">
+<span class="material-symbols-outlined text-[18px]">terminal</span>
+<span class="font-label-caps text-label-caps uppercase">Terminal</span>
+</a>
+</div>
+</div>
+</aside>
+<!-- Main Content -->
+<main class="ml-64 flex-1 flex flex-col min-w-0 pb-10">
+<!-- TopNavBar (Shared Component) -->
+<header class="bg-surface-dim/80 backdrop-blur-md border-b border-outline-variant flex justify-between items-center w-full px-margin py-4 max-w-full sticky top-0 z-40">
+<div class="flex items-center space-x-8">
+<div class="flex items-center space-x-6">
+<a class="font-label-caps text-label-caps text-surface-tint border-b-2 border-surface-tint pb-2 uppercase" href="#">Telemetry</a>
+<a class="font-label-caps text-label-caps text-on-surface-variant hover:text-on-surface transition-colors uppercase" href="#">Fleet</a>
+<a class="font-label-caps text-label-caps text-on-surface-variant hover:text-on-surface transition-colors uppercase" href="#">Routes</a>
+<a class="font-label-caps text-label-caps text-on-surface-variant hover:text-on-surface transition-colors uppercase" href="#">Intelligence</a>
+</div>
+</div>
+<div class="flex items-center space-x-4">
+<div class="relative">
+<input class="bg-surface-container-low border-b border-outline focus:border-primary-container focus:ring-0 text-primary font-data-sm text-data-sm py-1 px-3 w-48 transition-all" placeholder="QUERY SYSTEM..." type="text"/>
+<span class="material-symbols-outlined absolute right-2 top-1/2 -translate-y-1/2 text-on-surface-variant text-[16px]">search</span>
+</div>
+<button class="p-2 hover:bg-surface-container-high hover:text-surface-tint transition-all"><span class="material-symbols-outlined">notifications_active</span></button>
+<button class="p-2 hover:bg-surface-container-high hover:text-surface-tint transition-all"><span class="material-symbols-outlined">settings</span></button>
+<div class="h-8 w-8 bg-surface-container-high rounded overflow-hidden border border-outline-variant">
+<img class="object-cover w-full h-full" data-alt="A portrait of a futuristic transit operator in a dark blue technical uniform with glowing cybernetic interface details reflected on a transparent glasses visor. High-tech mission control aesthetic with cyan and asphalt gray tones." src="https://lh3.googleusercontent.com/aida-public/AB6AXuBEx_04X3TpGdxRpI9xAGx4ErEVu84jvGFMgRzm5qUxUM8GAa0X11VaJPECM22wP7tXTZSZdXSRBP_lVpES3lMcERMkg_0mUEOGPTeEH4zCxWGJNAvhniLNTiyxWaLAwBngtBPFMjXNQVzBSm7FB7jkYGNhS37hDmT6uNpk4IFy1p6nr2dVUov2eMQnzHud1nlvD9HeBr2LNjkjJyW-s-BuheoawUcBT2X1meCHFsKpPTb6kj-tIF7_XBS8Z4GfDcjC3bkYhIEdMgw"/>
+</div>
+</div>
+</header>
+<!-- Dashboard Canvas -->
+<div class="flex-1 p-margin overflow-y-auto custom-scrollbar">
+<!-- KPI Telemetry Tiles -->
+<div class="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-7 gap-gutter mb-6">
+<!-- Active Vehicles -->
+<div class="glass-panel p-4 flex flex-col">
+<span class="font-label-caps text-label-caps text-on-surface-variant mb-2">ACTIVE VEHICLES</span>
+<div class="flex items-baseline justify-between">
+<span class="font-data-lg text-data-lg text-primary-container">342</span>
+<div class="w-2 h-2 rounded-full bg-secondary-fixed-dim cyan-glow pulse-alert"></div>
+</div>
+<div class="mt-4 h-1 w-full bg-surface-container-high overflow-hidden">
+<div class="h-full bg-primary-container" style="width: 82%"></div>
+</div>
+</div>
+<div class="glass-panel p-4 flex flex-col">
+<span class="font-label-caps text-label-caps text-on-surface-variant mb-2">AVAILABLE</span>
+<span class="font-data-lg text-data-lg text-secondary-fixed-dim">288</span>
+<div class="mt-4 flex items-center space-x-1">
+<div class="w-1 h-3 bg-secondary-fixed-dim"></div>
+<div class="w-1 h-2 bg-outline-variant"></div>
+<div class="w-1 h-4 bg-secondary-fixed-dim"></div>
+<div class="w-1 h-2 bg-outline-variant"></div>
+</div>
+</div>
+<div class="glass-panel p-4 flex flex-col border-error/20">
+<span class="font-label-caps text-label-caps text-on-surface-variant mb-2">IN MAINTENANCE</span>
+<span class="font-data-lg text-data-lg text-error">12</span>
+<span class="font-label-caps text-[8px] text-error mt-1">PRIORITY 1 REPAIR</span>
+</div>
+<div class="glass-panel p-4 flex flex-col">
+<span class="font-label-caps text-label-caps text-on-surface-variant mb-2">ACTIVE TRIPS</span>
+<span class="font-data-lg text-data-lg text-primary">156</span>
+<span class="font-label-caps text-[8px] text-primary-container mt-1">+4% FROM PREV HR</span>
+</div>
+<div class="glass-panel p-4 flex flex-col">
+<span class="font-label-caps text-label-caps text-on-surface-variant mb-2">PENDING</span>
+<span class="font-data-lg text-data-lg text-tertiary-fixed-dim">24</span>
+<div class="mt-4 flex justify-between">
+<div class="w-2 h-2 bg-tertiary-fixed-dim amber-glow"></div>
+<div class="w-2 h-2 bg-tertiary-fixed-dim/20"></div>
+<div class="w-2 h-2 bg-tertiary-fixed-dim/20"></div>
+</div>
+</div>
+<div class="glass-panel p-4 flex flex-col">
+<span class="font-label-caps text-label-caps text-on-surface-variant mb-2">DRIVERS ON DUTY</span>
+<span class="font-data-lg text-data-lg text-primary">410</span>
+<div class="mt-4 flex space-x-1">
+<span class="w-1 h-1 bg-primary rounded-full"></span>
+<span class="w-1 h-1 bg-primary rounded-full"></span>
+<span class="w-1 h-1 bg-primary rounded-full"></span>
+<span class="w-1 h-1 bg-primary rounded-full opacity-30"></span>
+</div>
+</div>
+<div class="glass-panel p-4 flex flex-col border-primary-container/30">
+<span class="font-label-caps text-label-caps text-on-surface-variant mb-2">FLEET UTIL.</span>
+<span class="font-data-lg text-data-lg text-primary-container">82%</span>
+<span class="font-label-caps text-[8px] text-primary-container mt-1">OPTIMIZED LOAD</span>
+</div>
+</div>
+<!-- Dashboard Grid -->
+<div class="grid grid-cols-12 gap-gutter h-[calc(100vh-320px)] min-h-[500px]">
+<!-- Main View: Centralized Fleet Map -->
+<div class="col-span-12 lg:col-span-9 flex flex-col space-y-4">
+<div class="flex items-center justify-between glass-panel px-4 py-3">
+<div class="flex items-center space-x-6">
+<span class="font-label-caps text-label-caps text-primary tracking-widest">LIVE MESH MAP</span>
+<div class="flex space-x-4">
+<select class="bg-transparent border-none font-label-caps text-label-caps text-on-surface-variant focus:ring-0 p-0 cursor-pointer hover:text-primary">
+<option>VEHICLE TYPE: ALL</option>
+</select>
+<select class="bg-transparent border-none font-label-caps text-label-caps text-on-surface-variant focus:ring-0 p-0 cursor-pointer hover:text-primary">
+<option>STATUS: ACTIVE</option>
+</select>
+<select class="bg-transparent border-none font-label-caps text-label-caps text-on-surface-variant focus:ring-0 p-0 cursor-pointer hover:text-primary">
+<option>REGION: SECTOR-07</option>
+</select>
+</div>
+</div>
+<div class="flex space-x-2">
+<button class="p-1 glass-panel text-[16px]"><span class="material-symbols-outlined">zoom_in</span></button>
+<button class="p-1 glass-panel text-[16px]"><span class="material-symbols-outlined">zoom_out</span></button>
+<button class="p-1 glass-panel text-[16px]"><span class="material-symbols-outlined">layers</span></button>
+</div>
+</div>
+<div class="flex-1 glass-panel relative overflow-hidden group">
+<!-- Simulated Map Interface -->
+<div class="absolute inset-0 opacity-40 mix-blend-screen pointer-events-none">
+<div class="absolute w-full h-full" style="background-image: radial-gradient(circle, rgba(0, 240, 255, 0.05) 1px, transparent 1px); background-size: 32px 32px;"></div>
+</div>
+<div class="absolute inset-0 flex items-center justify-center">
+<div class="w-full h-full bg-cover bg-center transition-transform duration-[20s] linear scale-110 group-hover:scale-125" data-alt="A sophisticated digital topological fleet map of a dense urban center like San Francisco. The map is stylized in deep charcoal and asphalt colors with vibrant neon cyan and amber vector lines representing transit routes. Dozens of small glowing nodes pulse across the grid, signifying active vehicles in real-time. High-tech mission control aesthetic with data overlays." data-location="San Francisco" style="background-image: url('https://lh3.googleusercontent.com/aida-public/AB6AXuAUwpZlwTMKcxFbOFn2Cfzh7IixXMzr8_ARnwipNh4sUGkk9VUpzz7F6xWg295OqZ3iIzsPZY_K4p-09B2kNDwIQHENjz3JIRrBH9j4E7cEc6LihoKxiA7VkfeteMou2OroYRJZ59jvAmFdGUvxngWC0lwy_sSJdNMT2Qvv4_jh_90fUBpmf-Cspr-zKL-tRmwM5N71y5QzElWz0ZlIJZ-tyMO0Sb1I3uu1KrWE_7c_wBAgyg85MUNfrLPIbv0ued4BxHbUjn20R60')"></div>
+</div>
+<!-- Map HUD Overlays -->
+<div class="absolute top-4 left-4 flex flex-col space-y-2">
+<div class="glass-panel p-2 bg-surface-container/90">
+<div class="flex items-center space-x-2">
+<span class="w-2 h-2 rounded-full bg-secondary-fixed pulse-alert"></span>
+<span class="font-data-sm text-data-sm">GRID STABLE</span>
+</div>
+</div>
+<div class="glass-panel p-2 bg-surface-container/90">
+<span class="font-label-caps text-label-caps text-on-surface-variant block mb-1">LOCAL TIME</span>
+<span class="font-data-sm text-data-sm text-primary tabular-nums" id="clock">00:00:00 UTC</span>
+</div>
+</div>
+<div class="absolute bottom-4 right-4">
+<div class="glass-panel p-3 bg-surface-container/90 border-l-4 border-primary">
+<div class="flex items-start space-x-3">
+<span class="material-symbols-outlined text-primary">sensors</span>
+<div>
+<span class="font-label-caps text-label-caps text-on-surface-variant block">COORDINATE MESH</span>
+<span class="font-data-sm text-data-sm text-primary">34.0522° N, 118.2437° W</span>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+<!-- Operational Timeline / Sidebar -->
+<div class="col-span-12 lg:col-span-3 flex flex-col">
+<div class="flex items-center space-x-2 mb-4">
+<span class="material-symbols-outlined text-on-surface-variant text-[18px]">history</span>
+<h2 class="font-label-caps text-label-caps tracking-widest">OPERATIONAL TIMELINE</h2>
+</div>
+<div class="flex-1 glass-panel flex flex-col overflow-hidden">
+<div class="p-4 border-b border-outline-variant flex justify-between items-center bg-surface-container-low">
+<span class="font-label-caps text-[10px] text-on-surface-variant uppercase">Stream: Real-time</span>
+<div class="w-2 h-2 rounded-full bg-primary animate-pulse"></div>
+</div>
+<div class="flex-1 overflow-y-auto custom-scrollbar p-2 space-y-2">
+<!-- Log Entry -->
+<div class="p-3 border-l-2 border-primary-container bg-primary-container/5 data-grid-item">
+<div class="flex justify-between items-start mb-1">
+<span class="font-label-caps text-[9px] text-primary-container">ROUTE UPDATE</span>
+<span class="font-data-sm text-[10px] text-on-surface-variant">14:22:01</span>
+</div>
+<p class="font-data-sm text-[11px] text-on-surface leading-snug">UNIT-442 rerouted: Obstruction detected on 4th Ave.</p>
+</div>
+<div class="p-3 border-l-2 border-outline-variant bg-surface-container-high/20 data-grid-item">
+<div class="flex justify-between items-start mb-1">
+<span class="font-label-caps text-[9px] text-on-surface-variant">DISPATCH</span>
+<span class="font-data-sm text-[10px] text-on-surface-variant">14:21:45</span>
+</div>
+<p class="font-data-sm text-[11px] text-on-surface leading-snug">UNIT-109 assigned to Task: "Express Downtown-6".</p>
+</div>
+<div class="p-3 border-l-2 border-error bg-error/5 data-grid-item">
+<div class="flex justify-between items-start mb-1">
+<span class="font-label-caps text-[9px] text-error">CRITICAL ALERT</span>
+<span class="font-data-sm text-[10px] text-on-surface-variant">14:18:22</span>
+</div>
+<p class="font-data-sm text-[11px] text-on-surface leading-snug">UNIT-088: Engine failure. Recovery unit dispatched.</p>
+</div>
+<div class="p-3 border-l-2 border-tertiary-fixed-dim bg-tertiary-fixed-dim/5 data-grid-item">
+<div class="flex justify-between items-start mb-1">
+<span class="font-label-caps text-[9px] text-tertiary-fixed-dim">DIAGNOSTIC</span>
+<span class="font-data-sm text-[10px] text-on-surface-variant">14:15:00</span>
+</div>
+<p class="font-data-sm text-[11px] text-on-surface leading-snug">Scheduled maintenance sync complete for Fleet A.</p>
+</div>
+<div class="p-3 border-l-2 border-outline-variant bg-surface-container-high/20 data-grid-item">
+<div class="flex justify-between items-start mb-1">
+<span class="font-label-caps text-[9px] text-on-surface-variant">LOGISTICS</span>
+<span class="font-data-sm text-[10px] text-on-surface-variant">14:12:33</span>
+</div>
+<p class="font-data-sm text-[11px] text-on-surface leading-snug">Battery levels synchronized for charging station #9.</p>
+</div>
+<div class="p-3 border-l-2 border-primary-container bg-primary-container/5 data-grid-item">
+<div class="flex justify-between items-start mb-1">
+<span class="font-label-caps text-[9px] text-primary-container">ROUTE UPDATE</span>
+<span class="font-data-sm text-[10px] text-on-surface-variant">14:10:01</span>
+</div>
+<p class="font-data-sm text-[11px] text-on-surface leading-snug">UNIT-311 operational efficiency peak detected: 98%.</p>
+</div>
+</div>
+<div class="p-4 bg-surface-container-low border-t border-outline-variant">
+<button class="w-full py-2 bg-surface-container-high font-label-caps text-label-caps hover:bg-surface-bright transition-colors uppercase">View All Logs</button>
+</div>
+</div>
+</div>
+</div>
+</div>
+</main>
+<!-- Footer (Shared Component) -->
+<footer class="fixed bottom-0 left-64 right-0 border-t border-outline-variant bg-surface-dim/95 backdrop-blur-sm flex items-center justify-between px-margin py-2 z-40">
+<div class="flex items-center space-x-2">
+<span class="w-1.5 h-1.5 rounded-full bg-secondary-fixed-dim shadow-[0_0_8px_#00e383]"></span>
+<span class="font-label-caps text-label-caps text-on-surface-variant uppercase tracking-widest">TRANSITOPS v4.2.0 - SECURE LINK ESTABLISHED</span>
+</div>
+<div class="flex items-center space-x-6">
+<span class="font-data-sm text-data-sm text-secondary-fixed-dim">System Uptime: 99.99%</span>
+<span class="font-data-sm text-data-sm text-on-surface-variant">Lat: 34.0522° N</span>
+<span class="font-data-sm text-data-sm text-on-surface-variant">Long: 118.2437° W</span>
+<a class="font-label-caps text-label-caps text-on-surface-variant hover:text-primary-fixed transition-colors uppercase underline decoration-outline-variant decoration-1 underline-offset-4" href="#">Operational Logs</a>
+</div>
+</footer>
+<script>
+        // Real-time clock update
+        function updateClock() {
+            const now = new Date();
+            const timeString = now.toISOString().split('T')[1].split('.')[0] + ' UTC';
+            document.getElementById('clock').textContent = timeString;
+        }
+        setInterval(updateClock, 1000);
+        updateClock();
+
+        // Simulate some telemetry shifts
+        setInterval(() => {
+            const elements = document.querySelectorAll('.font-data-lg');
+            const target = elements[Math.floor(Math.random() * elements.length)];
+            if(target && !target.textContent.includes('%')) {
+                const currentVal = parseInt(target.textContent);
+                const variation = Math.random() > 0.5 ? 1 : -1;
+                if(currentVal > 10) target.textContent = currentVal + variation;
+            }
+        }, 3000);
+    </script>
+</body></html>

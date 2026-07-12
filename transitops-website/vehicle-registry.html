@@ -1,0 +1,506 @@
+<!DOCTYPE html>
+
+<html class="dark" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>TransitOps Vehicle Registry</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<!-- Firebase SDKs -->
+<script src="https://www.gstatic.com/firebasejs/11.5.0/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/11.5.0/firebase-auth-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/11.5.0/firebase-analytics-compat.js"></script>
+<link href="https://fonts.googleapis.com/css2?family=Archivo+Narrow:wght@400;600;700&amp;family=Inter:wght@400;500&amp;family=JetBrains+Mono:wght@400;500;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    "colors": {
+                        "tertiary-container": "#ffd386",
+                        "surface-tint": "#00dbe9",
+                        "on-surface": "#e2e2e6",
+                        "secondary": "#f5fff3",
+                        "on-primary-container": "#006970",
+                        "primary-fixed-dim": "#00dbe9",
+                        "on-error-container": "#ffdad6",
+                        "surface-container-low": "#1a1c1f",
+                        "surface-bright": "#37393d",
+                        "surface-container-lowest": "#0c0e11",
+                        "on-primary": "#00363a",
+                        "primary": "#dbfcff",
+                        "on-secondary-container": "#00723f",
+                        "on-primary-fixed": "#002022",
+                        "surface-container-highest": "#333538",
+                        "tertiary-fixed": "#ffdea8",
+                        "outline-variant": "#3b494b",
+                        "surface-container-high": "#282a2d",
+                        "on-error": "#690005",
+                        "on-background": "#e2e2e6",
+                        "surface-dim": "#111317",
+                        "on-secondary-fixed": "#00210e",
+                        "surface-variant": "#333538",
+                        "on-tertiary-fixed-variant": "#5e4200",
+                        "surface-container": "#1e2023",
+                        "tertiary": "#fff4e8",
+                        "on-primary-fixed-variant": "#004f54",
+                        "on-surface-variant": "#b9cacb",
+                        "on-tertiary-fixed": "#271900",
+                        "primary-fixed": "#7df4ff",
+                        "primary-container": "#00f0ff",
+                        "on-tertiary": "#412d00",
+                        "inverse-surface": "#e2e2e6",
+                        "error": "#ffb4ab",
+                        "inverse-on-surface": "#2f3034",
+                        "tertiary-fixed-dim": "#ffba20",
+                        "background": "#111317",
+                        "secondary-fixed-dim": "#00e383",
+                        "on-secondary-fixed-variant": "#00522c",
+                        "error-container": "#93000a",
+                        "secondary-fixed": "#5bffa1",
+                        "on-secondary": "#00391d",
+                        "surface": "#111317",
+                        "on-tertiary-container": "#7d5800",
+                        "inverse-primary": "#006970",
+                        "secondary-container": "#27ff97",
+                        "outline": "#849495"
+                    },
+                    "borderRadius": {
+                        "DEFAULT": "0.125rem",
+                        "lg": "0.25rem",
+                        "xl": "0.5rem",
+                        "full": "0.75rem"
+                    },
+                    "spacing": {
+                        "margin": "24px",
+                        "unit": "4px",
+                        "container-padding": "32px",
+                        "stack-md": "16px",
+                        "gutter": "16px",
+                        "stack-lg": "32px",
+                        "stack-sm": "8px"
+                    },
+                    "fontFamily": {
+                        "data-sm": ["JetBrains Mono"],
+                        "label-caps": ["JetBrains Mono"],
+                        "headline-lg": ["Archivo Narrow"],
+                        "body-md": ["Inter"],
+                        "headline-lg-mobile": ["Archivo Narrow"],
+                        "headline-xl": ["Archivo Narrow"],
+                        "data-lg": ["JetBrains Mono"]
+                    },
+                    "fontSize": {
+                        "data-sm": ["12px", {"lineHeight": "1.4", "letterSpacing": "0.1em", "fontWeight": "400"}],
+                        "label-caps": ["10px", {"lineHeight": "1.2", "fontWeight": "700"}],
+                        "headline-lg": ["32px", {"lineHeight": "1.2", "letterSpacing": "-0.01em", "fontWeight": "600"}],
+                        "body-md": ["16px", {"lineHeight": "1.6", "fontWeight": "400"}],
+                        "headline-lg-mobile": ["24px", {"lineHeight": "1.2", "fontWeight": "600"}],
+                        "headline-xl": ["48px", {"lineHeight": "1.1", "letterSpacing": "-0.02em", "fontWeight": "700"}],
+                        "data-lg": ["20px", {"lineHeight": "1.4", "letterSpacing": "0.05em", "fontWeight": "500"}]
+                    }
+                },
+            },
+        }
+    </script>
+<style>
+        body {
+            background-color: #0D0F12;
+            color: #e2e2e6;
+            overflow: hidden;
+        }
+
+        .scanlines {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(rgba(18, 16, 16, 0) 50%, rgba(0, 0, 0, 0.25) 50%), linear-gradient(90deg, rgba(255, 0, 0, 0.06), rgba(0, 255, 0, 0.02), rgba(0, 0, 255, 0.06));
+            z-index: 999;
+            background-size: 100% 4px, 3px 100%;
+            pointer-events: none;
+            opacity: 0.1;
+        }
+
+        .glass-panel {
+            background: rgba(20, 24, 29, 0.8);
+            backdrop-filter: blur(20px);
+            border: 1px solid rgba(255, 255, 255, 0.05);
+        }
+
+        .status-pulse {
+            animation: pulse 2s infinite ease-in-out;
+        }
+
+        @keyframes pulse {
+            0%, 100% { opacity: 1; transform: scale(1); }
+            50% { opacity: 0.5; transform: scale(0.8); }
+        }
+
+        .glow-hover:hover {
+            box-shadow: 0 0 15px rgba(0, 240, 255, 0.3);
+            border-color: #00f0ff;
+        }
+
+        ::-webkit-scrollbar {
+            width: 4px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #0d0f12;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #3b494b;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: #00dbe9;
+        }
+
+        .status-dot {
+            width: 6px;
+            height: 6px;
+            border-radius: 50%;
+        }
+    </style>
+</head>
+<body class="font-body-md text-body-md selection:bg-primary-container selection:text-on-primary-container">
+<div class="scanlines"></div>
+<!-- Navigation Shell (Desktop) -->
+<nav class="fixed left-0 top-0 h-full w-64 border-r border-outline-variant bg-surface-container-lowest flex flex-col p-4 space-y-stack-md z-50">
+<div class="mb-8">
+<h1 class="font-headline-lg-mobile text-headline-lg-mobile text-primary tracking-tighter">TRANSIT OPS</h1>
+<p class="font-label-caps text-label-caps text-on-surface-variant opacity-60">SECTOR-07 ACTIVE</p>
+</div>
+<div class="flex-grow space-y-2">
+<a class="flex items-center gap-3 px-4 py-3 bg-primary-container/10 text-primary border-l-4 border-primary shadow-[0_0_15px_rgba(0,240,255,0.2)] transition-all" href="mission-control.html">
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">dashboard</span>
+<span class="font-label-caps text-label-caps">DASHBOARD</span>
+</a>
+<a class="flex items-center gap-3 px-4 py-3 text-on-surface-variant hover:bg-surface-container-low hover:text-primary transition-all" href="index.html">
+<span class="material-symbols-outlined">map</span>
+<span class="font-label-caps text-label-caps">FLEET MANAGER</span>
+</a>
+<a class="flex items-center gap-3 px-4 py-3 text-on-surface-variant hover:bg-surface-container-low hover:text-primary transition-all" href="vehicle-registry.html">
+<span class="material-symbols-outlined">precision_manufacturing</span>
+<span class="font-label-caps text-label-caps">VEHICLE REGISTRY</span>
+</a>
+<a class="flex items-center gap-3 px-4 py-3 text-on-surface-variant hover:bg-surface-container-low hover:text-primary transition-all" href="trip-management.html">
+<span class="material-symbols-outlined">phonelink_setup</span>
+<span class="font-label-caps text-label-caps">TRIP MANAGEMENT</span>
+</a>
+<a class="flex items-center gap-3 px-4 py-3 text-on-surface-variant hover:bg-surface-container-low hover:text-primary transition-all" href="#">
+<span class="material-symbols-outlined">lan</span>
+<span class="font-label-caps text-label-caps">LOGISTICS</span>
+</a>
+<a class="flex items-center gap-3 px-4 py-3 text-on-surface-variant hover:bg-surface-container-low hover:text-primary transition-all" href="#">
+<span class="material-symbols-outlined">shield_with_heart</span>
+<span class="font-label-caps text-label-caps">SECURITY</span>
+</a>
+</div>
+<button class="mt-auto w-full py-4 border border-primary-container text-primary-container font-label-caps text-label-caps tracking-widest hover:bg-primary-container/20 transition-all uppercase glow-hover">
+            DEPLOY UNIT
+        </button>
+<div class="pt-4 border-t border-outline-variant space-y-2">
+<a class="flex items-center gap-3 px-4 py-2 text-on-surface-variant hover:text-primary transition-colors" href="#">
+<span class="material-symbols-outlined text-sm">help_center</span>
+<span class="font-label-caps text-label-caps">SUPPORT</span>
+</a>
+<a class="flex items-center gap-3 px-4 py-2 text-on-surface-variant hover:text-primary transition-colors" href="login.html">
+<span class="material-symbols-outlined text-sm">logout</span>
+<span class="font-label-caps text-label-caps">LOGOUT</span>
+</a>
+</div>
+</nav>
+<!-- Header / Top Bar -->
+<header class="fixed top-0 left-64 right-0 h-16 bg-surface-dim/80 backdrop-blur-md border-b border-outline-variant flex justify-between items-center px-margin z-40">
+<div class="flex items-center gap-8">
+<h2 class="font-headline-lg text-headline-lg font-bold text-primary tracking-tighter uppercase">Telemetry / Registry</h2>
+<div class="hidden md:flex gap-6">
+<a class="text-surface-tint border-b-2 border-surface-tint pb-2 font-body-md" href="#">Telemetry</a>
+<a class="text-on-surface-variant hover:text-on-surface transition-colors font-body-md" href="#">Fleet</a>
+<a class="text-on-surface-variant hover:text-on-surface transition-colors font-body-md" href="#">Routes</a>
+<a class="text-on-surface-variant hover:text-on-surface transition-colors font-body-md" href="#">Intelligence</a>
+</div>
+</div>
+<div class="flex items-center gap-4">
+<button class="material-symbols-outlined text-on-surface-variant hover:text-surface-tint transition-all scale-95 active:scale-90">notifications_active</button>
+<button class="material-symbols-outlined text-on-surface-variant hover:text-surface-tint transition-all scale-95 active:scale-90">settings</button>
+<div class="w-8 h-8 rounded-full border border-outline bg-surface-container flex items-center justify-center overflow-hidden">
+<img class="w-full h-full object-cover" data-alt="A professional close-up headshot of a futuristic transit operator in a dark tech-wear uniform, illuminated by a soft cyan holographic glow from a nearby terminal in a dark control room." src="https://lh3.googleusercontent.com/aida-public/AB6AXuDe0Meu38CCDeE1ch5QCj2NWuZjW9OmMzO_FCSFrHtm5YcSq5kVx6Kurd0OEcX36mtYJBkCtRd0_5J1ZD2K-Nuq78XWSVyUPeuAdocoyDKC2CWlbj9BPYkwu2Q0GBeTPaF81uyiBWt9ZQoXDaAekEcvMzr0y88Z112raJL5PjTxjRei0onndjKnpIVcyyGDBuXHgPJGf3ndKCTKTg5nDgi7Y47tJ-_K9TofNAmDrhppzUvU12tFP7mP9IgRd-lva299entv35HzL1Co"/>
+</div>
+</div>
+</header>
+<!-- Main Content -->
+<main class="ml-64 mt-16 p-margin h-[calc(100vh-64px-40px)] overflow-hidden flex flex-col gap-4">
+<!-- Header Stats & Action -->
+<div class="flex justify-between items-end shrink-0">
+<div>
+<span class="font-label-caps text-label-caps text-on-surface-variant uppercase tracking-widest">Global Asset List</span>
+<h3 class="font-headline-xl text-headline-xl text-on-surface">Vehicle Registry</h3>
+</div>
+<button class="px-8 py-3 bg-primary-container text-on-primary-container font-label-caps text-label-caps border border-primary uppercase tracking-[0.2em] shadow-[0_0_20px_rgba(0,240,255,0.2)] hover:shadow-[0_0_30px_rgba(0,240,255,0.4)] transition-all active:scale-[0.98]">
+                Register New Asset
+            </button>
+</div>
+<!-- Dashboard Body: Grid of Registry and Details -->
+<div class="grid grid-cols-12 gap-gutter flex-grow min-h-0">
+<!-- Data Table Container -->
+<section class="col-span-12 lg:col-span-8 flex flex-col glass-panel min-h-0 overflow-hidden relative">
+<div class="absolute top-2 right-2 font-data-sm text-[10px] text-on-surface-variant opacity-30">COORDS: 34.0522 N / 118.2437 W</div>
+<div class="overflow-y-auto flex-grow p-4">
+<table class="w-full text-left border-collapse">
+<thead class="sticky top-0 bg-surface-dim z-10">
+<tr class="border-b border-outline-variant">
+<th class="py-4 font-label-caps text-label-caps text-on-surface-variant">REG-ID</th>
+<th class="py-4 font-label-caps text-label-caps text-on-surface-variant">MODEL</th>
+<th class="py-4 font-label-caps text-label-caps text-on-surface-variant">TYPE</th>
+<th class="py-4 font-label-caps text-label-caps text-on-surface-variant">CAP (KG)</th>
+<th class="py-4 font-label-caps text-label-caps text-on-surface-variant">ODOM (KM)</th>
+<th class="py-4 font-label-caps text-label-caps text-on-surface-variant">STATUS</th>
+</tr>
+</thead>
+<tbody class="divide-y divide-outline-variant/30">
+<!-- Row 1 -->
+<tr class="hover:bg-surface-container-high transition-colors cursor-pointer group">
+<td class="py-4 font-data-sm text-data-sm text-primary group-hover:text-surface-tint">TO-992-BX</td>
+<td class="py-4 font-body-md text-on-surface">Volvo FH Electric</td>
+<td class="py-4 font-label-caps text-label-caps text-on-surface-variant">SEMI</td>
+<td class="py-4 font-data-sm text-data-sm">44,000</td>
+<td class="py-4 font-data-sm text-data-sm">12,402</td>
+<td class="py-4">
+<div class="inline-flex items-center gap-2 px-2 py-1 rounded bg-secondary-container/10 border border-secondary-container/20">
+<div class="status-dot bg-secondary-fixed"></div>
+<span class="font-label-caps text-label-caps text-secondary-fixed">AVAILABLE</span>
+</div>
+</td>
+</tr>
+<!-- Row 2 -->
+<tr class="hover:bg-surface-container-high transition-colors cursor-pointer group">
+<td class="py-4 font-data-sm text-data-sm text-primary group-hover:text-surface-tint">TO-104-ZA</td>
+<td class="py-4 font-body-md text-on-surface">Rivian EDV-700</td>
+<td class="py-4 font-label-caps text-label-caps text-on-surface-variant">VAN</td>
+<td class="py-4 font-data-sm text-data-sm">1,250</td>
+<td class="py-4 font-data-sm text-data-sm">84,912</td>
+<td class="py-4">
+<div class="inline-flex items-center gap-2 px-2 py-1 rounded bg-surface-tint/10 border border-surface-tint/20">
+<div class="status-dot bg-surface-tint status-pulse"></div>
+<span class="font-label-caps text-label-caps text-surface-tint">ON TRIP</span>
+</div>
+</td>
+</tr>
+<!-- Row 3 -->
+<tr class="hover:bg-surface-container-high transition-colors cursor-pointer group">
+<td class="py-4 font-data-sm text-data-sm text-primary group-hover:text-surface-tint">TO-223-LL</td>
+<td class="py-4 font-body-md text-on-surface">Scania 45S</td>
+<td class="py-4 font-label-caps text-label-caps text-on-surface-variant">TRUCK</td>
+<td class="py-4 font-data-sm text-data-sm">18,500</td>
+<td class="py-4 font-data-sm text-data-sm">241,003</td>
+<td class="py-4">
+<div class="inline-flex items-center gap-2 px-2 py-1 rounded bg-error-container/10 border border-error-container/20">
+<div class="status-dot bg-error"></div>
+<span class="font-label-caps text-label-caps text-error">IN SHOP</span>
+</div>
+</td>
+</tr>
+<!-- Row 4 -->
+<tr class="hover:bg-surface-container-high transition-colors cursor-pointer group">
+<td class="py-4 font-data-sm text-data-sm text-primary group-hover:text-surface-tint">TO-771-K9</td>
+<td class="py-4 font-body-md text-on-surface">Tesla Semi</td>
+<td class="py-4 font-label-caps text-label-caps text-on-surface-variant">SEMI</td>
+<td class="py-4 font-data-sm text-data-sm">36,000</td>
+<td class="py-4 font-data-sm text-data-sm">4,812</td>
+<td class="py-4">
+<div class="inline-flex items-center gap-2 px-2 py-1 rounded bg-secondary-container/10 border border-secondary-container/20">
+<div class="status-dot bg-secondary-fixed"></div>
+<span class="font-label-caps text-label-caps text-secondary-fixed">AVAILABLE</span>
+</div>
+</td>
+</tr>
+<!-- Row 5 -->
+<tr class="hover:bg-surface-container-high transition-colors cursor-pointer group opacity-40">
+<td class="py-4 font-data-sm text-data-sm text-primary group-hover:text-surface-tint">TO-001-RG</td>
+<td class="py-4 font-body-md text-on-surface">Freightliner Cascadia</td>
+<td class="py-4 font-label-caps text-label-caps text-on-surface-variant">TRUCK</td>
+<td class="py-4 font-data-sm text-data-sm">15,000</td>
+<td class="py-4 font-data-sm text-data-sm">1,250,911</td>
+<td class="py-4">
+<div class="inline-flex items-center gap-2 px-2 py-1 rounded bg-surface-variant/20 border border-outline">
+<div class="status-dot bg-outline"></div>
+<span class="font-label-caps text-label-caps text-outline">RETIRED</span>
+</div>
+</td>
+</tr>
+<!-- Additional Rows for Density -->
+<tr class="hover:bg-surface-container-high transition-colors cursor-pointer group">
+<td class="py-4 font-data-sm text-data-sm text-primary group-hover:text-surface-tint">TO-445-MM</td>
+<td class="py-4 font-body-md text-on-surface">Ford E-Transit</td>
+<td class="py-4 font-label-caps text-label-caps text-on-surface-variant">VAN</td>
+<td class="py-4 font-data-sm text-data-sm">1,100</td>
+<td class="py-4 font-data-sm text-data-sm">32,450</td>
+<td class="py-4">
+<div class="inline-flex items-center gap-2 px-2 py-1 rounded bg-surface-tint/10 border border-surface-tint/20">
+<div class="status-dot bg-surface-tint status-pulse"></div>
+<span class="font-label-caps text-label-caps text-surface-tint">ON TRIP</span>
+</div>
+</td>
+</tr>
+<tr class="hover:bg-surface-container-high transition-colors cursor-pointer group">
+<td class="py-4 font-data-sm text-data-sm text-primary group-hover:text-surface-tint">TO-883-PP</td>
+<td class="py-4 font-body-md text-on-surface">Kenworth T680E</td>
+<td class="py-4 font-label-caps text-label-caps text-on-surface-variant">SEMI</td>
+<td class="py-4 font-data-sm text-data-sm">40,000</td>
+<td class="py-4 font-data-sm text-data-sm">15,671</td>
+<td class="py-4">
+<div class="inline-flex items-center gap-2 px-2 py-1 rounded bg-secondary-container/10 border border-secondary-container/20">
+<div class="status-dot bg-secondary-fixed"></div>
+<span class="font-label-caps text-label-caps text-secondary-fixed">AVAILABLE</span>
+</div>
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</section>
+<!-- Detailed Stats Panel -->
+<section class="col-span-12 lg:col-span-4 flex flex-col gap-4 min-h-0">
+<!-- Quick ROI Visualization Card -->
+<div class="glass-panel p-container-padding flex flex-col gap-4 relative overflow-hidden h-1/2">
+<div class="absolute top-0 right-0 p-2 opacity-5">
+<span class="material-symbols-outlined text-[120px]">monitoring</span>
+</div>
+<div class="flex items-center justify-between">
+<h4 class="font-label-caps text-label-caps text-on-surface-variant">ACTIVE ASSET METRICS</h4>
+<span class="font-data-sm text-[10px] text-surface-tint">SECURE LINK</span>
+</div>
+<div class="mt-4 flex-grow flex flex-col justify-center">
+<div class="mb-2">
+<span class="font-label-caps text-label-caps text-on-surface-variant">AVG ROI RATIO</span>
+<div class="flex items-baseline gap-2">
+<span class="font-headline-xl text-headline-xl text-secondary-fixed-dim">4.82</span>
+<span class="font-data-sm text-data-sm text-secondary-fixed">+12% EST</span>
+</div>
+</div>
+<div class="w-full h-24 mt-4 relative">
+<!-- Decorative Graph Line -->
+<svg class="w-full h-full" viewbox="0 0 100 40">
+<path d="M0 35 Q 20 30, 40 20 T 80 15 T 100 5" fill="none" stroke="#00e383" stroke-width="2"></path>
+<path d="M0 35 Q 20 30, 40 20 T 80 15 T 100 5 L 100 40 L 0 40 Z" fill="url(#grad1)" opacity="0.1"></path>
+<defs>
+<lineargradient id="grad1" x1="0%" x2="0%" y1="0%" y2="100%">
+<stop offset="0%" style="stop-color:#00e383;stop-opacity:1"></stop>
+<stop offset="100%" style="stop-color:#00e383;stop-opacity:0"></stop>
+</lineargradient>
+</defs>
+</svg>
+</div>
+</div>
+<div class="grid grid-cols-2 gap-4 border-t border-outline-variant pt-4">
+<div>
+<p class="font-label-caps text-label-caps text-on-surface-variant">OP COST / KM</p>
+<p class="font-data-lg text-data-lg text-on-surface">$0.42</p>
+</div>
+<div>
+<p class="font-label-caps text-label-caps text-on-surface-variant">DOWNTIME %</p>
+<p class="font-data-lg text-data-lg text-error">2.4%</p>
+</div>
+</div>
+</div>
+<!-- Unit Highlight -->
+<div class="glass-panel p-container-padding flex-grow overflow-hidden flex flex-col gap-4">
+<h4 class="font-label-caps text-label-caps text-on-surface-variant border-b border-outline-variant pb-2">SELECTED ASSET PREVIEW</h4>
+<div class="aspect-video w-full relative group">
+<img class="w-full h-full object-cover" data-alt="A wide cinematic shot of a heavy electric semi-truck parked in a sleek, dimly lit futuristic warehouse. High-contrast lighting with cold blue and warm orange tones reflecting off the polished metallic exterior. Modern industrial design aesthetic with a focus on technical precision and heavy-duty logistics." src="https://lh3.googleusercontent.com/aida-public/AB6AXuBYQa5D36ULW8nf3mxaW8QNG3K3SatZws-M8ZMMShNNYcSq5kVx6Kurd0OEcX36mtYJBkCtRd0_5J1ZD2K-Nuq78XWSVyUPeuAdocoyDKC2CWlbj9BPYkwu2Q0GBeTPaF81uyiBWt9ZQoXDaAekEcvMzr0y88Z112raJL5PjTxjRei0onndjKnpIVcyyGDBuXHgPJGf3ndKCTKTg5nDgi7Y47tJ-_K9TofNAmDrhppzUvU12tFP7mP9IgRd-lva299entv35HzL1Co"/>
+<div class="absolute inset-0 bg-gradient-to-t from-black/80 to-transparent flex items-end p-4">
+<div>
+<span class="font-label-caps text-[10px] text-primary">SCANNED STATUS: OPTIMAL</span>
+<h5 class="font-data-lg text-data-lg">TO-992-BX</h5>
+</div>
+</div>
+</div>
+<div class="space-y-3">
+<div class="flex justify-between items-center">
+<span class="font-label-caps text-label-caps text-on-surface-variant">FUEL/CHARGE</span>
+<div class="w-32 h-2 bg-surface-container relative">
+<div class="absolute inset-0 bg-secondary-fixed-dim" style="width: 82%;"></div>
+</div>
+</div>
+<div class="flex justify-between items-center">
+<span class="font-label-caps text-label-caps text-on-surface-variant">ENGINE HEALTH</span>
+<span class="font-data-sm text-data-sm text-secondary-fixed">98.2%</span>
+</div>
+<div class="flex justify-between items-center">
+<span class="font-label-caps text-label-caps text-on-surface-variant">NEXT SERVICE</span>
+<span class="font-data-sm text-data-sm text-on-surface">1,598 KM</span>
+</div>
+</div>
+<button class="mt-auto w-full py-2 border border-outline-variant hover:border-surface-tint hover:text-surface-tint transition-all font-label-caps text-label-caps uppercase">
+                View Full Diagnostics
+            </button>
+</div>
+</section>
+</div>
+</main>
+<!-- Footer -->
+<footer class="fixed bottom-0 left-64 right-0 h-10 bg-surface-dim/95 backdrop-blur-sm border-t border-outline-variant flex items-center justify-between px-margin z-40">
+<div class="flex items-center gap-6">
+<span class="font-label-caps text-label-caps text-on-surface-variant">TRANSITOPS v4.2.0 - SECURE LINK ESTABLISHED</span>
+<div class="flex items-center gap-2">
+<div class="w-2 h-2 rounded-full bg-secondary-fixed-dim animate-pulse"></div>
+<span class="font-data-sm text-[10px] text-secondary-fixed-dim uppercase tracking-tighter">System Uptime: 99.99%</span>
+</div>
+</div>
+<div class="flex gap-6">
+<span class="font-data-sm text-data-sm text-on-surface-variant">Lat: 34.0522° N</span>
+<span class="font-data-sm text-data-sm text-on-surface-variant">Long: 118.2437° W</span>
+<a class="font-label-caps text-label-caps text-on-surface-variant hover:text-primary-fixed transition-colors" href="#">Operational Logs</a>
+</div>
+</footer>
+<script>
+        // Firebase Configuration
+        const firebaseConfig = {
+            apiKey: "AIzaSyBDtPFdDrjn1l3luohv91ULgxcjLOoE0fo",
+            authDomain: "odoo-32f06.firebaseapp.com",
+            projectId: "odoo-32f06",
+            storageBucket: "odoo-32f06.firebasestorage.app",
+            messagingSenderId: "178882313559",
+            appId: "1:178882313559:web:25ee9c70d2c41864855212",
+            measurementId: "G-B4DLE850JX"
+        };
+
+        // Initialize Firebase
+        firebase.initializeApp(firebaseConfig);
+        const auth = firebase.auth();
+        const analytics = firebase.analytics();
+
+        // Check auth state
+        auth.onAuthStateChanged((user) => {
+            if (!user) {
+                window.location.href = 'login.html';
+            }
+        });
+
+        // Micro-interactions and staggering animations
+        document.addEventListener('DOMContentLoaded', () => {
+            const rows = document.querySelectorAll('tbody tr');
+            rows.forEach((row, index) => {
+                row.style.opacity = '0';
+                row.style.transform = 'translateY(10px)';
+                setTimeout(() => {
+                    row.style.transition = 'all 0.4s cubic-bezier(0.16, 1, 0.3, 1)';
+                    row.style.opacity = '1';
+                    row.style.transform = 'translateY(0)';
+                }, 100 + (index * 40));
+            });
+
+            // Hover effect for Table Rows
+            rows.forEach(row => {
+                row.addEventListener('click', () => {
+                    // Reset others
+                    rows.forEach(r => r.classList.remove('bg-surface-container-highest'));
+                    // Highlight selected
+                    row.classList.add('bg-surface-container-highest');
+                });
+            });
+        });
+    </script>
+</body></html>
