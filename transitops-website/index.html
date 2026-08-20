@@ -1,393 +1,811 @@
-<!DOCTYPE html><html lang="en" class="dark" style=""><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><link href="https://fonts.googleapis.com/css2?family=Hanken+Grotesk:wght@400;500;600;700;800&amp;family=JetBrains+Mono:wght@500;700&amp;display=swap" rel="stylesheet"><link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=block" rel="stylesheet"><script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script><meta charset="utf-8">
-<!-- Firebase SDKs -->
-<script src="https://www.gstatic.com/firebasejs/11.5.0/firebase-app-compat.js"></script>
-<script src="https://www.gstatic.com/firebasejs/11.5.0/firebase-auth-compat.js"></script>
-<script src="https://www.gstatic.com/firebasejs/11.5.0/firebase-analytics-compat.js"></script>
-<script id="tailwind-config">try{
-         tailwind.config = {
-             darkMode: "class",
-             theme: {
-                 extend: {
-                     "colors": {
-                         "secondary-fixed-dim": "#4edea3",
-                         "on-secondary": "#003824",
-                         "surface-container": "#1e2023",
-                         "inverse-on-surface": "#2f3034",
-                         "tertiary": "#ffd8ae",
-                         "error-container": "#93000a",
-                         "inverse-primary": "#00677e",
-                         "on-secondary-fixed": "#002113",
-                         "tertiary-container": "#ffb451",
-                         "on-error-container": "#ffdad6",
-                         "on-surface": "#e2e2e6",
-                         "surface-tint": "#3cd7ff",
-                         "on-primary-fixed": "#001f27",
-                         "on-tertiary-container": "#724700",
-                         "primary": "#a8e8ff",
-                         "surface-variant": "#333538",
-                         "surface-container-lowest": "#0c0e11",
-                         "on-primary-container": "#00586b",
-                         "on-error": "#690005",
-                         "on-primary": "#003642",
-                         "secondary-fixed": "#6ffbbe",
-                         "error": "#ffb4ab",
-                         "on-tertiary-fixed-variant": "#653e00",
-                         "primary-fixed-dim": "#3cd7ff",
-                         "on-secondary-fixed-variant": "#005236",
-                         "background": "#111317",
-                         "secondary-container": "#00a572",
-                         "on-surface-variant": "#bbc9cf",
-                         "on-background": "#e2e2e6",
-                         "surface-container-high": "#282a2d",
-                         "on-primary-fixed-variant": "#004e5f",
-                         "surface-container-highest": "#333538",
-                         "surface-container-low": "#1a1c1f",
-                         "surface-dim": "#111317",
-                         "tertiary-fixed-dim": "#ffb95f",
-                         "primary-container": "#00d4ff",
-                         "surface": "#111317",
-                         "inverse-surface": "#e2e2e6",
-                         "on-secondary-container": "#00311f",
-                         "secondary": "#4edea3",
-                         "outline-variant": "#3c494e",
-                         "tertiary-fixed": "#ffddb8",
-                         "surface-bright": "#37393d",
-                         "primary-fixed": "#b4ebff",
-                         "on-tertiary-fixed": "#2a1700",
-                         "outline": "#859398",
-                         "on-tertiary": "#472a00"
-                     },
-                     "borderRadius": {
-                         "DEFAULT": "0.125rem",
-                         "lg": "0.25rem",
-                         "xl": "0.5rem",
-                         "full": "0.75rem"
-                     },
-                     "spacing": {
-                         "unit": "4px",
-                         "margin-mobile": "16px",
-                         "container-max": "1440px",
-                         "margin-desktop": "40px",
-                         "gutter": "24px"
-                     },
-                     "fontFamily": {
-                         "body-base": ["Hanken Grotesk"],
-                         "headline-md": ["Hanken Grotesk"],
-                         "label-caps": ["JetBrains Mono"],
-                         "display-lg": ["Hanken Grotesk"],
-                         "headline-sm": ["Hanken Grotesk"],
-                         "data-mono": ["JetBrains Mono"]
-                     },
-                     "fontSize": {
-                         "body-base": ["16px", {"lineHeight": "1.6", "fontWeight": "400"}],
-                         "headline-md": ["32px", {"lineHeight": "1.2", "fontWeight": "600"}],
-                         "label-caps": ["11px", {"lineHeight": "1.2", "letterSpacing": "0.1em", "fontWeight": "700"}],
-                         "display-lg": ["48px", {"lineHeight": "1.1", "letterSpacing": "-0.02em", "fontWeight": "700"}],
-                         "headline-sm": ["20px", {"lineHeight": "1.4", "fontWeight": "600"}],
-                         "data-mono": ["14px", {"lineHeight": "1.5", "letterSpacing": "0.02em", "fontWeight": "500"}]
-                     }
-                 },
-             },
-         }
-     }catch(_e){}</script>
-<style>
-.scanlines::before {
-    content: " ";
-    display: block;
-    position: absolute;
-    top: 0;
-    left: 0;
-    bottom: 0;
-    right: 0;
-    background: linear-gradient(rgba(18, 16, 16, 0) 50%, rgba(0, 0, 0, 0.25) 50%), linear-gradient(90deg, rgba(255, 0, 0, 0.06), rgba(0, 255, 0, 0.02), rgba(0, 0, 255, 0.06));
-    z-index: 20;
-    background-size: 100% 2px, 3px 100%;
-    pointer-events: none;
-}
-.grain-overlay {
-    background-image: url('https://www.transparenttextures.com/patterns/carbon-fibre.png');
-    opacity: 0.03;
-}
-.glass-panel {
-    background: rgba(30, 32, 35, 0.6);
-    backdrop-filter: blur(20px);
-    border: 1px solid rgba(255, 255, 255, 0.05);
-}
-.glow-button {
-    box-shadow: 0 0 20px rgba(0, 212, 255, 0.2);
-}
-.route-line {
-    stroke-dasharray: 2000;
-    stroke-dashoffset: 2000;
-    animation: drawRoute 4s ease-out forwards;
-}
-@keyframes drawRoute {
-    to {
-        stroke-dashoffset: 0;
-    }
-}
-.flicker-text {
-    animation: flicker 0.15s infinite;
-}
-@keyframes flicker {
-    0% { opacity: 0.97; }
-    100% { opacity: 1; }
-}
-</style>
-</head><body class="scanlines">
- <div class="grain-overlay fixed inset-0 z-10"></div>
- <!-- Navigation Shell -->
- <nav class="fixed top-0 left-0 right-0 z-50 bg-background/80 backdrop-blur-md border-b border-outline-variant/30 px-margin-desktop py-4 flex justify-between items-center w-full max-w-container-max mx-auto">
- <div class="flex items-center gap-4">
- <span class="font-display-lg text-display-lg font-bold tracking-tighter text-primary">TRANSITOPS</span>
- <div class="hidden md:flex gap-8 ml-12">
- <a class="font-headline-sm text-headline-sm uppercase tracking-wider text-primary border-b-2 border-primary pb-1" href="#">Fleet</a>
- <a class="font-headline-sm text-headline-sm uppercase tracking-wider text-on-surface-variant hover:text-primary transition-colors" href="#">Telemetry</a>
- <a class="font-headline-sm text-headline-sm uppercase tracking-wider text-on-surface-variant hover:text-primary transition-colors" href="#">Integrity</a>
- <a class="font-headline-sm text-headline-sm uppercase tracking-wider text-on-surface-variant hover:text-primary transition-colors" href="#">Tech Stack</a>
- </div>
- </div>
- <button id="auth-button" class="bg-primary-container text-on-primary-container px-6 py-2 rounded font-label-caps uppercase tracking-widest hover:brightness-110 transition-all">Establish Connection</button>
- </nav>
- <main class="relative pt-24 min-h-screen">
- <!-- Hero Section -->
- <section class="relative h-[85vh] flex items-center overflow-hidden px-margin-desktop">
- <!-- Background Image -->
+<!DOCTYPE html>
+<html lang="en" class="dark scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>TRANSITOPS — Mission-Critical Transportation Intelligence</title>
+    
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Hanken+Grotesk:ital,wght@0,300;0,400;0,500;0,600;0,700;0,800;1,400&family=JetBrains+Mono:wght@400;500;600;700&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200&display=block" rel="stylesheet">
+    
+    <!-- Tailwind CSS with Forms & Container Plugins -->
+    <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+    
+    <!-- Firebase SDKs (Compatibility Build v11.5.0) -->
+    <script src="https://www.gstatic.com/firebasejs/11.5.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/11.5.0/firebase-auth-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/11.5.0/firebase-analytics-compat.js"></script>
 
- <!-- Route Line Reveal Animation -->
- <div class="absolute inset-0 z-5 pointer-events-none opacity-20">
- <svg class="w-full h-full" fill="none" viewBox="0 0 1440 800" xmlns="http://www.w3.org/2000/svg">
- <path class="route-line" d="M-100 400C200 400 300 200 600 200C900 200 1000 600 1440 600" stroke="#3cd7ff" stroke-width="2"></path>
- <path class="route-line" d="M-100 500C300 500 500 300 800 300C1100 300 1200 700 1540 700" opacity="0.5" stroke="#4edea3" stroke-width="1"></path>
- </svg>
- </div>
- <div class="relative z-20 max-w-4xl">
- <div class="mb-4 inline-flex items-center gap-2 px-3 py-1 bg-primary/10 border border-primary/20 rounded-full">
- <span class="w-2 h-2 rounded-full bg-primary animate-pulse"></span>
- <span class="font-label-caps text-primary text-[10px]">ALL SYSTEMS OPERATIONAL</span>
- </div>
- <h1 class="font-display-lg text-[120px] leading-none font-bold tracking-[ -0.05em] uppercase mb-4 flicker-text">
-                     TRANSITOPS
-                 </h1>
- <p class="font-headline-md text-headline-md text-on-surface-variant max-w-2xl mb-12">
-                     Mission-Critical Logistics. <span class="text-primary">Powered by Real-Time Telemetry.</span>
- </p>
- <div class="flex flex-wrap gap-6">
- <button id="enter-mission-control" class="glow-button bg-primary-container text-on-primary-container px-10 py-4 font-label-caps text-sm uppercase tracking-widest flex items-center gap-3">
-                         Enter Mission Control
-                         <span class="material-symbols-outlined text-lg">arrow_forward</span>
- </button>
- <button class="border border-outline text-on-surface px-10 py-4 font-label-caps text-sm uppercase tracking-widest hover:bg-white/5 transition-colors">
-                         View Tech Stack
-                     </button>
- </div>
- </div>
- <!-- Sidebar Data Stream -->
- <div class="absolute right-margin-desktop top-1/2 -translate-y-1/2 hidden xl:flex flex-col gap-6 text-right font-data-mono text-[10px] text-outline">
- <div class="border-r-2 border-primary pr-4">
- <div class="text-primary">COORD_LAT</div>
- <div class="text-on-surface">34.0522° N</div>
- </div>
- <div class="border-r-2 border-secondary pr-4">
- <div class="text-secondary">COORD_LONG</div>
- <div class="text-on-surface">118.2437° W</div>
- </div>
- <div class="border-r-2 border-tertiary pr-4">
- <div class="text-tertiary">UPTIME_REL</div>
- <div class="text-on-surface">0.999923</div>
- </div>
- </div>
- </section>
- <!-- Features Bento Grid -->
- <section class="py-24 px-margin-desktop bg-surface-container-lowest relative">
- <div class="grid grid-cols-1 md:grid-cols-3 gap-gutter max-w-container-max mx-auto">
- <!-- Metric 1 -->
- <div class="glass-panel p-8 group hover:border-primary/50 transition-all duration-500">
- <div class="flex justify-between items-start mb-12">
- <span class="material-symbols-outlined text-primary text-3xl" style="font-variation-settings: &quot;FILL&quot; 1;">speed</span>
- <span class="font-data-mono text-outline text-xs">MTR_01</span>
- </div>
- <div class="mb-4">
- <div class="font-data-mono text-[48px] text-primary leading-none mb-2">99.9%</div>
- <h3 class="font-headline-sm text-headline-sm text-on-surface">Fleet Uptime</h3>
- </div>
- <p class="text-on-surface-variant font-body-base text-sm">
-                         Optimized maintenance cycles through predictive AI modeling.
-                     </p>
- <div class="mt-8 h-1 w-full bg-surface-variant overflow-hidden">
- <div class="h-full bg-primary w-full group-hover:animate-pulse"></div>
- </div>
- </div>
- <!-- Metric 2 -->
- <div class="glass-panel p-8 group hover:border-secondary/50 transition-all duration-500">
- <div class="flex justify-between items-start mb-12">
- <span class="material-symbols-outlined text-secondary text-3xl" style="font-variation-settings: &quot;FILL&quot; 1;">router</span>
- <span class="font-data-mono text-outline text-xs">MTR_02</span>
- </div>
- <div class="mb-4">
- <div class="font-data-mono text-[48px] text-secondary leading-none mb-2">12ms</div>
+    <script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        void: "#000000",
+                        surface: {
+                            base: "#05070a",
+                            card: "#0c1017",
+                            elevated: "#121824",
+                            border: "rgba(255, 255, 255, 0.08)",
+                            highlight: "rgba(255, 255, 255, 0.15)"
+                        },
+                        cyan: {
+                            glow: "#00f0ff",
+                            accent: "#00d4ff",
+                            subtle: "#00677e",
+                            dim: "#003642"
+                        },
+                        emerald: {
+                            glow: "#00ff9d",
+                            accent: "#10b981",
+                            subtle: "#00472d"
+                        },
+                        amber: {
+                            accent: "#ffb451"
+                        }
+                    },
+                    fontFamily: {
+                        display: ["Hanken Grotesk", "Plus Jakarta Sans", "sans-serif"],
+                        body: ["Plus Jakarta Sans", "Hanken Grotesk", "sans-serif"],
+                        mono: ["JetBrains Mono", "monospace"]
+                    },
+                    boxShadow: {
+                        'cyan-glow': '0 0 25px -5px rgba(0, 240, 255, 0.35)',
+                        'cyan-glow-lg': '0 0 45px -8px rgba(0, 240, 255, 0.45)',
+                        'emerald-glow': '0 0 25px -5px rgba(0, 255, 157, 0.35)',
+                        'card-glow': '0 10px 30px -10px rgba(0, 0, 0, 0.8), 0 0 1px 1px rgba(255, 255, 255, 0.05)'
+                    },
+                    animation: {
+                        'pulse-slow': 'pulse 4s cubic-bezier(0.4, 0, 0.6, 1) infinite',
+                        'scanline': 'scanline 8s linear infinite',
+                        'float': 'float 6s ease-in-out infinite',
+                        'ping-slow': 'ping 3s cubic-bezier(0, 0, 0.2, 1) infinite'
+                    },
+                    keyframes: {
+                        scanline: {
+                            '0%': { transform: 'translateY(-100%)' },
+                            '100%': { transform: 'translateY(1000%)' }
+                        },
+                        float: {
+                            '0%, 100%': { transform: 'translateY(0px)' },
+                            '50%': { transform: 'translateY(-6px)' }
+                        }
+                    }
+                }
+            }
+        }
+    </script>
 
- </div>
- <p class="text-on-surface-variant font-body-base text-sm">
-                         Global mesh connectivity ensuring sub-second command delivery.
-                     </p>
- <div class="mt-8 h-1 w-full bg-surface-variant overflow-hidden">
- <div class="h-full bg-secondary w-3/4 group-hover:w-full transition-all duration-700"></div>
- </div>
- </div>
- <!-- Metric 3-->
- <div class="glass-panel p-8 group hover:border-tertiary/50 transition-all duration-500">
- <div class="flex justify-between items-start mb-12">
- <span class="material-symbols-outlined text-tertiary text-3xl" style="font-variation-settings: &quot;FILL&quot; 1;">security</span>
- <span class="font-data-mono text-outline text-xs">MTR_03</span>
- </div>
- <div class="mb-4">
- <div class="font-data-mono text-[48px] text-tertiary leading-none mb-2">Zero</div>
- <h3 class="font-headline-sm text-headline-sm text-on-surface">Breach Integrity</h3>
- </div>
- <p class="text-on-surface-variant font-body-base text-sm">
-                         Supabase RLS &amp; RBAC enforced at every database layer.
-                     </p>
- <div class="mt-8 h-1 w-full bg-surface-variant overflow-hidden">
- <div class="h-full bg-tertiary w-full border-r-2 border-background"></div>
- </div>
- </div>
- </div>
- </section>
- <!-- Tech Stack Integrations -->
- <section class="py-20 px-margin-desktop border-y border-outline-variant/10">
- <div class="max-w-container-max mx-auto flex flex-col items-center">
- <span class="font-label-caps text-outline mb-12 uppercase">Stack Architecture</span>
- <div class="flex flex-wrap justify-center items-center gap-16 opacity-50 hover:opacity-100 transition-opacity duration-700">
- <div class="flex items-center gap-3 grayscale hover:grayscale-0 transition-all">
- <div class="w-8 h-8 rounded-full bg-white flex items-center justify-center">
- <span class="font-bold text-black text-xs">N</span>
- </div>
- <span class="font-data-mono text-lg font-bold">NEXT.JS</span>
- </div>
- <div class="flex items-center gap-3 grayscale hover:grayscale-0 transition-all">
- <span class="material-symbols-outlined text-primary text-3xl">water_drop</span>
- <span class="font-data-mono text-lg font-bold">TAILWIND</span>
- </div>
- <div class="flex items-center gap-3 grayscale hover:grayscale-0 transition-all">
- <span class="material-symbols-outlined text-secondary text-3xl">bolt</span>
- <span class="font-data-mono text-lg font-bold">GSAP</span>
- </div>
- <div class="flex items-center gap-3 grayscale hover:grayscale-0 transition-all">
- <div class="w-8 h-8 bg-secondary-container rounded-lg flex items-center justify-center">
- <span class="material-symbols-outlined text-on-secondary-container text-sm" style="font-variation-settings: &quot;FILL&quot; 1;">database</span>
- </div>
- <span class="font-data-mono text-lg font-bold">SUPABASE</span>
- </div>
- </div>
- </div>
- </section>
- </main>
- <!-- Footer -->
- <footer class="bg-surface-container-lowest border-t border-outline-variant/20 bg-background/50 backdrop-blur-xl py-12 px-margin-desktop">
- <div class="max-w-container-max mx-auto flex flex-col md:flex-row justify-between items-center gap-gutter">
- <div class="flex flex-col gap-2">
- <span class="font-label-caps text-label-caps text-on-surface-variant">TRANSITOPS MISSION CONTROL</span>
- <span class="font-data-mono text-[10px] text-secondary tracking-widest">© 2024 ALL SYSTEMS OPERATIONAL.</span>
- </div>
- <div class="flex flex-wrap justify-center gap-8">
- <span class="font-data-mono text-data-mono uppercase text-secondary glow-sm">UPTIME: 99.99%</span>
- <span class="font-data-mono text-data-mono uppercase text-on-surface-variant">LAT: 34.0522 N</span>
- <span class="font-data-mono text-data-mono uppercase text-on-surface-variant">LONG: 118.2437 W</span>
- <span class="font-data-mono text-data-mono uppercase text-on-surface-variant">STATUS: ENCRYPTED</span>
- </div>
- <div class="flex gap-4">
- <a class="text-on-surface-variant hover:text-secondary transition-colors transition-opacity duration-500" href="#">
- <span class="material-symbols-outlined">terminal</span>
- </a>
- <a class="text-on-surface-variant hover:text-secondary transition-colors transition-opacity duration-500" href="#">
- <span class="material-symbols-outlined">hub</span>
- </a>
- </div>
- </div>
- </footer>
- <!-- Interactive Data Points Overlay (Atmospheric) -->
- <div class="fixed inset-0 pointer-events-none z-40 overflow-hidden" id="data-overlay"></div>
- <script>
-         // Firebase Configuration
-         const firebaseConfig = {
-             apiKey: "AIzaSyBDtPFdDrjn1l3luohv91ULgxcjLOoE0fo",
-             authDomain: "odoo-32f06.firebaseapp.com",
-             projectId: "odoo-32f06",
-             storageBucket: "odoo-32f06.firebasestorage.app",
-             messagingSenderId: "178882313559",
-             appId: "1:178882313559:web:25ee9c70d2c41864855212",
-             measurementId: "G-B4DLE850JX"
-         };
+    <style>
+        /* Custom Scrollbar */
+        ::-webkit-scrollbar {
+            width: 6px;
+            height: 6px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #000000;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #1e293b;
+            border-radius: 3px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: #00d4ff;
+        }
 
-         // Initialize Firebase
-         firebase.initializeApp(firebaseConfig);
-         const auth = firebase.auth();
-         const analytics = firebase.analytics();
+        /* Subtle Grid Pattern Overlay */
+        .grid-bg {
+            background-image: 
+                linear-gradient(to right, rgba(255, 255, 255, 0.03) 1px, transparent 1px),
+                linear-gradient(to bottom, rgba(255, 255, 255, 0.03) 1px, transparent 1px);
+            background-size: 48px 48px;
+        }
 
-         // Check auth state and update button
-         const authButton = document.getElementById('auth-button');
-         const enterMissionControlBtn = document.getElementById('enter-mission-control');
-         
-         auth.onAuthStateChanged((user) => {
-             if (user) {
-                 authButton.textContent = "Disconnect";
-                 authButton.onclick = () => auth.signOut();
-             } else {
-                 authButton.textContent = "Establish Connection";
-                 authButton.onclick = () => window.location.href = 'login.html';
-             }
-         });
+        /* Ultra-fine CRT scanline effect */
+        .subtle-scanlines {
+            position: relative;
+        }
+        .subtle-scanlines::after {
+            content: " ";
+            position: absolute;
+            inset: 0;
+            background: linear-gradient(rgba(18, 16, 16, 0) 50%, rgba(0, 0, 0, 0.15) 50%);
+            background-size: 100% 3px;
+            pointer-events: none;
+            z-index: 30;
+            opacity: 0.6;
+        }
 
-         // Enter Mission Control button
-         document.getElementById('enter-mission-control').addEventListener('click', () => {
-             window.location.href = 'mission-control.html';
-         });
+        /* Glassmorphism Panel with dynamic mouse spotlight */
+        .tech-card {
+            position: relative;
+            background: rgba(12, 16, 23, 0.75);
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
+            border: 1px solid rgba(255, 255, 255, 0.07);
+            transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+            overflow: hidden;
+        }
+        .tech-card::before {
+            content: "";
+            position: absolute;
+            top: var(--mouse-y, -1000px);
+            left: var(--mouse-x, -1000px);
+            width: 320px;
+            height: 320px;
+            transform: translate(-50%, -50%);
+            background: radial-gradient(circle, rgba(0, 240, 255, 0.12) 0%, transparent 70%);
+            opacity: 0;
+            transition: opacity 0.3s ease;
+            pointer-events: none;
+            z-index: 1;
+        }
+        .tech-card:hover::before {
+            opacity: 1;
+        }
+        .tech-card:hover {
+            border-color: rgba(0, 240, 255, 0.35);
+            transform: translateY(-2px);
+            box-shadow: 0 16px 36px -12px rgba(0, 240, 255, 0.08), 0 0 1px 1px rgba(0, 240, 255, 0.2);
+        }
 
-         // Micro-interaction: Random floating data particles
-         function createParticle() {
-             const container = document.getElementById('data-overlay');
-             const particle = document.createElement('div');
-             const size = Math.random() * 2 + 1;
-             const duration = Math.random() * 20 + 10;
+        /* Animated SVG Route Lines */
+        .route-dash {
+            stroke-dasharray: 8, 8;
+            animation: dash 30s linear infinite;
+        }
+        @keyframes dash {
+            to {
+                stroke-dashoffset: -1000;
+            }
+        }
 
-             particle.className = 'absolute bg-primary/20 rounded-full blur-[1px]';
-             particle.style.width = `${size}px`;
-             particle.style.height = `${size}px`;
-             particle.style.left = `${Math.random() * 100}%`;
-             particle.style.top = `${Math.random() * 100}%`;
-             particle.style.opacity = Math.random();
+        /* Gradient Text Helper */
+        .text-gradient-cyan {
+            background: linear-gradient(135deg, #ffffff 30%, #00f0ff 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+        .text-gradient-emerald {
+            background: linear-gradient(135deg, #ffffff 40%, #00ff9d 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
 
-             container.appendChild(particle);
+        /* Sleek Button Ripple Glow */
+        .btn-glow {
+            position: relative;
+            transition: all 0.3s ease;
+        }
+        .btn-glow::after {
+            content: '';
+            position: absolute;
+            inset: -2px;
+            background: linear-gradient(90deg, #00f0ff, #00ff9d);
+            border-radius: inherit;
+            z-index: -1;
+            opacity: 0;
+            filter: blur(10px);
+            transition: opacity 0.3s ease;
+        }
+        .btn-glow:hover::after {
+            opacity: 0.6;
+        }
+    </style>
+</head>
+<body class="bg-black text-slate-200 font-body antialiased selection:bg-cyan-500/30 selection:text-cyan-200 min-h-screen relative overflow-x-hidden subtle-scanlines">
 
-             const animation = particle.animate([
-                 { transform: 'translate(0, 0)', opacity: 0 },
-                 { transform: `translate(${Math.random() * 100 - 50}px, ${Math.random() * -100}px)`, opacity: 0.5 },
-                 { transform: `translate(${Math.random() * 200 - 100}px, ${Math.random() * -200}px)`, opacity: 0 }
-             ], {
-                 duration: duration * 1000,
-                 iterations: Infinity
-             });
-         }
+    <!-- Interactive Logistics Canvas Background -->
+    <div class="fixed inset-0 pointer-events-none z-0 overflow-hidden">
+        <canvas id="hero-canvas" class="w-full h-full opacity-45"></canvas>
+        <div class="absolute inset-0 bg-gradient-to-b from-black/40 via-black/80 to-black pointer-events-none"></div>
+        <div class="absolute inset-0 grid-bg opacity-30 pointer-events-none"></div>
+    </div>
 
-         for(let i=0; i<30; i++) {
-             createParticle();
-         }
+    <!-- Telemetry Atmospheric Ambient Radial Glows -->
+    <div class="fixed top-[-10%] left-1/2 -translate-x-1/2 w-[900px] h-[500px] bg-cyan-600/10 blur-[140px] rounded-full pointer-events-none z-0"></div>
+    <div class="fixed bottom-0 right-[-10%] w-[600px] h-[400px] bg-emerald-600/5 blur-[130px] rounded-full pointer-events-none z-0"></div>
 
-         // Hover light-beam effect for inputs (simulated on cards)
-         document.querySelectorAll('.glass-panel').forEach(card => {
-             card.addEventListener('mousemove', e => {
-                 const rect = card.getBoundingClientRect();
-                 const x = e.clientX - rect.left;
-                 const y = e.clientY - rect.top;
-                 card.style.setProperty('--mouse-x', `${x}px`);
-                 card.style.setProperty('--mouse-y', `${y}px`);
-                 card.style.background = `radial-gradient(400px circle at ${x}px ${y}px, rgba(0, 212, 255, 0.05), transparent 40%)`;
-             });
-             card.addEventListener('mouseleave', () => {
-                 card.style.background = 'rgba(30, 32, 35, 0.6)';
-             });
-         });
-     </script>
+    <!-- Navigation Header -->
+    <header class="fixed top-0 left-0 right-0 z-50 transition-all duration-300 border-b border-white/[0.06] bg-black/60 backdrop-blur-xl">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-20 flex items-center justify-between">
+            <!-- Brand Logo -->
+            <div class="flex items-center gap-3 group cursor-pointer" onclick="window.scrollTo({top: 0, behavior: 'smooth'})">
+                <div class="relative flex items-center justify-center w-10 h-10 rounded-lg bg-surface-card border border-cyan-500/30 group-hover:border-cyan-400 group-hover:shadow-[0_0_15px_rgba(0,240,255,0.4)] transition-all duration-300">
+                    <span class="material-symbols-outlined text-cyan-accent text-2xl group-hover:scale-110 transition-transform duration-300">hub</span>
+                    <span class="absolute -top-1 -right-1 w-2 h-2 rounded-full bg-emerald-accent animate-ping"></span>
+                    <span class="absolute -top-1 -right-1 w-2 h-2 rounded-full bg-emerald-accent"></span>
+                </div>
+                <div class="flex flex-col">
+                    <div class="flex items-center gap-2">
+                        <span class="font-display font-extrabold text-xl tracking-tight text-white group-hover:text-cyan-glow transition-colors">TRANSITOPS</span>
+                        <span class="px-1.5 py-0.5 text-[9px] font-mono font-bold tracking-wider uppercase rounded bg-cyan-500/10 text-cyan-300 border border-cyan-500/20">v2.4</span>
+                    </div>
+                    <span class="font-mono text-[9px] text-slate-400 tracking-widest uppercase">Autonomous Fleet Intelligence</span>
+                </div>
+            </div>
 
- </body></html>
+            <!-- Desktop Nav Links -->
+            <nav class="hidden md:flex items-center gap-1 bg-surface-card/60 p-1.5 rounded-full border border-white/[0.06] backdrop-blur-md">
+                <a href="#hero" class="px-4 py-1.5 rounded-full text-xs font-mono tracking-wider text-cyan-300 bg-white/[0.05] border border-white/[0.08] hover:text-white transition-colors">
+                    FLEET_VIEW
+                </a>
+                <a href="#metrics" class="px-4 py-1.5 rounded-full text-xs font-mono tracking-wider text-slate-400 hover:text-cyan-300 hover:bg-white/[0.03] transition-colors">
+                    TELEMETRY
+                </a>
+                <a href="#live-feed" class="px-4 py-1.5 rounded-full text-xs font-mono tracking-wider text-slate-400 hover:text-cyan-300 hover:bg-white/[0.03] transition-colors">
+                    INTEGRITY
+                </a>
+                <a href="#tech-stack" class="px-4 py-1.5 rounded-full text-xs font-mono tracking-wider text-slate-400 hover:text-cyan-300 hover:bg-white/[0.03] transition-colors">
+                    TECH_STACK
+                </a>
+            </nav>
+
+            <!-- Action / Auth Status -->
+            <div class="flex items-center gap-3">
+                <div class="hidden xl:flex items-center gap-2 px-3 py-1.5 rounded-full bg-surface-card border border-white/[0.06] text-[11px] font-mono text-slate-400">
+                    <span class="w-2 h-2 rounded-full bg-emerald-accent animate-pulse"></span>
+                    <span class="text-slate-300">MESH:</span>
+                    <span class="text-emerald-400 font-semibold">99.99% NOMINAL</span>
+                </div>
+                
+                <!-- Main Connection Auth Button (Preserved ID & Handler) -->
+                <button id="auth-button" class="btn-glow relative inline-flex items-center justify-center px-5 py-2.5 rounded-lg text-xs font-mono font-bold uppercase tracking-widest text-black bg-cyan-glow hover:bg-cyan-accent active:scale-95 shadow-cyan-glow transition-all duration-200">
+                    Establish Connection
+                </button>
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Content Area -->
+    <main class="relative z-10 pt-28 pb-16">
+
+        <!-- HERO SECTION -->
+        <section id="hero" class="relative min-h-[85vh] flex items-center max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
+            <div class="grid grid-cols-1 lg:grid-cols-12 gap-12 items-center w-full">
+                
+                <!-- Left Hero Copy & Actions -->
+                <div class="lg:col-span-7 flex flex-col items-start text-left z-20">
+                    
+                    <!-- Operational Status Pill -->
+                    <div class="inline-flex items-center gap-2.5 px-3.5 py-1.5 rounded-full bg-surface-card/90 border border-cyan-500/30 backdrop-blur-md mb-8 shadow-sm">
+                        <span class="relative flex h-2 w-2">
+                            <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-accent opacity-75"></span>
+                            <span class="relative inline-flex rounded-full h-2 w-2 bg-emerald-accent"></span>
+                        </span>
+                        <span class="font-mono text-[11px] font-semibold text-slate-300 tracking-wider uppercase">
+                            ALL SYSTEMS OPERATIONAL <span class="text-slate-500 mx-1">//</span> <span class="text-cyan-accent">14,892 NODES ONLINE</span>
+                        </span>
+                    </div>
+
+                    <!-- Hero Main Heading -->
+                    <h1 class="font-display font-extrabold text-4xl sm:text-6xl xl:text-7xl tracking-tight text-white uppercase leading-[1.08] mb-6">
+                        MISSION-CRITICAL <br>
+                        <span class="text-gradient-cyan">LOGISTICS.</span>
+                    </h1>
+
+                    <!-- Hero Subtitle -->
+                    <p class="text-base sm:text-lg text-slate-400 max-w-2xl font-body font-normal leading-relaxed mb-10">
+                        Autonomous fleet synchronization, predictive route optimization, and sub-millisecond edge telemetry powered by high-concurrency real-time infrastructure.
+                    </p>
+
+                    <!-- CTA Actions Cluster -->
+                    <div class="flex flex-wrap items-center gap-4 w-full sm:w-auto">
+                        <!-- Primary CTA (Preserved ID & Redirect) -->
+                        <button id="enter-mission-control" class="btn-glow group w-full sm:w-auto inline-flex items-center justify-center gap-3 px-8 py-4 rounded-xl font-mono text-xs font-bold uppercase tracking-widest text-black bg-cyan-glow hover:bg-white active:scale-95 shadow-cyan-glow-lg transition-all duration-300">
+                            <span>Enter Mission Control</span>
+                            <span class="material-symbols-outlined text-lg group-hover:translate-x-1 transition-transform">arrow_forward</span>
+                        </button>
+
+                        <!-- Secondary Architecture CTA -->
+                        <a href="#tech-stack" class="w-full sm:w-auto inline-flex items-center justify-center gap-2 px-7 py-4 rounded-xl font-mono text-xs font-semibold uppercase tracking-widest text-slate-300 bg-surface-card/80 hover:bg-surface-elevated border border-white/[0.1] hover:border-cyan-500/40 hover:text-white transition-all duration-300">
+                            <span class="material-symbols-outlined text-base text-cyan-accent">layers</span>
+                            <span>View Tech Stack</span>
+                        </a>
+                    </div>
+
+                    <!-- Bottom Quick Telemetry Highlights -->
+                    <div class="grid grid-cols-3 gap-6 mt-14 pt-8 border-t border-white/[0.08] w-full max-w-xl">
+                        <div>
+                            <div class="font-mono text-2xl font-bold text-white tracking-tight">12<span class="text-cyan-accent text-sm ml-0.5">ms</span></div>
+                            <div class="font-mono text-[10px] uppercase tracking-wider text-slate-400 mt-1">Edge Latency</div>
+                        </div>
+                        <div>
+                            <div class="font-mono text-2xl font-bold text-white tracking-tight">99.99<span class="text-emerald-accent text-sm ml-0.5">%</span></div>
+                            <div class="font-mono text-[10px] uppercase tracking-wider text-slate-400 mt-1">Telemetry SLA</div>
+                        </div>
+                        <div>
+                            <div class="font-mono text-2xl font-bold text-white tracking-tight">Zero<span class="text-amber-accent text-sm ml-0.5"></span></div>
+                            <div class="font-mono text-[10px] uppercase tracking-wider text-slate-400 mt-1">Security Breaches</div>
+                        </div>
+                    </div>
+
+                </div>
+
+                <!-- Right Hero: Live Telemetry Mission Control Radar Card -->
+                <div class="lg:col-span-5 relative">
+                    <div class="relative tech-card rounded-2xl p-6 shadow-2xl border border-white/[0.1] bg-surface-card/80 backdrop-blur-2xl">
+                        
+                        <!-- Top HUD Bar -->
+                        <div class="flex items-center justify-between border-b border-white/[0.08] pb-4 mb-5">
+                            <div class="flex items-center gap-2">
+                                <span class="w-2.5 h-2.5 rounded-full bg-cyan-accent animate-pulse"></span>
+                                <span class="font-mono text-xs font-bold tracking-wider text-white uppercase">LIVE TELEMETRY STREAM</span>
+                            </div>
+                            <span id="utc-clock" class="font-mono text-xs text-slate-400 bg-white/[0.04] px-2.5 py-1 rounded border border-white/[0.05]">
+                                23:42:01 UTC
+                            </span>
+                        </div>
+
+                        <!-- Real-Time Interactive Radar Sphere -->
+                        <div class="relative w-full aspect-video rounded-xl bg-black/60 border border-white/[0.06] overflow-hidden flex items-center justify-center mb-5">
+                            <!-- Radar Grid Lines -->
+                            <div class="absolute inset-0 flex items-center justify-center pointer-events-none">
+                                <div class="w-48 h-48 rounded-full border border-cyan-500/20"></div>
+                                <div class="w-32 h-32 rounded-full border border-cyan-500/30"></div>
+                                <div class="w-16 h-16 rounded-full border border-cyan-500/40"></div>
+                                <div class="absolute inset-0 flex items-center justify-center">
+                                    <div class="w-full h-px bg-cyan-500/15"></div>
+                                    <div class="h-full w-px bg-cyan-500/15"></div>
+                                </div>
+                            </div>
+                            <!-- Radar Sweep Animation -->
+                            <div class="absolute inset-0 flex items-center justify-center pointer-events-none">
+                                <div class="w-48 h-48 rounded-full border-r-2 border-cyan-glow/60 animate-spin" style="animation-duration: 4s;"></div>
+                            </div>
+                            <!-- Active Moving Nodes -->
+                            <div class="absolute top-1/3 left-1/4 flex items-center gap-1.5 animate-pulse">
+                                <div class="w-2 h-2 rounded-full bg-cyan-accent"></div>
+                                <span class="font-mono text-[9px] text-cyan-300">TR-804 [AIR]</span>
+                            </div>
+                            <div class="absolute bottom-1/4 right-1/3 flex items-center gap-1.5 animate-pulse" style="animation-delay: 1s;">
+                                <div class="w-2 h-2 rounded-full bg-emerald-accent"></div>
+                                <span class="font-mono text-[9px] text-emerald-300">TR-219 [SEA]</span>
+                            </div>
+                            <div class="absolute top-1/2 right-1/4 flex items-center gap-1.5 animate-pulse" style="animation-delay: 2s;">
+                                <div class="w-2 h-2 rounded-full bg-amber-accent"></div>
+                                <span class="font-mono text-[9px] text-amber-300">TR-550 [GROUND]</span>
+                            </div>
+                        </div>
+
+                        <!-- Live Feed Stream Items -->
+                        <div class="space-y-2.5 font-mono text-[11px]">
+                            <div class="p-2.5 rounded-lg bg-surface-elevated/70 border border-white/[0.04] flex items-center justify-between">
+                                <div class="flex items-center gap-2">
+                                    <span class="text-cyan-accent font-bold">ALPHA-09</span>
+                                    <span class="text-slate-400">SFO ➔ NRT</span>
+                                </div>
+                                <span class="text-emerald-400 bg-emerald-950/60 px-2 py-0.5 rounded text-[10px] border border-emerald-500/30">IN_TRANSIT // 890 KM/H</span>
+                            </div>
+                            <div class="p-2.5 rounded-lg bg-surface-elevated/70 border border-white/[0.04] flex items-center justify-between">
+                                <div class="flex items-center gap-2">
+                                    <span class="text-cyan-accent font-bold">DELTA-44</span>
+                                    <span class="text-slate-400">LAX ➔ FRA</span>
+                                </div>
+                                <span class="text-cyan-400 bg-cyan-950/60 px-2 py-0.5 rounded text-[10px] border border-cyan-500/30">WAYPOINT_SYNC // OK</span>
+                            </div>
+                            <div class="p-2.5 rounded-lg bg-surface-elevated/70 border border-white/[0.04] flex items-center justify-between">
+                                <div class="flex items-center gap-2">
+                                    <span class="text-amber-400 font-bold">OMEGA-12</span>
+                                    <span class="text-slate-400">SIN ➔ DXB</span>
+                                </div>
+                                <span class="text-slate-300 bg-slate-800/80 px-2 py-0.5 rounded text-[10px] border border-slate-700">OPTIMIZING_VECTOR</span>
+                            </div>
+                        </div>
+
+                        <!-- Bottom GPS HUD Coordinates -->
+                        <div class="mt-4 pt-3 border-t border-white/[0.06] flex items-center justify-between font-mono text-[10px] text-slate-400">
+                            <div><span class="text-slate-500">LAT:</span> 34.0522° N</div>
+                            <div><span class="text-slate-500">LONG:</span> 118.2437° W</div>
+                            <div><span class="text-emerald-400">REL: 0.99994</span></div>
+                        </div>
+
+                    </div>
+                </div>
+
+            </div>
+        </section>
+
+        <!-- BENTO GRID FEATURES SECTION -->
+        <section id="metrics" class="py-24 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative">
+            
+            <!-- Section Header -->
+            <div class="text-center max-w-3xl mx-auto mb-16">
+                <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-surface-card border border-white/[0.08] mb-4">
+                    <span class="material-symbols-outlined text-cyan-accent text-sm">tune</span>
+                    <span class="font-mono text-[10px] font-bold text-cyan-300 uppercase tracking-widest">SYSTEM ARCHITECTURE METRICS</span>
+                </div>
+                <h2 class="font-display font-bold text-3xl sm:text-4xl text-white tracking-tight uppercase">
+                    ENGINEERED FOR ZERO FAILURE TOLERANCE
+                </h2>
+                <p class="text-slate-400 mt-4 text-sm sm:text-base">
+                    Every packet, route decision, and telemetry beacon is verified through high-throughput edge nodes and cryptographic consensus.
+                </p>
+            </div>
+
+            <!-- Bento 3-Column Grid -->
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+
+                <!-- Metric 1: Fleet Uptime -->
+                <div class="tech-card rounded-2xl p-8 flex flex-col justify-between group">
+                    <div>
+                        <div class="flex items-center justify-between mb-8">
+                            <div class="w-12 h-12 rounded-xl bg-cyan-500/10 border border-cyan-500/20 flex items-center justify-center text-cyan-accent group-hover:scale-110 group-hover:border-cyan-400 transition-all duration-300">
+                                <span class="material-symbols-outlined text-2xl">speed</span>
+                            </div>
+                            <span class="font-mono text-xs font-semibold text-cyan-400/70 bg-cyan-500/5 px-2.5 py-1 rounded border border-cyan-500/10">MOD_01 // UPTIME</span>
+                        </div>
+
+                        <div class="mb-4">
+                            <div class="font-mono text-5xl font-extrabold text-white tracking-tight group-hover:text-cyan-glow transition-colors">
+                                99.99<span class="text-cyan-accent text-3xl">%</span>
+                            </div>
+                            <h3 class="font-display font-bold text-xl text-slate-100 mt-2">Autonomous Fleet Uptime</h3>
+                        </div>
+
+                        <p class="text-slate-400 text-sm leading-relaxed mb-6 font-body">
+                            Continuous multi-region failover and predictive maintenance algorithms eliminate deadlocks and dispatch delays.
+                        </p>
+                    </div>
+
+                    <!-- Waveform Visualizer -->
+                    <div>
+                        <div class="flex items-center justify-between text-[11px] font-mono text-slate-400 mb-2">
+                            <span>SLA THRESHOLD</span>
+                            <span class="text-emerald-400">OPTIMAL</span>
+                        </div>
+                        <div class="h-1.5 w-full bg-surface-elevated rounded-full overflow-hidden border border-white/[0.05]">
+                            <div class="h-full bg-gradient-to-r from-cyan-500 to-emerald-400 w-full animate-pulse"></div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Metric 2: Sub-Second Latency -->
+                <div class="tech-card rounded-2xl p-8 flex flex-col justify-between group">
+                    <div>
+                        <div class="flex items-center justify-between mb-8">
+                            <div class="w-12 h-12 rounded-xl bg-emerald-500/10 border border-emerald-500/20 flex items-center justify-center text-emerald-accent group-hover:scale-110 group-hover:border-emerald-400 transition-all duration-300">
+                                <span class="material-symbols-outlined text-2xl">router</span>
+                            </div>
+                            <span class="font-mono text-xs font-semibold text-emerald-400/70 bg-emerald-500/5 px-2.5 py-1 rounded border border-emerald-500/10">MOD_02 // MESH</span>
+                        </div>
+
+                        <div class="mb-4">
+                            <div class="font-mono text-5xl font-extrabold text-white tracking-tight group-hover:text-emerald-glow transition-colors">
+                                12<span class="text-emerald-accent text-3xl">ms</span>
+                            </div>
+                            <h3 class="font-display font-bold text-xl text-slate-100 mt-2">Global Mesh Latency</h3>
+                        </div>
+
+                        <p class="text-slate-400 text-sm leading-relaxed mb-6 font-body">
+                            Global mesh relays deliver sub-second command telemetry across ground, oceanic, and orbital transit assets.
+                        </p>
+                    </div>
+
+                    <!-- Pulse Latency Visualizer -->
+                    <div>
+                        <div class="flex items-center justify-between text-[11px] font-mono text-slate-400 mb-2">
+                            <span>RELAY FREQUENCY</span>
+                            <span class="text-emerald-400">180+ NODES</span>
+                        </div>
+                        <div class="h-1.5 w-full bg-surface-elevated rounded-full overflow-hidden border border-white/[0.05]">
+                            <div class="h-full bg-emerald-accent w-[92%] group-hover:w-full transition-all duration-700"></div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Metric 3: Zero Breach Security -->
+                <div class="tech-card rounded-2xl p-8 flex flex-col justify-between group">
+                    <div>
+                        <div class="flex items-center justify-between mb-8">
+                            <div class="w-12 h-12 rounded-xl bg-amber-500/10 border border-amber-500/20 flex items-center justify-center text-amber-accent group-hover:scale-110 group-hover:border-amber-400 transition-all duration-300">
+                                <span class="material-symbols-outlined text-2xl">security</span>
+                            </div>
+                            <span class="font-mono text-xs font-semibold text-amber-400/70 bg-amber-500/5 px-2.5 py-1 rounded border border-amber-500/10">MOD_03 // SEC_OPS</span>
+                        </div>
+
+                        <div class="mb-4">
+                            <div class="font-mono text-5xl font-extrabold text-white tracking-tight group-hover:text-amber-accent transition-colors">
+                                ZERO<span class="text-amber-accent text-3xl">_</span>
+                            </div>
+                            <h3 class="font-display font-bold text-xl text-slate-100 mt-2">Breach Integrity</h3>
+                        </div>
+
+                        <p class="text-slate-400 text-sm leading-relaxed mb-6 font-body">
+                            Strict cryptographic Row-Level Security (RLS) & RBAC tokenization at every database layer.
+                        </p>
+                    </div>
+
+                    <!-- Security Hash Visualizer -->
+                    <div>
+                        <div class="flex items-center justify-between text-[11px] font-mono text-slate-400 mb-2">
+                            <span>ENCRYPTION</span>
+                            <span class="text-amber-400">SHA-512 TLS 1.3</span>
+                        </div>
+                        <div class="h-1.5 w-full bg-surface-elevated rounded-full overflow-hidden border border-white/[0.05]">
+                            <div class="h-full bg-amber-accent w-full"></div>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </section>
+
+        <!-- TECH STACK ARCHITECTURE SHOWCASE -->
+        <section id="tech-stack" class="py-20 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 border-t border-white/[0.06] relative">
+            <div class="max-w-4xl mx-auto text-center mb-16">
+                <span class="font-mono text-xs text-cyan-accent tracking-widest uppercase mb-3 block">HIGH-CONCURRENCY PIPELINE</span>
+                <h2 class="font-display font-bold text-3xl text-white uppercase tracking-tight">Mission Stack Architecture</h2>
+                <p class="text-slate-400 text-sm mt-3">Built on ultra-low latency frameworks designed for planetary scale execution.</p>
+            </div>
+
+            <!-- Tech Stack Showcase Cards -->
+            <div class="grid grid-cols-2 md:grid-cols-4 gap-4 max-w-5xl mx-auto">
+                
+                <!-- Next.js -->
+                <div class="tech-card rounded-xl p-6 text-center group">
+                    <div class="w-12 h-12 mx-auto rounded-lg bg-white/5 border border-white/10 flex items-center justify-center mb-4 group-hover:border-cyan-500/50 transition-colors">
+                        <span class="font-display font-extrabold text-xl text-white">N</span>
+                    </div>
+                    <div class="font-mono font-bold text-sm text-white">NEXT.JS 15</div>
+                    <div class="font-mono text-[10px] text-cyan-400 mt-1 uppercase">Edge Runtime Core</div>
+                </div>
+
+                <!-- Tailwind CSS -->
+                <div class="tech-card rounded-xl p-6 text-center group">
+                    <div class="w-12 h-12 mx-auto rounded-lg bg-cyan-500/10 border border-cyan-500/20 flex items-center justify-center mb-4 text-cyan-accent group-hover:border-cyan-400 transition-colors">
+                        <span class="material-symbols-outlined text-2xl">water_drop</span>
+                    </div>
+                    <div class="font-mono font-bold text-sm text-white">TAILWIND CSS</div>
+                    <div class="font-mono text-[10px] text-cyan-400 mt-1 uppercase">Adaptive Design System</div>
+                </div>
+
+                <!-- Canvas & GSAP -->
+                <div class="tech-card rounded-xl p-6 text-center group">
+                    <div class="w-12 h-12 mx-auto rounded-lg bg-emerald-500/10 border border-emerald-500/20 flex items-center justify-center mb-4 text-emerald-accent group-hover:border-emerald-400 transition-colors">
+                        <span class="material-symbols-outlined text-2xl">bolt</span>
+                    </div>
+                    <div class="font-mono font-bold text-sm text-white">GSAP & CANVAS</div>
+                    <div class="font-mono text-[10px] text-emerald-400 mt-1 uppercase">60FPS Telemetry Render</div>
+                </div>
+
+                <!-- Supabase & Firebase -->
+                <div class="tech-card rounded-xl p-6 text-center group">
+                    <div class="w-12 h-12 mx-auto rounded-lg bg-amber-500/10 border border-amber-500/20 flex items-center justify-center mb-4 text-amber-accent group-hover:border-amber-400 transition-colors">
+                        <span class="material-symbols-outlined text-2xl">database</span>
+                    </div>
+                    <div class="font-mono font-bold text-sm text-white">SUPABASE & FIREBASE</div>
+                    <div class="font-mono text-[10px] text-amber-400 mt-1 uppercase">Real-Time RBAC Storage</div>
+                </div>
+
+            </div>
+        </section>
+
+    </main>
+
+    <!-- OPERATIONS FOOTER -->
+    <footer class="border-t border-white/[0.08] bg-black/80 backdrop-blur-2xl py-12 relative z-20">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex flex-col md:flex-row items-center justify-between gap-8">
+                
+                <!-- Brand & Copyright -->
+                <div class="flex flex-col items-center md:items-start gap-1.5">
+                    <div class="flex items-center gap-2">
+                        <span class="w-2 h-2 rounded-full bg-cyan-accent"></span>
+                        <span class="font-display font-bold text-sm tracking-wider text-white uppercase">TRANSITOPS MISSION CONTROL</span>
+                    </div>
+                    <span class="font-mono text-[11px] text-slate-400">© 2026 TRANSITOPS INTELLIGENCE CORP. ALL SYSTEMS ENCRYPTED.</span>
+                </div>
+
+                <!-- Telemetry Matrix Status Badges -->
+                <div class="flex flex-wrap justify-center items-center gap-6 font-mono text-[11px] text-slate-400">
+                    <div class="flex items-center gap-1.5 text-emerald-400">
+                        <span class="w-1.5 h-1.5 rounded-full bg-emerald-accent animate-ping"></span>
+                        <span>UPTIME: 99.999%</span>
+                    </div>
+                    <div class="hidden sm:block text-slate-400">LAT: 34.0522° N</div>
+                    <div class="hidden sm:block text-slate-400">LONG: 118.2437° W</div>
+                    <div class="text-cyan-400">PROTOCOL: TLS 1.3 SECURE</div>
+                </div>
+
+                <!-- Quick Terminal Icons -->
+                <div class="flex items-center gap-3">
+                    <button class="w-9 h-9 rounded-lg bg-surface-card border border-white/[0.08] text-slate-400 hover:text-cyan-accent hover:border-cyan-500/40 transition-colors flex items-center justify-center" title="Mission Terminal">
+                        <span class="material-symbols-outlined text-lg">terminal</span>
+                    </button>
+                    <button class="w-9 h-9 rounded-lg bg-surface-card border border-white/[0.08] text-slate-400 hover:text-emerald-accent hover:border-emerald-500/40 transition-colors flex items-center justify-center" title="Network Mesh">
+                        <span class="material-symbols-outlined text-lg">hub</span>
+                    </button>
+                </div>
+
+            </div>
+        </div>
+    </footer>
+
+    <!-- Background Canvas & Dynamic Scripts -->
+    <script>
+        // --- 1. FIREBASE INITIALIZATION & AUTH (Preserved exact config & logic) ---
+        const firebaseConfig = {
+            apiKey: "AIzaSyBDtPFdDrjn1l3luohv91ULgxcjLOoE0fo",
+            authDomain: "odoo-32f06.firebaseapp.com",
+            projectId: "odoo-32f06",
+            storageBucket: "odoo-32f06.firebasestorage.app",
+            messagingSenderId: "178882313559",
+            appId: "1:178882313559:web:25ee9c70d2c41864855212",
+            measurementId: "G-B4DLE850JX"
+        };
+
+        // Initialize Firebase
+        if (typeof firebase !== 'undefined') {
+            firebase.initializeApp(firebaseConfig);
+            const auth = firebase.auth();
+            const analytics = firebase.analytics();
+
+            const authButton = document.getElementById('auth-button');
+            const enterMissionControlBtn = document.getElementById('enter-mission-control');
+
+            auth.onAuthStateChanged((user) => {
+                if (user) {
+                    authButton.textContent = "Disconnect";
+                    authButton.classList.remove('bg-cyan-glow', 'text-black');
+                    authButton.classList.add('bg-red-500/20', 'text-red-300', 'border', 'border-red-500/40', 'hover:bg-red-500/30');
+                    authButton.onclick = () => auth.signOut();
+                } else {
+                    authButton.textContent = "Establish Connection";
+                    authButton.classList.remove('bg-red-500/20', 'text-red-300', 'border', 'border-red-500/40');
+                    authButton.classList.add('bg-cyan-glow', 'text-black');
+                    authButton.onclick = () => window.location.href = 'login.html';
+                }
+            });
+
+            if (enterMissionControlBtn) {
+                enterMissionControlBtn.addEventListener('click', () => {
+                    window.location.href = 'mission-control.html';
+                });
+            }
+        }
+
+        // --- 2. DYNAMIC LIVE UTC CLOCK ---
+        function updateClock() {
+            const clockEl = document.getElementById('utc-clock');
+            if (clockEl) {
+                const now = new Date();
+                const hours = String(now.getUTCHours()).padStart(2, '0');
+                const minutes = String(now.getUTCMinutes()).padStart(2, '0');
+                const seconds = String(now.getUTCSeconds()).padStart(2, '0');
+                clockEl.textContent = `${hours}:${minutes}:${seconds} UTC`;
+            }
+        }
+        setInterval(updateClock, 1000);
+        updateClock();
+
+        // --- 3. DYNAMIC MOUSE SPOTLIGHT MICRO-INTERACTION ---
+        document.querySelectorAll('.tech-card').forEach(card => {
+            card.addEventListener('mousemove', e => {
+                const rect = card.getBoundingClientRect();
+                const x = e.clientX - rect.left;
+                const y = e.clientY - rect.top;
+                card.style.setProperty('--mouse-x', `${x}px`);
+                card.style.setProperty('--mouse-y', `${y}px`);
+            });
+        });
+
+        // --- 4. HIGH-PERFORMANCE LOGISTICS NETWORK CANVAS ---
+        const canvas = document.getElementById('hero-canvas');
+        if (canvas) {
+            const ctx = canvas.getContext('2d');
+            let width, height;
+            let nodes = [];
+            let packets = [];
+
+            function resize() {
+                width = canvas.width = window.innerWidth;
+                height = canvas.height = window.innerHeight;
+                initNodes();
+            }
+
+            function initNodes() {
+                nodes = [];
+                const nodeCount = Math.floor(width / 110);
+                for (let i = 0; i < nodeCount; i++) {
+                    nodes.push({
+                        x: Math.random() * width,
+                        y: Math.random() * height * 0.85 + height * 0.05,
+                        vx: (Math.random() - 0.5) * 0.4,
+                        vy: (Math.random() - 0.5) * 0.4,
+                        radius: Math.random() * 2 + 1.5,
+                        pulse: Math.random() * Math.PI * 2
+                    });
+                }
+
+                packets = [];
+                for (let i = 0; i < 18; i++) {
+                    packets.push({
+                        nodeA: Math.floor(Math.random() * nodes.length),
+                        nodeB: Math.floor(Math.random() * nodes.length),
+                        progress: Math.random(),
+                        speed: Math.random() * 0.006 + 0.003
+                    });
+                }
+            }
+
+            function draw() {
+                ctx.clearRect(0, 0, width, height);
+
+                // Update & Draw Nodes
+                for (let i = 0; i < nodes.length; i++) {
+                    const n = nodes[i];
+                    n.x += n.vx;
+                    n.y += n.vy;
+                    n.pulse += 0.03;
+
+                    if (n.x < 0 || n.x > width) n.vx *= -1;
+                    if (n.y < 0 || n.y > height) n.vy *= -1;
+
+                    // Draw Node Circle
+                    ctx.beginPath();
+                    ctx.arc(n.x, n.y, n.radius, 0, Math.PI * 2);
+                    ctx.fillStyle = 'rgba(0, 240, 255, 0.7)';
+                    ctx.shadowBlur = 8;
+                    ctx.shadowColor = '#00f0ff';
+                    ctx.fill();
+                    ctx.shadowBlur = 0;
+
+                    // Draw Subtle Connection Lines
+                    for (let j = i + 1; j < nodes.length; j++) {
+                        const n2 = nodes[j];
+                        const dx = n.x - n2.x;
+                        const dy = n.y - n2.y;
+                        const dist = Math.sqrt(dx * dx + dy * dy);
+
+                        if (dist < 180) {
+                            const alpha = (1 - dist / 180) * 0.25;
+                            ctx.beginPath();
+                            ctx.moveTo(n.x, n.y);
+                            ctx.lineTo(n2.x, n2.y);
+                            ctx.strokeStyle = `rgba(0, 240, 255, ${alpha})`;
+                            ctx.lineWidth = 0.8;
+                            ctx.stroke();
+                        }
+                    }
+                }
+
+                // Draw moving data telemetry packets
+                for (let p of packets) {
+                    p.progress += p.speed;
+                    if (p.progress >= 1) {
+                        p.progress = 0;
+                        p.nodeA = Math.floor(Math.random() * nodes.length);
+                        p.nodeB = Math.floor(Math.random() * nodes.length);
+                    }
+
+                    const start = nodes[p.nodeA];
+                    const end = nodes[p.nodeB];
+                    if (start && end) {
+                        const curX = start.x + (end.x - start.x) * p.progress;
+                        const curY = start.y + (end.y - start.y) * p.progress;
+
+                        ctx.beginPath();
+                        ctx.arc(curX, curY, 2.2, 0, Math.PI * 2);
+                        ctx.fillStyle = '#00ff9d';
+                        ctx.shadowBlur = 10;
+                        ctx.shadowColor = '#00ff9d';
+                        ctx.fill();
+                        ctx.shadowBlur = 0;
+                    }
+                }
+
+                requestAnimationFrame(draw);
+            }
+
+            window.addEventListener('resize', resize);
+            resize();
+            draw();
+        }
+    </script>
+</body>
+</html>
